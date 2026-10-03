@@ -6,6 +6,7 @@ import { hrefFor } from "@/components/paths";
 import { ProductCard } from "@/components/ProductCard";
 import { LeadForm } from "@/components/LeadForm";
 import { SITE } from "@/config/site";
+import { localizedAlternates } from "@/lib/seo";
 import { PART_SECTIONS, UNIT_SECTIONS, sectionPath } from "@/lib/catalog-config";
 import { getFeaturedProducts, getGuideArticles } from "@/lib/shopify/catalog";
 
@@ -14,7 +15,7 @@ export const revalidate=3600;
 
 export async function generateMetadata({params}:HomePageProps):Promise<Metadata>{
   const {locale}=await params;const canonical=locale==="zh"?"/zh":"/";
-  return {title:{absolute:"HVAC Equipment & Parts for Southern California | "+SITE.brand},description:"Shop HVAC equipment, systems and replacement parts with local pickup and delivery in Southern California.",alternates:{canonical,languages:{"en-US":"/","zh-Hans":"/zh","x-default":"/"}},openGraph:{title:"HVAC Equipment & Parts for Southern California",description:"Shop verified HVAC equipment and parts from HVAC Pacific.",url:SITE.domain+canonical,type:"website"}};
+  return {title:{absolute:"HVAC Equipment & Parts for Southern California | "+SITE.brand},description:"Shop HVAC equipment, systems and replacement parts with local pickup and delivery in Southern California.",alternates:localizedAlternates(locale,"/"),openGraph:{title:"HVAC Equipment & Parts for Southern California",description:"Shop verified HVAC equipment and parts from HVAC Pacific.",url:SITE.domain+canonical,type:"website"}};
 }
 
 export default async function HomePage({params}:HomePageProps){
