@@ -240,6 +240,7 @@ export default async function ProductPage({ params }: P) {
 
         {faq.length > 0 && (
           <section className="pdp-section faq">
+            <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify({"@context":"https://schema.org","@type":"FAQPage",mainEntity:faq.map((f)=>({"@type":"Question",name:f.q,acceptedAnswer:{"@type":"Answer",text:f.a}}))}).replace(/</g,"\\u003c")}} />
             <h2>Frequently asked questions</h2>
             {faq.map((f) => <details key={f.q}><summary>{f.q}</summary><p>{f.a}</p></details>)}
           </section>
