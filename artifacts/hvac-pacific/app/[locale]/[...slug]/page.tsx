@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { hrefFor } from "@/components/paths";
 import { SITE } from "@/config/site";
+import { localizedAlternates } from "@/lib/seo";
 import { STATIC_PAGES } from "@/lib/static-pages";
 
 type P={params:Promise<{locale:string;slug:string[]}>};
@@ -19,10 +20,7 @@ export async function generateMetadata({params}:P):Promise<Metadata>{
     title:page.title+" | "+SITE.brand,
     description:page.description,
     robots:!page.reviewed||locale==="zh"?{index:false,follow:true}:undefined,
-    alternates:{
-      canonical:hrefFor(locale,path),
-      languages:{"en-US":path,"zh-Hans":hrefFor("zh",path),"x-default":path},
-    },
+    alternates:localizedAlternates(locale,path),
   };
 }
 
