@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { ProductDetailData } from "@/lib/shopify/catalog";
-import { boolMeta, metafieldMap } from "@/lib/shopify/catalog";
+import type { ProductDetailData } from "@/lib/shopify/shared";
+import { boolMeta, metafieldMap } from "@/lib/shopify/shared";
 import { money } from "./ProductCard";
 
 export function ProductPurchase({ product }: { product: ProductDetailData }) {
