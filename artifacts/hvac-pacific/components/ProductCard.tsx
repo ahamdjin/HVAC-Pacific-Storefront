@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { ProductCardData } from "@/lib/shopify/catalog";
+import type { ProductCardData } from "@/lib/shopify/shared";
 import { hrefFor } from "./paths";
-import { metafieldMap } from "@/lib/shopify/catalog";
+import { metafieldMap } from "@/lib/shopify/shared";
 
 export function money(amount: string, currencyCode = "USD") {
   return new Intl.NumberFormat("en-US", {
