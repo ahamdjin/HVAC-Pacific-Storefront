@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { SITE } from "@/config/site";
 
 const hits = new Map<string, { count: number; reset: number }>();
 const WINDOW = 60_000;
@@ -34,6 +35,12 @@ function json(body: unknown, status = 200, extraHeaders: Record<string, string> 
 }
 
 export async function POST(request: NextRequest) {
+  const origin = request.headers.get("origin");
+  if (process.env.NODE_ENV === "production" && origin) {
+    const allowed = new Set([SITE.domain, "https://www.hvacpacific.com"]);
+    if (!allowed.has(origin)) return json({ error: "Invalid request origin." }, 403);
+  }
+
   const raw = await request.json().catch(() => null);
   if (!raw || typeof raw !== "object") return json({ error: "Invalid request." }, 400);
 
@@ -45,6 +52,9 @@ export async function POST(request: NextRequest) {
   const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
   const ip = forwarded || request.headers.get("x-real-ip")?.trim() || "unknown";
   const now = Date.now();
+  if (hits.size > 1_000) {
+    for (const [key, entry] of hits) if (entry.reset <= now) hits.delete(key);
+  }
   const current = hits.get(ip);
   if (current && current.reset > now && current.count >= LIMIT) {
     return json(
