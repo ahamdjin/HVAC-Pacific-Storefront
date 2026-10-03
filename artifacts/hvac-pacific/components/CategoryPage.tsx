@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CatalogGrid } from "./CatalogGrid";
@@ -66,7 +67,7 @@ export async function CategoryPage({kind,slugs,locale}:{kind:"units"|"parts";slu
       {!section && <div className="category-links">{sections.map((s)=><Link key={s.slug} href={hrefFor(locale,sectionPath(s))}><strong>{s.title}</strong><span>{s.intro}</span></Link>)}</div>}
       {section?.slug==="capacitors" && <div className="subcat-links">{ALL_SECTIONS.filter((s)=>s.parent==="capacitors").map((s)=><Link key={s.slug} href={hrefFor(locale,sectionPath(s))}>{s.title}</Link>)}</div>}
 
-      {products.length>0 ? <CatalogGrid products={products} locale={locale} kind={kind}/> : (
+      {products.length>0 ? <Suspense fallback={<div className="loading-box">Loading filters…</div>}><CatalogGrid products={products} locale={locale} kind={kind}/></Suspense> : (
         <div className="empty-state">
           <h2>No verified products are published in this category yet.</h2>
           <p>We do not publish placeholder inventory. Contact us with the model or equipment you need.</p>
