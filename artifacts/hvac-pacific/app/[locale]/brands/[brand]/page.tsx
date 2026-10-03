@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ProductCard } from "@/components/ProductCard";
 import { SITE } from "@/config/site";
+import { localizedAlternates } from "@/lib/seo";
 import { getAllProducts } from "@/lib/shopify/catalog";
 
 type P={params:Promise<{locale:string;brand:string}>};
@@ -18,7 +19,7 @@ export async function generateMetadata({params}:P):Promise<Metadata>{
   const {locale,brand}=await params;const {vendor}=await resolveBrand(brand,locale);
   if(!vendor)return {};
   const path="/brands/"+brand;
-  return {title:vendor+" HVAC Equipment & Parts | "+SITE.brand,description:"Shop published "+vendor+" HVAC equipment and parts from HVAC Pacific.",alternates:{canonical:locale==="zh"?"/zh"+path:path,languages:{"en-US":path,"zh-Hans":"/zh"+path,"x-default":path}}};
+  return {title:vendor+" HVAC Equipment & Parts | "+SITE.brand,description:"Shop published "+vendor+" HVAC equipment and parts from HVAC Pacific.",alternates:localizedAlternates(locale,path)};
 }
 export default async function Page({params}:P){
   const {locale,brand}=await params;const {vendor,products}=await resolveBrand(brand,locale);if(!vendor||!products.length)notFound();
