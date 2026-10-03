@@ -188,3 +188,26 @@ The QA command fails non-zero for blocking issues such as:
 - a unit missing its installer gate
 - a refrigerant item missing its EPA 608 gate
 - missing Product schema/canonical on a rendered PDP
+
+
+## Source-backed Shopify guide drafts
+
+Eight full guide drafts are stored in `scripts/src/guide-drafts.ts`. Each draft includes a short-answer block, table of contents, internal catalog links, and a source section using primary or manufacturer technical sources.
+
+Preview the seeding plan without any Shopify writes:
+
+```bash
+pnpm --filter @workspace/scripts seed:guides
+```
+
+Sync the drafts to the Shopify `guides` blog:
+
+```bash
+pnpm --filter @workspace/scripts seed:guides -- --apply
+```
+
+The seeder creates the `guides` blog if necessary and creates or updates articles as **unpublished**. It will not overwrite an article that is already published, which protects reviewed live content from a later seed run.
+
+Guide seeding requires Shopify Admin content permissions: `read_content` and `write_content` (or the equivalent Online Store page scopes supported by the installed app).
+
+Before publishing a guide, review its current regulatory claims against the linked primary sources, add any needed product/category links, and perform editorial/legal review where appropriate.
