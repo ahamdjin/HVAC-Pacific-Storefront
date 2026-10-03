@@ -47,7 +47,12 @@ function language(locale: string) {
   return locale === "zh" ? "ZH_CN" : "EN";
 }
 
+function mockBuild() {
+  return process.env.SHOPIFY_MOCK_BUILD === "true";
+}
+
 export async function getAllProducts(locale = "en", first = 250) {
+  if (mockBuild()) return [] as ProductCardData[];
   const query = `
     query Products($first:Int!, $language:LanguageCode!) @inContext(language:$language) {
       products(first:$first, sortKey:TITLE) { nodes { ${PRODUCT_CARD_FIELDS} } }
@@ -60,6 +65,7 @@ export async function getAllProducts(locale = "en", first = 250) {
 }
 
 export async function getFeaturedProducts(locale = "en") {
+  if (mockBuild()) return [] as ProductCardData[];
   const query = `
     query Featured($language:LanguageCode!) @inContext(language:$language) {
       collection(handle:"featured") { products(first:8) { nodes { ${PRODUCT_CARD_FIELDS} } } }
@@ -73,6 +79,7 @@ export async function getFeaturedProducts(locale = "en") {
 }
 
 export async function getProduct(handle: string, locale = "en") {
+  if (mockBuild()) return null;
   const query = `
     query Product($handle:String!, $language:LanguageCode!) @inContext(language:$language) {
       product(handle:$handle) {
@@ -91,6 +98,7 @@ export async function getProduct(handle: string, locale = "en") {
 }
 
 export async function getCollection(handle: string, locale = "en") {
+  if (mockBuild()) return null;
   const query = `
     query Collection($handle:String!, $language:LanguageCode!) @inContext(language:$language) {
       collection(handle:$handle) {
@@ -109,6 +117,7 @@ export async function getCollection(handle: string, locale = "en") {
 }
 
 export async function searchProducts(term: string, locale = "en") {
+  if (mockBuild()) return [] as ProductCardData[];
   if (!term.trim()) return [];
   const query = `
     query Search($query:String!, $language:LanguageCode!) @inContext(language:$language) {
@@ -125,6 +134,7 @@ export async function searchProducts(term: string, locale = "en") {
 }
 
 export async function getProductsByVendor(vendor: string, locale = "en") {
+  if (mockBuild()) return [] as ProductCardData[];
   const query = `
     query Vendor($query:String!, $language:LanguageCode!) @inContext(language:$language) {
       products(first:100, query:$query, sortKey:TITLE) { nodes { ${PRODUCT_CARD_FIELDS} } }
@@ -137,6 +147,7 @@ export async function getProductsByVendor(vendor: string, locale = "en") {
 }
 
 export async function getGuideArticles(locale = "en", first = 50) {
+  if (mockBuild()) return [] as ArticleData[];
   const query = `
     query Guides($first:Int!, $language:LanguageCode!) @inContext(language:$language) {
       blog(handle:"guides") {
@@ -158,6 +169,7 @@ export async function getGuideArticles(locale = "en", first = 50) {
 }
 
 export async function getGuideArticle(handle: string, locale = "en") {
+  if (mockBuild()) return null;
   const query = `
     query Guide($handle:String!, $language:LanguageCode!) @inContext(language:$language) {
       blog(handle:"guides") {
@@ -177,6 +189,7 @@ export async function getGuideArticle(handle: string, locale = "en") {
 }
 
 export async function getProductRecommendations(productId: string, locale = "en") {
+  if (mockBuild()) return [] as ProductCardData[];
   const query = `
     query Recs($id:ID!, $language:LanguageCode!) @inContext(language:$language) {
       productRecommendations(productId:$id) { ${PRODUCT_CARD_FIELDS} }
