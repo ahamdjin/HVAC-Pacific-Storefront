@@ -1,8 +1,8 @@
 import "server-only";
 
-const STOREFRONT_API_VERSION = "2026-04";
+const STOREFRONT_API_VERSION = "2026-10";
 const CONFIG_CACHE_TTL_MS = 60_000;
-const FETCH_TIMEOUT_MS = 10_000;
+const FETCH_TIMEOUT_MS = 12_000;
 
 type ShopifyConnectionSettings = {
   shop_domain?: string;
@@ -13,7 +13,7 @@ type ShopifyConnectionResponse = {
   items?: Array<{ settings?: ShopifyConnectionSettings }>;
 };
 
-type ShopifyStorefrontConfig = {
+export type ShopifyStorefrontConfig = {
   shopDomain: string;
   storefrontAccessToken: string;
 };
@@ -21,6 +21,22 @@ type ShopifyStorefrontConfig = {
 let cachedConfig:
   | { value: ShopifyStorefrontConfig; expiresAt: number }
   | undefined;
+
+function normalizeDomain(value: string) {
+  return value.replace(/^https?:\/\//, "").replace(/\/$/, "");
+}
+
+function envConfig(): ShopifyStorefrontConfig | null {
+  const shopDomain = process.env.SHOPIFY_STORE_DOMAIN;
+  const storefrontAccessToken =
+    process.env.SHOPIFY_STOREFRONT_TOKEN ??
+    process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
+  if (!shopDomain || !storefrontAccessToken) return null;
+  return {
+    shopDomain: normalizeDomain(shopDomain),
+    storefrontAccessToken,
+  };
+}
 
 function getConnectionEndpoint() {
   const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
@@ -31,7 +47,9 @@ function getConnectionEndpoint() {
       : null;
 
   if (!hostname || !identity) {
-    throw new Error("Missing Replit connector environment variables");
+    throw new Error(
+      "Shopify is not configured. Add SHOPIFY_STORE_DOMAIN + SHOPIFY_STOREFRONT_TOKEN or connect the Replit Shopify integration.",
+    );
   }
 
   const protocol = hostname.startsWith("localhost") ? "http" : "https";
@@ -45,6 +63,9 @@ function getConnectionEndpoint() {
 export async function getShopifyStorefrontConfig(
   options: { forceRefresh?: boolean } = {},
 ): Promise<ShopifyStorefrontConfig> {
+  const direct = envConfig();
+  if (direct) return direct;
+
   if (
     cachedConfig &&
     !options.forceRefresh &&
@@ -71,13 +92,13 @@ export async function getShopifyStorefrontConfig(
   const settings = data.items?.[0]?.settings;
   if (!settings?.shop_domain || !settings.storefront_access_token) {
     throw new Error(
-      "Shopify Store integration is missing Storefront settings. Recreate the integration after OpenInt provisions a Storefront token.",
+      "Shopify integration is missing Storefront API settings.",
     );
   }
 
   cachedConfig = {
     value: {
-      shopDomain: settings.shop_domain,
+      shopDomain: normalizeDomain(settings.shop_domain),
       storefrontAccessToken: settings.storefront_access_token,
     },
     expiresAt: Date.now() + CONFIG_CACHE_TTL_MS,
@@ -88,39 +109,36 @@ export async function getShopifyStorefrontConfig(
 export async function shopifyStorefrontRequest<T>(
   query: string,
   variables?: Record<string, unknown>,
+  options: { cache?: RequestCache; revalidate?: number } = {},
 ): Promise<T> {
   const config = await getShopifyStorefrontConfig();
-  const response = await fetch(
-    `https://${config.shopDomain}/api/${STOREFRONT_API_VERSION}/graphql.json`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Shopify-Storefront-Access-Token": config.storefrontAccessToken,
-      },
-      body: JSON.stringify({ query, variables }),
-      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-    },
-  );
-
-  if (response.status === 401 || response.status === 403) {
-    cachedConfig = undefined;
-    const refreshed = await getShopifyStorefrontConfig({ forceRefresh: true });
-    const retry = await fetch(
-      `https://${refreshed.shopDomain}/api/${STOREFRONT_API_VERSION}/graphql.json`,
+  const request = async (current: ShopifyStorefrontConfig) =>
+    fetch(
+      `https://${current.shopDomain}/api/${STOREFRONT_API_VERSION}/graphql.json`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-Shopify-Storefront-Access-Token": refreshed.storefrontAccessToken,
+          "X-Shopify-Storefront-Access-Token":
+            current.storefrontAccessToken,
         },
         body: JSON.stringify({ query, variables }),
+        cache: options.cache ?? "force-cache",
+        next:
+          options.revalidate === undefined
+            ? { revalidate: 3600 }
+            : { revalidate: options.revalidate },
         signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
       },
     );
-    return parseResponse<T>(retry);
-  }
 
+  let response = await request(config);
+  if (response.status === 401 || response.status === 403) {
+    cachedConfig = undefined;
+    response = await request(
+      await getShopifyStorefrontConfig({ forceRefresh: true }),
+    );
+  }
   return parseResponse<T>(response);
 }
 
