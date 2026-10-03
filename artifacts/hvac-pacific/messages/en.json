@@ -40,8 +40,6 @@
     "unitsHeading": "HVAC units",
     "partsHeading": "Parts & accessories",
     "pickupNote": "Pickup location provided after order.",
-    "catalogTitle": "Catalog information is loading",
-    "catalogDescription": "Product details and availability come directly from Shopify. No product listings are shown until verified store data is available.",
     "contactTitle": "Questions? Talk with our team.",
     "contactDescription": "Call for real product and order support."
   },
@@ -50,6 +48,42 @@
     "contact": "Contact",
     "about": "About",
     "compliance": "California HVAC compliance",
-    "copyright": "HVAC Pacific"
+    "copyright": "HVAC Pacific",
+    "pickupNote": "Pickup location provided after order."
+  },
+  "Nav": {
+    "skip": "Skip to content",
+    "menu": "Menu",
+    "allUnits": "All units",
+    "allParts": "All parts & accessories",
+    "browse": "Browse",
+    "language": "Language",
+    "mainNav": "Main navigation"
+  },
+  "Home": {
+    "unitsText": "Heat pumps, packaged units, mini splits and AC + furnace systems.",
+    "partsText": "Electrical, motors, controls, refrigeration, tools and more.",
+    "emptyTitle": "The catalog is not published yet",
+    "emptyDescription": "No products are listed on this site yet. We show product details only once they are verified, so nothing here is a placeholder listing. Call or email us for equipment and parts questions in the meantime.",
+    "browseHeading": "Browse by category",
+    "factsHeading": "Local service",
+    "factPickup": "Local pickup",
+    "factPickupText": "Pickup location is provided after order.",
+    "factDelivery": "Delivery within {miles} miles",
+    "factDeliveryText": "Local delivery is available within a {miles}-mile radius.",
+    "factLanguages": "English and Chinese support",
+    "factLanguagesText": "Talk with us in English or 中文.",
+    "email": "Email support",
+    "needInstallerText": "Looking for installation help? Installer requests are coming in a later phase.",
+    "status": "Store status"
+  },
+  "Scaffold": {
+    "breadcrumb": "Breadcrumb",
+    "title": "This page is part of a later phase",
+    "description": "The online catalog, search, guides and request forms are not available yet. For questions, call or email us.",
+    "back": "Back to home",
+    "searchTitle": "Search is not available yet",
+    "cartTitle": "Cart is empty",
+    "cartDescription": "Checkout is not open yet."
   }
 }

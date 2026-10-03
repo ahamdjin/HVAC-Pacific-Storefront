@@ -5,10 +5,13 @@ import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { SITE } from "@/config/site";
 import { routing } from "@/i18n/routing";
+import { SiteHeader } from "@/components/SiteHeader";
+import { SiteFooter } from "@/components/SiteFooter";
 import "../globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.domain),
+  icons: { icon: SITE.logoPath },
   title: {
     default: "HVAC Equipment & Parts for Southern California | hvacpacific",
     template: "%s | hvacpacific",
@@ -48,7 +51,36 @@ export default async function LocaleLayout({
   return (
     <html lang={locale === "zh" ? "zh-Hans" : "en-US"}>
       <body>
-        <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "Organization",
+                  "@id": `${SITE.domain}/#organization`,
+                  name: SITE.displayName,
+                  url: SITE.domain,
+                  logo: `${SITE.domain}${SITE.logoPath}`,
+                  telephone: SITE.phoneE164,
+                  email: SITE.email,
+                },
+                {
+                  "@type": "WebSite",
+                  "@id": `${SITE.domain}/#website`,
+                  name: SITE.displayName,
+                  url: SITE.domain,
+                  publisher: { "@id": `${SITE.domain}/#organization` },
+                },
+              ],
+            }).replace(/</g, "\\u003c"),
+          }}
+        />
+        <NextIntlClientProvider messages={messages}><SiteHeader locale={locale} />
+          {children}
+          <SiteFooter locale={locale} />
+        </NextIntlClientProvider>
       </body>
     </html>
   );

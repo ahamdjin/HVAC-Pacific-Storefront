@@ -1,0 +1,1 @@
+- [Next.js preview origins](next-preview-origins.md) — allow the exact development hostname and loopback for proxied Next.js live reload.

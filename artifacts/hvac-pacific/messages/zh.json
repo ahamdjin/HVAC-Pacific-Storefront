@@ -41,8 +41,6 @@
     "unitsHeading": "暖通设备",
     "partsHeading": "零件与配件",
     "pickupNote": "订单完成后提供自取地点。",
-    "catalogTitle": "正在加载目录信息",
-    "catalogDescription": "产品详情和供货信息直接来自 Shopify。验证商店数据可用之前，不显示产品列表。",
     "contactTitle": "有问题？请联系我们。",
     "contactDescription": "致电获取真实的产品和订单支持。"
   },
@@ -51,6 +49,42 @@
     "contact": "联系我们",
     "about": "关于我们",
     "compliance": "加州暖通合规",
-    "copyright": "HVAC Pacific"
+    "copyright": "HVAC Pacific",
+    "pickupNote": "订单完成后提供自取地点。"
+  },
+  "Nav": {
+    "skip": "跳到正文",
+    "menu": "菜单",
+    "allUnits": "全部设备",
+    "allParts": "全部零件与配件",
+    "browse": "浏览",
+    "language": "语言",
+    "mainNav": "主导航"
+  },
+  "Home": {
+    "unitsText": "热泵、一体式机组、迷你分体机以及空调与炉体系统。",
+    "partsText": "电气、电机、控制、制冷、工具等。",
+    "emptyTitle": "产品目录尚未发布",
+    "emptyDescription": "本网站目前没有上架产品。我们只在信息核实后才显示产品详情，因此这里没有任何占位商品。如有设备或零件问题，请致电或发送邮件。",
+    "browseHeading": "按类别浏览",
+    "factsHeading": "本地服务",
+    "factPickup": "本地自取",
+    "factPickupText": "订单完成后提供自取地点。",
+    "factDelivery": "{miles} 英里内配送",
+    "factDeliveryText": "{miles} 英里范围内提供本地配送。",
+    "factLanguagesText": "可用 English 或中文与我们沟通。",
+    "factLanguages": "英文和中文支持",
+    "email": "邮件支持",
+    "needInstallerText": "需要安装协助？安装人员申请将在后续阶段开放。",
+    "status": "商店状态"
+  },
+  "Scaffold": {
+    "breadcrumb": "当前位置",
+    "title": "此页面属于后续阶段",
+    "description": "在线目录、搜索、指南和申请表单暂未开放。如有问题，请致电或发送邮件。",
+    "back": "返回首页",
+    "searchTitle": "搜索暂未开放",
+    "cartTitle": "购物车为空",
+    "cartDescription": "结账功能暂未开放。"
   }
 }

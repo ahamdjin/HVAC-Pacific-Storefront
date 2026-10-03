@@ -1,10 +1,11 @@
-# [Project name]
+# HVAC Pacific
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+An SEO-first Shopify-backed storefront for a Southern California HVAC equipment and parts seller.
 
 ## Run & Operate
 
 - `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/hvac-pacific run dev` — storefront, via its managed workflow
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
@@ -19,22 +20,33 @@ _Replace the heading above with the project's name, and this line with one sente
 - Validation: Zod (`zod/v4`), `drizzle-zod`
 - API codegen: Orval (from OpenAPI spec)
 - Build: esbuild (CJS bundle)
+- Storefront: Next.js App Router, Tailwind CSS, next-intl. Its active source is `artifacts/hvac-pacific/app/`, not the unused Vite scaffold under `src/`.
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/hvac-pacific/config/site.ts` — business configuration
+- `artifacts/hvac-pacific/lib/shopify/storefront.ts` — server-only Storefront client using the Replit Shopify connection
+- `artifacts/hvac-pacific/messages/` — UI messages; Simplified Chinese is a machine draft pending native review
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Shopify is the system of record for products, inventory, pricing, translations, carts and checkout. Do not create a second local catalog.
+- Use server-rendered Next.js pages for crawlable HTML. Never replace the storefront with client-only routing.
+  **Why:** SEO and server-rendered content are explicit, non-negotiable requirements in the user's brief.
+- Shopify Admin calls belong only in import/setup scripts through the integration proxy. Never expose Admin credentials to the browser.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Local pickup and delivery within 20 miles. No carrier shipping at launch; refrigerant and units stay pickup/local-delivery only.
+- English at `/`, Simplified Chinese at `/zh`; visible language links, no browser-language redirects.
+- Showroom location is not yet set. Hide showroom/pickup addresses and Store/LocalBusiness address schema; say “Pickup location provided after order.”
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Build in the seven phases from the uploaded brief. Stop after each phase, show the result, and wait for the user's OK before continuing.
+- Never invent product specifications, certifications, AHRI numbers, availability or pricing. Omit empty Shopify fields rather than using placeholders.
+- No fake testimonials, star ratings, dealer status, price guarantees, stock counters or countdowns.
+- EPA 608 certification, licensed-install acknowledgments and hidden HOLD products are mandatory business logic.
 
 ## Gotchas
 

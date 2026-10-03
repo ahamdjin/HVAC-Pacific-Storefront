@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 106, "column": 0}, "map": {"version":3,"sources":["file:///home/runner/workspace/artifacts/hvac-pacific/i18n/routing.ts"],"sourcesContent":["import { defineRouting } from \"next-intl/routing\";\n\nexport const routing = defineRouting({\n  locales: [\"en\", \"zh\"],\n  defaultLocale: \"en\",\n  localePrefix: \"as-needed\",\n  localeDetection: false,\n});"],"names":["routing","locales","defaultLocale","localePrefix","localeDetection"],"mappings":";;;;AAAA;;AAEO,MAAMA,UAAU,IAAA,2cAAa,EAAC;IACnCC,SAAS;QAAC;QAAM;KAAK;IACrBC,eAAe;IACfC,cAAc;IACdC,iBAAiB;AACnB"}},
+    {"offset": {"line": 125, "column": 0}, "map": {"version":3,"sources":["file:///home/runner/workspace/artifacts/hvac-pacific/proxy.ts"],"sourcesContent":["import createMiddleware from \"next-intl/middleware\";\nimport { routing } from \"./i18n/routing\";\n\nexport default createMiddleware(routing);\n\nexport const config = {\n  matcher: \"/((?!api|trpc|_next|_vercel|.*\\\\..*).*)\",\n};"],"names":["config","matcher"],"mappings":";;;;;;AAAA;AACA;;;uCAEe,IAAA,yZAAgB,EAAC,0JAAO;AAEhC,MAAMA,SAAS;IACpBC,SAAS;AACX"}}]
+}
