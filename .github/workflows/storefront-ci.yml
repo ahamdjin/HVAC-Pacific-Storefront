@@ -31,6 +31,8 @@ jobs:
         run: pnpm --filter @workspace/scripts run typecheck
       - name: Check XLSX reader
         run: pnpm --filter @workspace/scripts run check:xlsx-reader
+      - name: Test purchase compliance policy
+        run: pnpm --filter @workspace/scripts run test:purchase-policy
       - name: Build storefront
         env:
           SHOPIFY_MOCK_BUILD: "true"
