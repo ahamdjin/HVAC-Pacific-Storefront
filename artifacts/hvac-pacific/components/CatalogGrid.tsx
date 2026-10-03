@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import type { ProductCardData } from "@/lib/shopify/catalog";
-import { metafieldMap, parseKeySpecs } from "@/lib/shopify/catalog";
+import type { ProductCardData } from "@/lib/shopify/shared";
+import { metafieldMap, parseKeySpecs } from "@/lib/shopify/shared";
 import { ProductCard } from "./ProductCard";
 
 type Props = { products: ProductCardData[]; locale: string; kind: "units" | "parts" };
