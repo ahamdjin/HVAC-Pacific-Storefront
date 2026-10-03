@@ -27,3 +27,7 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Typecheck storefront
         run: pnpm --filter @workspace/hvac-pacific run typecheck
+      - name: Build storefront
+        env:
+          SHOPIFY_MOCK_BUILD: "true"
+        run: pnpm --filter @workspace/hvac-pacific run build
