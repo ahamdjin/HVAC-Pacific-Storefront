@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { shopifyStorefrontRequest } from "@/lib/shopify/storefront";
+import { evaluatePurchasePolicy, type PurchaseAttribute } from "@/lib/purchase-policy";
 
 const COOKIE = "hvac_cart_id";
 
-type CartAttribute = { key: string; value: string };
 type VariantPolicy = {
   id: string;
   availableForSale: boolean;
@@ -12,14 +12,6 @@ type VariantPolicy = {
     metafields: Array<{ key: string; value: string } | null>;
   };
 };
-
-function attributeMap(attributes: CartAttribute[]) {
-  return new Map(attributes.map((attribute) => [attribute.key, attribute.value.trim()]));
-}
-
-function truthy(value?: string) {
-  return value === "true" || value === "1";
-}
 
 async function getVariantPolicy(variantId: string) {
   const query = `
@@ -46,43 +38,26 @@ async function getVariantPolicy(variantId: string) {
   return data.node;
 }
 
-async function validatePurchasePolicy(variantId: string, attributes: CartAttribute[]) {
+async function validatePurchasePolicy(variantId: string, attributes: PurchaseAttribute[]) {
   const variant = await getVariantPolicy(variantId);
-  if (!variant) return { error: "Product variant was not found.", status: 404 as const };
-  if (!variant.availableForSale) return { error: "This product is not currently available.", status: 409 as const };
-
+  if (!variant) {
+    return evaluatePurchasePolicy({
+      found: false,
+      availableForSale: false,
+      meta: {},
+      attributes,
+    });
+  }
   const meta = Object.fromEntries(
-    variant.product.metafields.filter((item): item is NonNullable<typeof item> => Boolean(item)).map((item) => [item.key, item.value]),
+    variant.product.metafields
+      .filter((item): item is NonNullable<typeof item> => Boolean(item))
+      .map((item) => [item.key, item.value]),
   );
-  const siteStatus = (meta.site_status || "").trim().toUpperCase();
-  if (siteStatus === "HOLD" || siteStatus === "NEEDS DATA") {
-    return { error: "This product is not available for online purchase.", status: 409 as const };
-  }
-
-  const attrs = attributeMap(attributes);
-  const requiresEpa = truthy(meta.requires_epa608);
-  const requiresInstall = truthy(meta.requires_licensed_install);
-
-  if (requiresEpa) {
-    const cert = attrs.get("EPA 608 Certification") || "";
-    const technician = attrs.get("Certified Technician") || "";
-    const acknowledgement = attrs.get("EPA 608 Acknowledgement");
-    if (!cert || cert.length > 120 || !technician || technician.length > 120 || acknowledgement !== "Confirmed") {
-      return { error: "EPA 608 certification details are required for this refrigerant product.", status: 400 as const };
-    }
-  }
-
-  if (requiresInstall && attrs.get("Licensed Install Acknowledgement") !== "Confirmed") {
-    return { error: "Installation acknowledgement is required for this equipment.", status: 400 as const };
-  }
-
-  return {
-    variant,
-    requiresEpa,
-    epaNote: requiresEpa
-      ? `EPA 608 cert: ${attrs.get("EPA 608 Certification")} · Technician: ${attrs.get("Certified Technician")}`
-      : undefined,
-  };
+  return evaluatePurchasePolicy({
+    availableForSale: variant.availableForSale,
+    meta,
+    attributes,
+  });
 }
 
 const CART_FIELDS = `
@@ -123,18 +98,18 @@ export async function POST(request: NextRequest) {
   if (typeof body.variantId !== "string" || !body.variantId) {
     return NextResponse.json({ error: "Missing product variant." }, { status: 400 });
   }
-  const attributes: CartAttribute[] = Array.isArray(body.attributes)
+  const attributes: PurchaseAttribute[] = Array.isArray(body.attributes)
     ? body.attributes
-        .filter((x: unknown): x is CartAttribute => {
+        .filter((x: unknown): x is PurchaseAttribute => {
           if (!x || typeof x !== "object") return false;
           const candidate = x as { key?: unknown; value?: unknown };
           return typeof candidate.key === "string" && typeof candidate.value === "string";
         })
-        .map((x: CartAttribute) => ({ key: x.key.slice(0, 120), value: x.value.slice(0, 240) }))
+        .map((x: PurchaseAttribute) => ({ key: x.key.slice(0, 120), value: x.value.slice(0, 240) }))
     : [];
 
   const policy = await validatePurchasePolicy(body.variantId, attributes);
-  if ("error" in policy) {
+  if (!policy.ok) {
     return NextResponse.json({ error: policy.error }, { status: policy.status });
   }
 
