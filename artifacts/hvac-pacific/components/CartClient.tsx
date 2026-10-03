@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useLocale, useTranslations } from "next-intl";
 import { money } from "./ProductCard";
 
 type Cart = {
@@ -12,6 +13,8 @@ type Cart = {
 };
 
 export function CartClient() {
+  const t = useTranslations("Commerce.cart");
+  const locale = useLocale();
   const [cart, setCart] = useState<Cart|null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -31,18 +34,18 @@ export function CartClient() {
     await load();
   }
 
-  if (loading) return <div className="loading-box">Loading cart…</div>;
-  if (!cart?.lines.nodes.length) return <div className="empty-state"><h2>Your cart is empty</h2><p>Browse equipment and parts to start an order.</p></div>;
+  if (loading) return <div className="loading-box">{t("loading")}</div>;
+  if (!cart?.lines.nodes.length) return <div className="empty-state"><h2>{t("emptyTitle")}</h2><p>{t("emptyText")}</p></div>;
 
   return <div className="cart-layout">
     <div className="cart-lines">
       {cart.lines.nodes.map((line)=><article className="cart-line" key={line.id}>
         <div className="cart-thumb">{line.merchandise.product.featuredImage && <Image src={line.merchandise.product.featuredImage.url} alt={line.merchandise.product.featuredImage.altText || line.merchandise.product.title} width={120} height={120} />}</div>
-        <div><h2>{line.merchandise.product.title}</h2>{line.merchandise.title !== "Default Title" && <p>{line.merchandise.title}</p>}<strong>{money(line.merchandise.price.amount,line.merchandise.price.currencyCode)}</strong></div>
-        <div className="qty"><label><span>Qty</span><input type="number" min={1} value={line.quantity} onChange={(e)=>void change(line.id,Math.max(1,Number(e.target.value)))} /></label><button type="button" onClick={()=>void remove(line.id)}>Remove</button></div>
+        <div><h2>{line.merchandise.product.title}</h2>{line.merchandise.title !== "Default Title" && <p>{line.merchandise.title}</p>}<strong>{money(line.merchandise.price.amount,line.merchandise.price.currencyCode,locale)}</strong></div>
+        <div className="qty"><label><span>{t("qty")}</span><input type="number" min={1} value={line.quantity} onChange={(e)=>void change(line.id,Math.max(1,Number(e.target.value)))} /></label><button type="button" onClick={()=>void remove(line.id)}>{t("remove")}</button></div>
       </article>)}
     </div>
-    <aside className="cart-summary"><h2>Order summary</h2><div><span>Subtotal</span><strong>{money(cart.cost.subtotalAmount.amount,cart.cost.subtotalAmount.currencyCode)}</strong></div><p>Pickup or local-delivery details are finalized during checkout.</p><a className="btn primary checkout" href={cart.checkoutUrl} onClick={() => {
+    <aside className="cart-summary"><h2>{t("summary")}</h2><div><span>{t("subtotal")}</span><strong>{money(cart.cost.subtotalAmount.amount,cart.cost.subtotalAmount.currencyCode,locale)}</strong></div><p>{t("fulfillmentNote")}</p><a className="btn primary checkout" href={cart.checkoutUrl} onClick={() => {
       (window as unknown as { dataLayer?: unknown[] }).dataLayer?.push({
         event: "begin_checkout",
         ecommerce: {
@@ -56,6 +59,6 @@ export function CartClient() {
           })),
         },
       });
-    }}>Continue to secure checkout</a></aside>
+    }}>{t("checkout")}</a></aside>
   </div>;
 }
