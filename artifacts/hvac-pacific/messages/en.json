@@ -1,0 +1,55 @@
+{
+  "Navigation": {
+    "units": "Units",
+    "parts": "Parts & Accessories",
+    "brands": "Brands",
+    "guides": "Guides",
+    "needInstaller": "Need an Installer?",
+    "cart": "Cart",
+    "searchPlaceholder": "Search HVAC equipment and parts",
+    "searchLabel": "Search",
+    "call": "Call",
+    "languageEnglish": "EN",
+    "languageChinese": "中文",
+    "unitsCategories": {
+      "heatPump": "Heat Pump Systems",
+      "packaged": "Packaged Units",
+      "miniSplits": "Ductless Mini Splits",
+      "acFurnace": "AC + Furnace Systems"
+    },
+    "partsCategories": {
+      "capacitors": "Capacitors",
+      "contactors": "Contactors & Relays",
+      "motors": "Motors",
+      "thermostats": "Thermostats",
+      "furnace": "Furnace Parts",
+      "refrigeration": "Refrigeration Parts",
+      "electrical": "Electrical",
+      "condensate": "Condensate",
+      "chemicals": "Chemicals & Leak Detection",
+      "tools": "Tools",
+      "refrigerant": "Refrigerant"
+    }
+  },
+  "HomePage": {
+    "eyebrow": "Local HVAC equipment and parts",
+    "title": "HVAC Equipment & Parts for Southern California",
+    "subtitle": "Local pickup and delivery within 20 miles. Support in English and 中文.",
+    "shopUnits": "Shop units",
+    "shopParts": "Shop parts",
+    "unitsHeading": "HVAC units",
+    "partsHeading": "Parts & accessories",
+    "pickupNote": "Pickup location provided after order.",
+    "catalogTitle": "Catalog information is loading",
+    "catalogDescription": "Product details and availability come directly from Shopify. No product listings are shown until verified store data is available.",
+    "contactTitle": "Questions? Talk with our team.",
+    "contactDescription": "Call for real product and order support."
+  },
+  "Footer": {
+    "pickupDelivery": "Pickup & delivery",
+    "contact": "Contact",
+    "about": "About",
+    "compliance": "California HVAC compliance",
+    "copyright": "HVAC Pacific"
+  }
+}

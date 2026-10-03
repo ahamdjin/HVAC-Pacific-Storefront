@@ -1,0 +1,56 @@
+{
+  "_translationStatus": "Machine draft — needs native review",
+  "Navigation": {
+    "units": "空调设备",
+    "parts": "零件与配件",
+    "brands": "品牌",
+    "guides": "指南",
+    "needInstaller": "需要安装人员？",
+    "cart": "购物车",
+    "searchPlaceholder": "搜索暖通设备和零件",
+    "searchLabel": "搜索",
+    "call": "致电",
+    "languageEnglish": "EN",
+    "languageChinese": "中文",
+    "unitsCategories": {
+      "heatPump": "热泵系统",
+      "packaged": "一体式机组",
+      "miniSplits": "无管道迷你分体机",
+      "acFurnace": "空调与炉体系统"
+    },
+    "partsCategories": {
+      "capacitors": "电容器",
+      "contactors": "接触器与继电器",
+      "motors": "电机",
+      "thermostats": "温控器",
+      "furnace": "炉体零件",
+      "refrigeration": "制冷零件",
+      "electrical": "电气用品",
+      "condensate": "冷凝水用品",
+      "chemicals": "化学品与泄漏检测",
+      "tools": "工具",
+      "refrigerant": "制冷剂"
+    }
+  },
+  "HomePage": {
+    "eyebrow": "本地暖通设备与零件",
+    "title": "南加州暖通设备与零件",
+    "subtitle": "20 英里范围内提供本地自取和配送。提供 English 和中文支持。",
+    "shopUnits": "选购设备",
+    "shopParts": "选购零件",
+    "unitsHeading": "暖通设备",
+    "partsHeading": "零件与配件",
+    "pickupNote": "订单完成后提供自取地点。",
+    "catalogTitle": "正在加载目录信息",
+    "catalogDescription": "产品详情和供货信息直接来自 Shopify。验证商店数据可用之前，不显示产品列表。",
+    "contactTitle": "有问题？请联系我们。",
+    "contactDescription": "致电获取真实的产品和订单支持。"
+  },
+  "Footer": {
+    "pickupDelivery": "自取与配送",
+    "contact": "联系我们",
+    "about": "关于我们",
+    "compliance": "加州暖通合规",
+    "copyright": "HVAC Pacific"
+  }
+}
