@@ -7,6 +7,7 @@ import { ProductPurchase } from "@/components/ProductPurchase";
 import { ProductCard } from "@/components/ProductCard";
 import { hrefFor } from "@/components/paths";
 import { SITE } from "@/config/site";
+import { localizedAlternates } from "@/lib/seo";
 import { ALL_SECTIONS, productMatchesSection, sectionPath } from "@/lib/catalog-config";
 import { boolMeta, getGuideArticles, getProduct, getProductRecommendations, metafieldMap, parseFaq, parseKeySpecs } from "@/lib/shopify/catalog";
 
@@ -45,10 +46,7 @@ export async function generateMetadata({ params }: P): Promise<Metadata> {
     title: shortTitle(product.seo.title || product.title) + " | " + SITE.brand,
     description,
     robots: noindex ? { index: false, follow: true } : undefined,
-    alternates: {
-      canonical: hrefFor(locale, path),
-      languages: { "en-US": path, "zh-Hans": hrefFor("zh", path), "x-default": path },
-    },
+    alternates: localizedAlternates(locale, path),
     openGraph: {
       type: "website",
       title: product.title,
