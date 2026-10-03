@@ -131,3 +131,60 @@ It stays disabled until `SITE.showroom`, the feature flag and Google store code 
 8. Submit sitemap in Search Console.
 9. Review draft legal/policy pages before marking them indexable.
 10. Native-review Simplified Chinese copy before treating Chinese pages as final.
+
+
+## Excel product import
+
+The importer lives in `scripts/src/import-products.ts` and reads the exact `Units` and `Accessories` worksheets from the approved workbook.
+
+Dry run is the default and performs **no Shopify writes**:
+
+```bash
+pnpm --filter @workspace/scripts import:products -- ../hvacpacific_product_list.xlsx
+```
+
+After reviewing the generated CSV report, apply the import explicitly:
+
+```bash
+pnpm --filter @workspace/scripts import:products -- ../hvacpacific_product_list.xlsx --apply
+```
+
+Additional apply-mode environment values:
+
+- `SHOPIFY_HEADLESS_PUBLICATION_ID` — required before any ACTIVE row can be published to the headless channel.
+- `SHOPIFY_LOCATION_ID` — required if accessory `qty` values should update Shopify inventory at a location.
+
+Safety behavior:
+
+- upsert lookup is by exact variant SKU (`listing_id` for Units, `sku` for Accessories)
+- duplicate SKUs fail instead of guessing
+- multi-option / multi-variant products are refused rather than destructively replaced
+- a handle already owned by a different SKU is refused
+- `DECIDE`, HOLD/NEEDS DATA, unknown statuses and missing prices remain DRAFT
+- missing price is never invented
+- controlled blank metafields are deleted so re-running the workbook is truly idempotent
+- `efficiency_stated` is intentionally never mapped to public efficiency fields
+- refrigerant rows receive the `pickup-only` tag and EPA 608 gate
+- equipment categories receive the licensed-install acknowledgement gate
+- collections are created/attached from `site_category` and `subcategory`
+- every run writes a CSV report under `scripts/reports/`
+
+The XLSX reader uses Python's standard library only, so there is no third-party spreadsheet parsing dependency in the production workspace.
+
+## Catalog QA
+
+Run catalog data checks against the live Storefront API:
+
+```bash
+pnpm --filter @workspace/scripts qa:catalog
+```
+
+Set `QA_SITE_URL=https://hvacpacific.com` to also check server-rendered PDP H1s, self-referencing canonicals, Product JSON-LD, and filtered-URL `noindex,follow` behavior.
+
+The QA command fails non-zero for blocking issues such as:
+
+- a published product without an image or valid price
+- a published HOLD / NEEDS DATA product
+- a unit missing its installer gate
+- a refrigerant item missing its EPA 608 gate
+- missing Product schema/canonical on a rendered PDP
