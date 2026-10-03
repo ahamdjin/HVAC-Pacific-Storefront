@@ -9,7 +9,7 @@ import { hrefFor } from "@/components/paths";
 import { SITE } from "@/config/site";
 import { localizedAlternates } from "@/lib/seo";
 import { ALL_SECTIONS, productMatchesSection, sectionPath } from "@/lib/catalog-config";
-import { boolMeta, getGuideArticles, getProduct, getProductRecommendations, metafieldMap, parseFaq, parseKeySpecs } from "@/lib/shopify/catalog";
+import { boolMeta, getCollection, getGuideArticles, getProduct, getProductRecommendations, metafieldMap, parseFaq, parseKeySpecs } from "@/lib/shopify/catalog";
 
 type P = { params: Promise<{ locale: string; handle: string }> };
 export const revalidate = 3600;
@@ -87,11 +87,17 @@ export default async function ProductPage({ params }: P) {
     ...parseKeySpecs(m.key_specs).map((x) => [x.label, x.value]),
   ].filter((x) => x[1]);
 
-  const faq = parseFaq(m.faq);
-  const [recs, guides] = await Promise.all([
+  const productFaq = parseFaq(m.faq);
+  const [recs, guides, categoryCollection] = await Promise.all([
     getProductRecommendations(product.id, locale).catch(() => []),
     getGuideArticles(locale, 20).catch(() => []),
+    section ? getCollection(section.slug, locale).catch(() => null) : Promise.resolve(null),
   ]);
+  const categoryMeta = Object.fromEntries(
+    (categoryCollection?.metafields ?? []).filter(Boolean).map((field) => [field!.key, field!.value]),
+  );
+  const categoryFaq = parseFaq(categoryMeta.faq);
+  const faq = productFaq.length ? productFaq : categoryFaq;
   const guideTerms = [product.vendor, section?.title, m.site_category, m.refrigerant]
     .filter((value): value is string => Boolean(value))
     .map((value) => value.toLowerCase());
