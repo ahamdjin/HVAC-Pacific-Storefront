@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { SITE } from "@/config/site";
 import { MegaMenu } from "./MegaMenu";
 import { LanguageSwitch } from "./LanguageSwitch";
+import { MobileMenu } from "./MobileMenu";
 import { hrefFor, partLinks, unitLinks } from "./paths";
 
 export async function SiteHeader({ locale }: { locale: string }) {
@@ -35,9 +36,21 @@ export async function SiteHeader({ locale }: { locale: string }) {
             <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" d="M3 4h2.5l2 11h10l2-8H7M9 20h.01M17 20h.01"/></svg>
             <span>{t("cart")}</span>
           </Link>
+          <MobileMenu
+            menuLabel={n("menu")}
+            unitsLabel={t("units")}
+            partsLabel={t("parts")}
+            units={units}
+            parts={parts}
+            links={[
+              { label: t("brands"), href: h("/brands") },
+              { label: t("guides"), href: h("/guides") },
+              { label: t("needInstaller"), href: h("/need-installer") },
+            ]}
+          />
         </div>
       </div>
-      <nav className="navbar" aria-label={n("mainNav")}>
+      <nav className="navbar desktop-navbar" aria-label={n("mainNav")}>
         <div className="wrap nav-row">
           <MegaMenu label={t("units")} allLabel={n("allUnits")} allHref={h("/units")} items={units} />
           <MegaMenu label={t("parts")} allLabel={n("allParts")} allHref={h("/parts")} items={parts} wide />
