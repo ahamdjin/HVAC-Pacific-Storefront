@@ -41,7 +41,43 @@
     "partsHeading": "Parts & accessories",
     "pickupNote": "Pickup location provided after order.",
     "contactTitle": "Questions? Talk with our team.",
-    "contactDescription": "Call for real product and order support."
+    "contactDescription": "Call for real product and order support.",
+    "metaTitle": "HVAC Equipment & Parts for Southern California | hvacpacific",
+    "metaDescription": "Shop HVAC equipment, systems and replacement parts with local pickup and delivery in Southern California.",
+    "ogDescription": "Shop verified HVAC equipment and parts from HVAC Pacific.",
+    "supplyEyebrow": "Southern California HVAC supply",
+    "lead": "Shop verified equipment, systems and service parts with local pickup and delivery within {miles} miles. Support in English and 中文.",
+    "verifiedData": "Verified product data",
+    "localFulfillment": "Local fulfillment",
+    "phoneSupport": "Real phone support",
+    "findPart": "Find the exact part",
+    "searchBy": "Search by model, SKU or specification",
+    "searchExample": "Example: GA5SAN53600W",
+    "searchCatalog": "Search catalog",
+    "notSure": "Not sure what matches?",
+    "call": "Call {phone}",
+    "shopEquipment": "Shop equipment",
+    "viewAllUnits": "View all units →",
+    "repairService": "Repair & service",
+    "viewAllParts": "View all parts →",
+    "currentCatalog": "Current catalog",
+    "featuredProducts": "Featured products",
+    "whyEyebrow": "Why HVAC Pacific",
+    "whyTitle": "Built for exact-product buying",
+    "californiaFocused": "California-focused",
+    "californiaFocusedText": "Product pages surface compliance fields only when they exist in the catalog.",
+    "localPickupDelivery": "Local pickup & delivery",
+    "localPickupDeliveryText": "Fulfillment is focused on Southern California within the configured local service area.",
+    "bilingual": "English & 中文",
+    "bilingualText": "Visible language routes and phone support without browser-language redirects.",
+    "contractorData": "Contractor-friendly data",
+    "contractorDataText": "Model numbers, electrical details, refrigerant and compatibility notes stay close to the product.",
+    "knowledgeCenter": "Knowledge center",
+    "latestGuides": "Latest HVAC guides",
+    "allGuides": "All guides →",
+    "helpFind": "Need help finding a product?",
+    "talkWith": "Talk with HVAC Pacific",
+    "sendModel": "Call {phone} or send the model number and what you need."
   },
   "Footer": {
     "pickupDelivery": "Pickup & delivery",
@@ -141,6 +177,158 @@
       "button": "Search",
       "noneTitle": "No products found",
       "noneText": "Try a model number, brand, component type or shorter search."
+    }
+  },
+  "Category": {
+    "units": "Units",
+    "parts": "Parts & Accessories",
+    "equipment": "Equipment",
+    "partsEyebrow": "Parts & accessories",
+    "allUnitsTitle": "HVAC Units",
+    "allPartsTitle": "HVAC Parts & Accessories",
+    "unitsMetaDescription": "Shop HVAC equipment for Southern California pickup and local delivery.",
+    "partsMetaDescription": "Shop HVAC parts and accessories for Southern California pickup and local delivery.",
+    "forSaleTitle": "{title} for Sale – Pickup in Southern California | {brand}",
+    "unitsIntro": "Browse HVAC equipment by system type, brand, capacity and refrigerant. Product information is displayed only when it is available from the catalog.",
+    "partsIntro": "Browse HVAC parts and accessories by category, brand and key specifications.",
+    "loadingFilters": "Loading filters…",
+    "emptyTitle": "No verified products are published in this category yet.",
+    "emptyText": "We do not publish placeholder inventory. Contact us with the model or equipment you need.",
+    "buyingGuide": "Buying guide",
+    "capacityTitle": "Choosing the right capacity",
+    "capacityText": "Do not size HVAC equipment from square footage alone. A licensed contractor should perform a Manual J load calculation and verify the matched equipment, electrical service, ductwork and local permit requirements before installation.",
+    "faq": "Frequently asked questions",
+    "relatedCategories": "Related categories",
+    "helpfulGuides": "Helpful HVAC guides",
+    "sections": {
+      "heat-pump-systems": {
+        "title": "Heat Pump Systems",
+        "intro": "Shop heat pump equipment for year-round heating and cooling. Compare capacity, refrigerant, efficiency data and compatible components before ordering."
+      },
+      "packaged-units": {
+        "title": "Packaged Units",
+        "intro": "Shop packaged HVAC equipment with the major heating and cooling components housed in one cabinet. Verify electrical service, capacity and installation requirements before purchase."
+      },
+      "mini-splits": {
+        "title": "Ductless Mini Splits",
+        "intro": "Shop ductless mini-split systems and components by BTU capacity, voltage, refrigerant and brand."
+      },
+      "ac-furnace-systems": {
+        "title": "AC + Furnace Systems",
+        "intro": "Matched central air-conditioning and furnace equipment. Published systems appear only after their product data has been verified."
+      },
+      "capacitors": {
+        "title": "HVAC Capacitors",
+        "intro": "Replacement HVAC capacitors for air conditioners, heat pumps and motors. Match capacitance, voltage and physical fit to the equipment specification."
+      },
+      "dual-run-capacitors": {
+        "title": "Dual Run Capacitors",
+        "intro": "Dual run capacitors combine compressor and fan capacitance in one can. Match both MFD ratings and voltage before replacing."
+      },
+      "single-run-capacitors": {
+        "title": "Single Run Capacitors",
+        "intro": "Single run capacitors for HVAC motors and equipment. Match the required MFD and voltage printed on the original component."
+      },
+      "contactors-relays": {
+        "title": "Contactors & Relays",
+        "intro": "HVAC contactors and relays for switching compressors, motors and control circuits."
+      },
+      "motors": {
+        "title": "HVAC Motors",
+        "intro": "Condenser fan, blower and replacement HVAC motors. Verify horsepower, RPM, voltage, frame, shaft and rotation before ordering."
+      },
+      "thermostats": {
+        "title": "Thermostats",
+        "intro": "Thermostats and controls for conventional and heat-pump HVAC systems. Verify staging and system compatibility before purchase."
+      },
+      "furnace-parts": {
+        "title": "Furnace Parts",
+        "intro": "Ignition, safety and replacement furnace components. Confirm model compatibility and ratings before installation."
+      },
+      "refrigeration-parts": {
+        "title": "Refrigeration Parts",
+        "intro": "Refrigeration service parts and components for qualified HVAC and refrigeration work."
+      },
+      "electrical": {
+        "title": "HVAC Electrical",
+        "intro": "Electrical components used in HVAC service and equipment repair."
+      },
+      "condensate": {
+        "title": "Condensate",
+        "intro": "Condensate management components for air-conditioning and HVAC systems."
+      },
+      "chemicals-leak-detection": {
+        "title": "Chemicals & Leak Detection",
+        "intro": "HVAC service chemicals and leak-detection products. Follow manufacturer instructions and applicable safety requirements."
+      },
+      "tools": {
+        "title": "HVAC Tools",
+        "intro": "Tools and service accessories for HVAC installation, diagnostics and maintenance."
+      },
+      "refrigerant": {
+        "title": "Refrigerant",
+        "intro": "Refrigerant products are sold subject to applicable EPA sales restrictions and our certification-verification policy."
+      }
+    }
+  },
+  "ProductPage": {
+    "units": "Units",
+    "parts": "Parts & Accessories",
+    "brand": "Brand",
+    "model": "Model",
+    "capacity": "Capacity",
+    "systemType": "System type",
+    "refrigerant": "Refrigerant",
+    "threePhaseTitle": "3-phase power required.",
+    "threePhaseText": "This equipment requires compatible electrical service.",
+    "imageUnavailable": "Product image unavailable",
+    "imageAlt": "{title} product image {number}",
+    "needInstaller": "Need an Installer?",
+    "systemComponents": "System components",
+    "outdoorUnit": "Outdoor unit",
+    "indoorUnit": "Indoor coil / air handler",
+    "furnace": "Furnace",
+    "specifications": "Specifications",
+    "compliance": "Compliance information",
+    "scaqmd": "SCAQMD Rule 1111 compliant",
+    "cec": "CEC listed",
+    "documents": "Documents",
+    "specSheet": "Spec sheet",
+    "installationManual": "Installation manual",
+    "safetyDataSheet": "Safety data sheet",
+    "installNoteTitle": "Important installation note",
+    "installNote": "HVAC equipment must be selected and installed for the actual application. Local permits, licensed installation and refrigerant-handling requirements may apply. Manufacturer warranty coverage is subject to manufacturer terms and may require registration.",
+    "prop65Title": "California Proposition 65",
+    "prop65Text": "This product is flagged for a California Proposition 65 warning. Review the product packaging and manufacturer documentation before use.",
+    "productDetails": "Product details",
+    "faq": "Frequently asked questions",
+    "completeInstall": "Complete the install",
+    "relatedGuides": "Related HVAC guides",
+    "call": "Call",
+    "order": "Order"
+  },
+  "Pages": {
+    "cart": {
+      "breadcrumb": "Cart",
+      "title": "Your cart",
+      "description": "Review your order before continuing to Shopify's secure checkout."
+    },
+    "installer": {
+      "breadcrumb": "Need an Installer?",
+      "eyebrow": "Installation referral",
+      "title": "Need an HVAC installer?",
+      "description": "Tell us what you are purchasing and where the project is located. We can refer your request to an independent licensed contractor.",
+      "important": "Important:",
+      "disclaimer": "HVAC Pacific does not perform installation. Referred contractors are independent businesses.",
+      "callPrompt": "Prefer to talk? Call {phone}."
+    },
+    "contact": {
+      "breadcrumb": "Contact",
+      "eyebrow": "Customer support",
+      "title": "Contact HVAC Pacific",
+      "description": "Questions about a model, part, order or local pickup? Send us a message or call.",
+      "talk": "Talk with us",
+      "pickup": "Pickup location provided after order."
     }
   }
 }
