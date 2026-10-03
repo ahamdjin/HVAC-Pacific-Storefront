@@ -60,30 +60,87 @@
     "language": "Language",
     "mainNav": "Main navigation"
   },
-  "Home": {
-    "unitsText": "Heat pumps, packaged units, mini splits and AC + furnace systems.",
-    "partsText": "Electrical, motors, controls, refrigeration, tools and more.",
-    "emptyTitle": "The catalog is not published yet",
-    "emptyDescription": "No products are listed on this site yet. We show product details only once they are verified, so nothing here is a placeholder listing. Call or email us for equipment and parts questions in the meantime.",
-    "browseHeading": "Browse by category",
-    "factsHeading": "Local service",
-    "factPickup": "Local pickup",
-    "factPickupText": "Pickup location is provided after order.",
-    "factDelivery": "Delivery within {miles} miles",
-    "factDeliveryText": "Local delivery is available within a {miles}-mile radius.",
-    "factLanguages": "English and Chinese support",
-    "factLanguagesText": "Talk with us in English or 中文.",
-    "email": "Email support",
-    "needInstallerText": "Looking for installation help? Installer requests are coming in a later phase.",
-    "status": "Store status"
-  },
-  "Scaffold": {
-    "breadcrumb": "Breadcrumb",
-    "title": "This page is part of a later phase",
-    "description": "The online catalog, search, guides and request forms are not available yet. For questions, call or email us.",
-    "back": "Back to home",
-    "searchTitle": "Search is not available yet",
-    "cartTitle": "Cart is empty",
-    "cartDescription": "Checkout is not open yet."
+  "Commerce": {
+    "productCard": {
+      "imageUnavailable": "Image unavailable",
+      "available": "Available",
+      "unavailable": "Unavailable",
+      "fulfillment": "Local pickup / delivery within 20 mi",
+      "ton": "{value} Ton"
+    },
+    "catalog": {
+      "aria": "Product filters",
+      "title": "Filter products",
+      "reset": "Reset",
+      "brand": "Brand",
+      "tonnage": "Tonnage",
+      "refrigerant": "Refrigerant",
+      "systemType": "System type",
+      "keySpecification": "Key specification",
+      "price": "Price",
+      "all": "All",
+      "products": "products",
+      "noMatchingTitle": "No matching products",
+      "noMatchingText": "Try removing one or more filters.",
+      "clearFilters": "Clear filters",
+      "under100": "Under $100",
+      "from100to500": "$100–$500",
+      "from500to2000": "$500–$2,000",
+      "over2000": "$2,000+"
+    },
+    "purchase": {
+      "option": "Option",
+      "unavailableSuffix": " — unavailable",
+      "unavailable": "Unavailable",
+      "fulfillment": "Local pickup · Local delivery within 20 miles",
+      "installAck": "I understand this equipment must be installed by a licensed contractor with EPA 608 certification and may require a permit.",
+      "adding": "Adding…",
+      "addToCart": "Add to cart",
+      "added": "Added to cart.",
+      "addError": "Unable to add to cart.",
+      "gateNote": "EPA 608 certification verification is required before refrigerant pickup or delivery.",
+      "close": "Close",
+      "epaTitle": "EPA 608 verification required",
+      "epaDescription": "Certification is verified before pickup/delivery. Orders without valid certification are cancelled and refunded.",
+      "certNumber": "EPA 608 certification number",
+      "techName": "Certified technician name",
+      "epaAck": "I am EPA 608 certified or purchasing for a certified technician.",
+      "verifyAdd": "Verify details & add"
+    },
+    "cart": {
+      "loading": "Loading cart…",
+      "emptyTitle": "Your cart is empty",
+      "emptyText": "Browse equipment and parts to start an order.",
+      "qty": "Qty",
+      "remove": "Remove",
+      "summary": "Order summary",
+      "subtotal": "Subtotal",
+      "fulfillmentNote": "Pickup or local-delivery details are finalized during checkout.",
+      "checkout": "Continue to secure checkout"
+    },
+    "lead": {
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "zip": "ZIP code",
+      "preferredLanguage": "Preferred language",
+      "english": "English",
+      "chinese": "中文",
+      "message": "Message",
+      "consent": "I agree that HVAC Pacific may contact me about this request.",
+      "sending": "Sending…",
+      "send": "Send request",
+      "success": "Thanks — your request was sent.",
+      "error": "Unable to send request."
+    },
+    "search": {
+      "breadcrumb": "Search",
+      "title": "Search HVAC equipment & parts",
+      "results": "{count} results for",
+      "placeholder": "Model, part, brand or specification",
+      "button": "Search",
+      "noneTitle": "No products found",
+      "noneText": "Try a model number, brand, component type or shorter search."
+    }
   }
 }
