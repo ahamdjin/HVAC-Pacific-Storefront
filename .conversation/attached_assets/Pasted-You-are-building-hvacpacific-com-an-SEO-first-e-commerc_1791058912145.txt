@@ -1,0 +1,278 @@
+You are building **hvacpacific.com**, an SEO-first e-commerce site for a Southern California HVAC equipment and parts seller. **Replit hosts the front end (Next.js). Shopify is the headless backend** (products, inventory, pricing, translations, checkout). Build in the phases at the bottom. **Stop after each phase, show me what you built, and wait for my OK before continuing.**
+
+Non-negotiable rules for the whole project:
+1. **Never invent product data.** If a spec, rating, certification, or AHRI number is empty in Shopify, the row/badge is not rendered. No placeholder specs, no "up to" claims you calculated.
+2. **No fake trust signals.** No testimonials, star ratings, "authorized dealer", "#1", "best price guaranteed", stock counters, or countdown timers unless the data comes from a real source I provide.
+3. **SEO is the product.** Every page must be server-rendered HTML with correct metadata, structured data, and canonical URL. If a design choice hurts crawlability or Core Web Vitals, choose the crawlable option.
+4. **Compliance gates are business logic, not decoration** (EPA 608 refrigerant gate, installer acknowledgment, hidden HOLD products). Do not skip them.
+
+---
+
+## 1. Config (single source of truth — `config/site.ts`)
+
+```ts
+export const SITE = {
+  brand: "hvacpacific",               // house brand, lowercase as written
+  displayName: "HVAC Pacific",
+  domain: "https://hvacpacific.com",
+  phone: "213-282-8212",
+  phoneE164: "+12132828212",
+  email: "support@bmon.ai",           // TODO: switch to support@hvacpacific.com
+  mailingAddress: { street: "1142 S Diamond Bar Blvd #726", city: "Diamond Bar", region: "CA", postal: "91765", country: "US" },
+  showroom: null as null | { street: string; city: string; region: string; postal: string; hours: string[]; lat?: number; lng?: number },
+  // ^ Rosemead showroom/pickup address TBD. While null: hide pickup address, omit Store/LocalBusiness schema address, show "Pickup location provided after order".
+  serviceRadiusMiles: 20,
+  locales: ["en", "zh"],              // zh = Simplified Chinese (zh-Hans / Shopify ZH_CN)
+  defaultLocale: "en",
+  featuredBrands: ["Lennox", "Carrier", "Midea", "Daikin", "TCL"], // brand pages render ONLY if the brand has ≥1 published product
+  logoUrl: "https://assets.cdn.filesafe.space/Z1X6dLIh9rIQWOIUiptn/media/6aa5c74edf2d0155533d43d4.png", // download into /public/brand/, do not hotlink
+};
+```
+
+Secrets (Replit Secrets, never committed): `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_STOREFRONT_TOKEN`, `SHOPIFY_ADMIN_TOKEN` (import script only, server-side), `SHOPIFY_WEBHOOK_SECRET`, `LEAD_WEBHOOK_URL` (GoHighLevel inbound webhook for installer/contact leads), `GA4_ID`, `GSC_VERIFICATION`, `MERCHANT_VERIFICATION`.
+
+---
+
+## 2. Stack
+
+- **Next.js (App Router, latest stable) + TypeScript + Tailwind CSS.** Server Components by default; client components only for cart, filters, modals, forms.
+- **Shopify Storefront API (GraphQL)** for catalog, collections, search, blog articles, cart. Use `@inContext(language: ZH_CN)` for Chinese.
+- **Shopify Admin API** only in `/scripts` (product import) — never in the browser.
+- **Rendering:** static generation + ISR (`revalidate: 3600`) for products/collections/articles, plus on-demand revalidation via Shopify product/collection webhooks → `POST /api/revalidate` (verify HMAC with `SHOPIFY_WEBHOOK_SECRET`).
+- **i18n:** `next-intl` with locale prefix: English at `/`, Chinese at `/zh/`. **Do not auto-redirect by browser language** (hurts crawling); show a visible language switcher (EN | 中文) that links to the equivalent URL.
+- **Images:** `next/image`, Shopify CDN sizes, explicit width/height, descriptive alt text.
+- **Deploy:** Replit Deployments (Autoscale), custom domain `hvacpacific.com` + `www` → 301 to apex.
+
+---
+
+## 3. Shopify setup I will do (give me a checklist page at `/admin-checklist` in dev only, not deployed)
+
+- Shopify plan with Headless sales channel → Storefront token.
+- Custom app with Admin scopes: `write_products`, `read_products`, `write_inventory`, `read_locations`, `write_publications`, `read_translations`, `write_translations`.
+- Primary Shopify domain = `shop.hvacpacific.com` (checkout runs there). The Shopify Online Store theme must be password-protected or redirect to hvacpacific.com so Google never indexes duplicate product pages.
+- Shipping & delivery: **Local pickup** (showroom) + **Local delivery** within 20 miles of the showroom. No carrier shipping at launch. Refrigerant and units are pickup/local delivery only, permanently.
+- Shopify Tax on (California).
+- Translate & Adapt app for Simplified Chinese product/collection translations.
+
+### Metafield definitions (namespace `specs`, all with Storefront access ON)
+
+| key | type | used for |
+|---|---|---|
+| site_status | single_line_text (PUBLISH, PUBLISH AFTER CHECK, NEEDS DATA, HOLD, KEEP - LEGAL RISK) | internal QA |
+| site_category / subcategory | single_line_text | nav + breadcrumbs (also mirrored as collections) |
+| tonnage | number_decimal | filters, specs |
+| btu | number_integer | specs |
+| system_type | single_line_text | specs, filters |
+| outdoor_model / indoor_model / furnace_model | single_line_text | component table |
+| refrigerant | single_line_text | filters, specs |
+| ahri_number | single_line_text | AHRI badge + link |
+| seer2 / eer2 / hspf2 / afue | number_decimal | specs (render only if set) |
+| scaqmd_1111_compliant | boolean | badge (only if true) |
+| cec_listed | boolean | badge (only if true) |
+| requires_epa608 | boolean | refrigerant gate |
+| requires_licensed_install | boolean | installer acknowledgment |
+| three_phase | boolean | warning banner |
+| prop65 | boolean | Prop 65 warning block |
+| key_specs | multi_line_text | spec table (semicolon-separated "label: value") |
+| google_title | single_line_text | Merchant feed title (≤150 chars) |
+| search_keywords | multi_line_text | internal search synonyms (NOT rendered as meta keywords) |
+| spec_sheet_url / manual_url / sds_url | url | documents block |
+| faq | json `[{q,a}]` | product FAQ + FAQPage schema |
+
+---
+
+## 4. Product import script (`/scripts/import-products.ts`)
+
+Input: `hvacpacific_product_list.xlsx` (I will upload it to the repo). Read tabs **`Units`** and **`Accessories`** by exact header name.
+
+- **Units columns:** listing_id, status, site_category, brand, title, tonnage, system_type, outdoor_model, indoor_model, furnace_model, refrigerant, efficiency_stated, ahri_number, seer2, eer2, hspf2, price, cost, margin, ship_weight_lb, flags, action, compliant_alternative
+- **Accessories columns:** sku, status, site_category, subcategory, brand, title, google_title, key_specs, price, cost, margin, qty, ship_weight_lb, shipping_scope, flags, action, source_category, source_brand, search_keywords
+
+Rules:
+- Upsert by SKU (`listing_id` for units, `sku` for accessories). Idempotent — re-running updates, never duplicates.
+- `status` PUBLISH / PUBLISH AFTER CHECK / KEEP - LEGAL RISK → Shopify ACTIVE and published to Headless channel. NEEDS DATA / HOLD → DRAFT, not published.
+- Vendor = `brand` (house brand = `hvacpacific`). Skip publishing any row whose brand is `DECIDE` (force DRAFT) and log it.
+- Price from `price`; cost → Shopify "cost per item". Empty price → DRAFT regardless of status, logged.
+- `efficiency_stated` is **internal only** — do not map it to seer2 or display it.
+- `flags` and `action` → private product note metafield (`internal.flags`), never rendered.
+- Refrigerant rows → `requires_epa608 = true`, tag `pickup-only`.
+- Units (site_category in AC + Furnace Systems, Heat Pump Systems, Packaged Units, Ductless Mini Splits) → `requires_licensed_install = true`.
+- Rows where system_type contains "3-phase" → `three_phase = true`.
+- Accessory rows whose flags mention Prop 65 → `prop65 = true`.
+- Create/attach collections from site_category and subcategory (see section 5).
+- Output a CSV report: created / updated / drafted / skipped + reason.
+
+---
+
+## 5. Information architecture & URLs (lowercase, hyphenated, no trailing slash, no query strings in canonicals)
+
+```
+/                                   Home
+/units                              All units (hub)
+/units/heat-pump-systems
+/units/packaged-units
+/units/mini-splits
+/units/ac-furnace-systems           (all products HOLD at launch → page shows intro + "Request a quote" form, meta robots noindex until ≥1 product is published)
+/parts                              All parts & accessories (hub)
+/parts/capacitors
+/parts/capacitors/dual-run-capacitors
+/parts/capacitors/single-run-capacitors
+/parts/contactors-relays
+/parts/motors
+/parts/thermostats
+/parts/furnace-parts
+/parts/refrigeration-parts
+/parts/electrical
+/parts/condensate
+/parts/chemicals-leak-detection
+/parts/tools
+/parts/refrigerant                  (EPA 608 gated)
+/products/{handle}                  handle = slug(brand + key descriptor + model #), e.g. midea-3-ton-packaged-heat-pump-mrd-36hwn10-m134g
+/brands/{brand}                     only brands with ≥1 published product
+/guides                             Shopify blog "guides"
+/guides/{handle}
+/need-installer
+/contact
+/about
+/pickup-delivery
+/california-hvac-compliance         (cornerstone page)
+/refrigerant-sales-policy
+/shipping-returns
+/warranty
+/privacy  /terms  /prop-65
+/zh/...                             mirror of every route above
+```
+
+Subcategory pages exist **only when the subcategory has ≥5 published products** (current data: dual run caps 8, single run caps 12, contactors 12, others smaller). Smaller subcategories are on-page filters on the parent category.
+
+Navigation: two top menus — **Units** and **Parts & Accessories** — each opening a mega-menu of the categories above. Header: logo, search, Units, Parts & Accessories, Brands, Guides, phone (click-to-call), **Need an Installer?** button, language switcher, cart.
+
+Breadcrumbs on every page below home (visible + BreadcrumbList schema).
+
+---
+
+## 6. Page templates
+
+### Home
+1. H1: "HVAC Equipment & Parts for Southern California" (+ subline: local pickup/delivery within 20 miles; English & 中文 support).
+2. Category tiles (Units categories + top 6 Parts categories).
+3. Featured products (Shopify collection `featured`).
+4. "Why hvacpacific" — 3–4 factual points only: California-compliance focus, local pickup/delivery, real phone support in English and Chinese, contractor-friendly parts. No testimonials.
+5. Guides teaser (latest 3).
+6. Contact strip (phone, email, form).
+
+### Category page
+- H1 = category name (e.g. "Dual Run Capacitors").
+- 80–150 word intro **above** the grid (from Shopify collection description).
+- Filters (client-side; URL params allowed but canonical stays the clean category URL and filtered URLs get `noindex,follow`): Units → tonnage, system type, refrigerant, brand, price. Parts → subcategory, brand, key attribute (MFD, amps, HP, voltage) parsed from key_specs.
+- Product grid: image, title, price, availability, "Pickup / 20-mi delivery" label.
+- Below grid: 400–800 word buying guide (from collection metafield `content.guide_html`) + sizing table for units (tonnage vs approx. sq ft, with "get a Manual J load calculation" caveat) + FAQ (collection metafield `content.faq`) rendered as FAQPage schema.
+- Links to related guides and sibling categories.
+
+### Product page (modeled on the best competitor PDPs: exact-product H1, spec table, important notes, documents, FAQ, related guides)
+1. Breadcrumbs.
+2. H1 = full product title (includes model numbers).
+3. Price, availability, fulfillment (Pickup / local delivery within 20 mi), Add to cart.
+4. **Gates:**
+   - `requires_epa608` → Add-to-cart opens a modal requiring: EPA 608 certification number, certified technician name, checkbox "I am EPA 608 certified or purchasing for a certified technician". Stored as cart line attributes and cart note. Copy: "Certification is verified before pickup/delivery. Orders without valid certification are cancelled and refunded."
+   - `requires_licensed_install` → required checkbox before add-to-cart: "I understand this equipment must be installed by a licensed contractor with EPA 608 certification and may require a permit." Stored as line attribute.
+   - `three_phase` → yellow banner "3-phase power required — light commercial. Most homes are single-phase."
+5. **Need an Installer?** button (opens installer form, product prefilled).
+6. Key highlights (from metafields that exist).
+7. **Component table** (systems): Outdoor unit / Indoor coil or air handler / Furnace, each with model #.
+8. **Spec table** (only populated metafields + key_specs).
+9. **Compliance badges** — render each only when its field is set: AHRI # (link to ahridirectory.org with the number shown), SEER2/EER2/HSPF2, "SCAQMD Rule 1111 compliant (14 ng/J)", "CEC listed".
+10. Documents: spec sheet, installation manual, SDS (refrigerant/chemicals) — only if URLs exist.
+11. Important notes: install requirements, permit note, manufacturer warranty "per manufacturer terms; registration may be required" (no invented warranty years).
+12. Prop 65 block if `prop65`.
+13. FAQ (product metafield, else category default FAQ).
+14. "Complete the install" (Shopify product recommendations, complementary) + related guides.
+15. JSON-LD: Product + Offer (price, priceCurrency USD, availability, itemCondition New, url, seller), brand, sku, mpn (= model # for brand-name products; omit for house brand), BreadcrumbList.
+
+### Need an Installer (`/need-installer` + modal)
+Fields: name, phone, email, ZIP, product (prefilled), preferred language (English/中文), message, consent checkbox for contact. POST `/api/installer-lead` → validate (zod) + honeypot + rate limit → forward JSON to `LEAD_WEBHOOK_URL`. Success message. Disclaimer: "hvacpacific does not perform installation. We can refer you to independent licensed contractors."
+
+### Contact
+Same pipeline as installer form (`type: contact`), plus phone, email, mailing address. Click-to-call everywhere on mobile.
+
+### Policy pages
+Generate drafts for refrigerant-sales-policy, shipping-returns (pickup/local delivery only; returns on unopened, uninstalled equipment — mark DRAFT for my review), warranty, privacy, terms, prop-65. Every draft page shows a visible "DRAFT – pending review" banner in dev and is `noindex` until I set `reviewed: true` in its frontmatter/metafield.
+
+---
+
+## 7. Technical SEO (all required)
+
+- Unique `<title>` and meta description per page from templates:
+  - Product: `{title} | hvacpacific` (truncate title intelligently to ~60 chars before the brand suffix if needed); description from first 155 chars of highlights.
+  - Category: `{Category} for Sale – Pickup in Southern California | hvacpacific`.
+- Canonical on every page; self-referencing; strip params.
+- `hreflang`: `en-US`, `zh-Hans`, `x-default` (→ en) on every page pair.
+- `robots.txt`: allow all; disallow `/api`, `/cart`, `/search?`, `/account`; reference sitemap.
+- `sitemap.xml` index → per-locale sitemaps for products, collections, guides, static pages. Exclude drafts, HOLD/NEEDS DATA products, noindex pages, empty brand pages.
+- JSON-LD: Organization (logo, phone, email, sameAs only for real profiles), WebSite + SearchAction, BreadcrumbList, Product/Offer, ItemList on category pages, FAQPage where FAQ exists, Article on guides. Add `Store` with address/hours **only when `SITE.showroom` is set**.
+- Open Graph + Twitter cards with product images.
+- Core Web Vitals targets on mobile: LCP < 2.5 s, CLS < 0.1, INP < 200 ms. No layout shift from fonts (use `next/font`), lazy-load below-the-fold images, no heavy carousels above the fold.
+- Accessibility: WCAG 2.1 AA contrast, labels on all inputs, keyboard-navigable menus and modals.
+- 404 page with search and category links; 301 redirect map file (`/config/redirects.ts`) for future URL changes.
+- No `meta keywords`. No author tag naming other companies.
+- Internal linking: every product links to its category, brand, and ≥2 relevant guides; every guide links to ≥2 categories.
+
+---
+
+## 8. Google Merchant Center feed
+
+Route `/feeds/google-merchant.xml` (RSS 2.0 with `g:` namespace), regenerated on revalidation. One feed for English (Chinese feed later).
+
+Fields: `g:id` (SKU/listing_id), `g:title` (= `google_title` metafield, else product title, ≤150 chars), `g:description` (plain text), `g:link` (hvacpacific.com product URL — never the Shopify domain), `g:image_link`, `g:availability`, `g:price` ("4550.00 USD"), `g:condition` new, `g:brand`, `g:mpn` (model # for brand-name products), `g:identifier_exists` = `no` for house-brand items without GTIN/MPN, `g:is_bundle` = `yes` for multi-component systems (brand/mpn = outdoor unit), `g:google_product_category`, `g:product_type` (site breadcrumb path), `g:product_highlight` (up to 10, from highlights), `g:shipping` reflecting local delivery/pickup.
+
+Exclude from feed: DRAFT products, products with no image, anything with `requires_epa608 = true` (refrigerant), and HOLD/NEEDS DATA.
+
+Also expose `/feeds/local-inventory.xml` scaffold (store_code, id, availability, price) behind a config flag for later free local listings once the showroom is set.
+
+---
+
+## 9. Chinese (zh) version
+
+- All UI strings in `messages/en.json` and `messages/zh.json` (Simplified Chinese). Generate initial zh strings, but mark the file "machine draft – needs native review".
+- Product/collection/article content pulled from Shopify translations via `@inContext(language: ZH_CN)`; if a translation is missing, render English content and set that page to `noindex` in zh (avoid thin duplicate pages) until translated.
+- Localized meta titles/descriptions; hreflang pairs; Chinese fonts via system font stack (no huge webfont downloads).
+
+---
+
+## 10. Guides (content plan — create as Shopify blog articles in "guides")
+
+Draft these with outlines + full first drafts, **noindex until I mark reviewed**, factual claims limited to what I supply or cite:
+1. California HVAC Compliance Guide: SEER2/EER2 (Southwest region), SCAQMD Rule 1111 furnaces, CEC listing — also used as `/california-hvac-compliance` cornerstone
+2. What Is an AHRI Matched System (and How to Look One Up)
+3. How to Size a Central AC or Heat Pump (tonnage vs sq ft + why Manual J)
+4. Packaged Unit vs Split System
+5. R-454B vs R-32 vs R-410A: What Changed
+6. How to Choose a Replacement Dual Run Capacitor (MFD, voltage, round vs oval)
+7. Buying R-22 in California: EPA 608 Rules and Reclaimed Refrigerant
+8. Mini Split Buying Guide (single-zone vs multi-zone, 115V vs 230V)
+
+Article template: H1, short answer box at top, table of contents, H2/H3 structure, product links, FAQ, author/updated date, Article schema.
+
+---
+
+## 11. Design
+
+Clean, professional, industrial-light. White background, navy (#1F3A5F) primary, one accent color sampled from the logo, generous spacing, system font stack, 16px+ body text, large tap targets. Product images on white. No stock photos of people, no AI-generated faces. Mobile-first: sticky bottom bar on product pages with price + Add to cart + call button.
+
+---
+
+## 12. Analytics & verification
+
+GA4 (via `GA4_ID`, loaded after interaction/idle), e-commerce events (view_item, add_to_cart, begin_checkout), lead events for installer/contact forms. Google Search Console + Merchant Center verification meta tags from secrets.
+
+---
+
+## 13. Build phases (stop after each)
+
+1. **Scaffold:** Next.js + Tailwind + next-intl + config + Shopify Storefront client + layout (header/footer/nav) + home placeholder. Show me.
+2. **Data:** metafield definitions doc, import script, run against the Excel in DRAFT-safe mode (dry run first, print report). Show me the report.
+3. **Catalog pages:** category, product (with all gates), brand, search, cart → Shopify checkout. Show me on mobile.
+4. **Content & forms:** guides, policy drafts, need-installer, contact, compliance page.
+5. **SEO & feeds:** metadata, schema, sitemaps, robots, hreflang, Merchant feed, revalidation webhooks. Run Lighthouse (mobile) on home, one category, one product; report scores.
+6. **Chinese:** zh routes, strings, translated content fallback/noindex logic.
+7. **QA checklist** (print pass/fail): every published product has price, image, H1 with model #, canonical, Product schema validating in Rich Results Test format; no HOLD/NEEDS DATA product reachable by URL or sitemap; EPA 608 modal blocks add-to-cart without a cert #; installer checkbox blocks add-to-cart on units; filtered URLs are noindex; no testimonials/ratings anywhere; Lighthouse mobile SEO = 100, Performance ≥ 90.
