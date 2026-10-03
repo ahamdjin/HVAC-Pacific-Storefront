@@ -293,7 +293,7 @@ export default async function ProductPage({ params }: P) {
         <div className="mobile-buy">
           <strong>{new Intl.NumberFormat("en-US", { style: "currency", currency: variant.price.currencyCode }).format(Number(variant.price.amount))}</strong>
           <a href={"tel:" + SITE.phoneE164}>Call</a>
-          <a href="#main">Buy</a>
+          <a href="#purchase">Order</a>
         </div>
       )}
     </main>
