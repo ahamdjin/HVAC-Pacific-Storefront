@@ -37,3 +37,22 @@ jobs:
         env:
           SHOPIFY_MOCK_BUILD: "true"
         run: pnpm --filter @workspace/hvac-pacific run build
+      - name: Smoke test production storefront
+        env:
+          SHOPIFY_MOCK_BUILD: "true"
+          ZH_TRANSLATIONS_REVIEWED: "false"
+          PORT: "3000"
+          QA_BASE_URL: "http://127.0.0.1:3000"
+        run: |
+          pnpm --filter @workspace/hvac-pacific run start > /tmp/hvac-storefront.log 2>&1 &
+          APP_PID=$!
+          trap 'kill $APP_PID 2>/dev/null || true' EXIT
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:3000/ >/dev/null; then break; fi
+            sleep 1
+          done
+          if ! curl -fsS http://127.0.0.1:3000/ >/dev/null; then
+            cat /tmp/hvac-storefront.log
+            exit 1
+          fi
+          pnpm --filter @workspace/scripts run test:storefront-smoke
