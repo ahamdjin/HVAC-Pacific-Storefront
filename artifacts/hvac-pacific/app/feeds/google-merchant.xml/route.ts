@@ -20,13 +20,14 @@ export async function GET(){
     const bundle=[m.outdoor_model,m.indoor_model,m.furnace_model].filter(Boolean).length>1;
     const highlights=parseKeySpecs(m.key_specs).slice(0,10).map(x=>`<g:product_highlight>${esc(x.label+": "+x.value)}</g:product_highlight>`).join("");
     const productType=[m.site_category,m.subcategory].filter(Boolean).join(" > ");
+    const description=plain(p.description)||[p.title,productType,m.refrigerant].filter(Boolean).join(" – ");
     return `<item>
 <title>${esc((m.google_title||p.title).slice(0,150))}</title>
-<description>${esc(plain(p.description).slice(0,5000))}</description>
+<description>${esc(description.slice(0,5000))}</description>
 <link>${esc(SITE.domain+"/products/"+p.handle)}</link>
 <g:id>${esc(v.sku||p.id)}</g:id>
 <g:title>${esc((m.google_title||p.title).slice(0,150))}</g:title>
-<g:description>${esc(plain(p.description).slice(0,5000))}</g:description>
+<g:description>${esc(description.slice(0,5000))}</g:description>
 <g:link>${esc(SITE.domain+"/products/"+p.handle)}</g:link>
 <g:image_link>${esc(p.featuredImage!.url)}</g:image_link>
 <g:availability>${p.availableForSale?"in_stock":"out_of_stock"}</g:availability>
