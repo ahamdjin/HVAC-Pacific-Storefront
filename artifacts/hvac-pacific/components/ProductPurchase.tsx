@@ -76,7 +76,7 @@ export function ProductPurchase({ product }: { product: ProductDetailData }) {
   }
 
   return (
-    <div className="purchase-box">
+    <div className="purchase-box" id="purchase">
       {variants.length > 1 && (
         <label className="variant-picker"><span>Option</span><select value={variantId} onChange={(e)=>setVariantId(e.target.value)}>{variants.map((v)=><option key={v.id} value={v.id} disabled={!v.availableForSale}>{v.title}{!v.availableForSale ? " — unavailable" : ""}</option>)}</select></label>
       )}
