@@ -42,6 +42,20 @@ export function CartClient() {
         <div className="qty"><label><span>Qty</span><input type="number" min={1} value={line.quantity} onChange={(e)=>void change(line.id,Math.max(1,Number(e.target.value)))} /></label><button type="button" onClick={()=>void remove(line.id)}>Remove</button></div>
       </article>)}
     </div>
-    <aside className="cart-summary"><h2>Order summary</h2><div><span>Subtotal</span><strong>{money(cart.cost.subtotalAmount.amount,cart.cost.subtotalAmount.currencyCode)}</strong></div><p>Pickup or local-delivery details are finalized during checkout.</p><a className="btn primary checkout" href={cart.checkoutUrl}>Continue to secure checkout</a></aside>
+    <aside className="cart-summary"><h2>Order summary</h2><div><span>Subtotal</span><strong>{money(cart.cost.subtotalAmount.amount,cart.cost.subtotalAmount.currencyCode)}</strong></div><p>Pickup or local-delivery details are finalized during checkout.</p><a className="btn primary checkout" href={cart.checkoutUrl} onClick={() => {
+      (window as unknown as { dataLayer?: unknown[] }).dataLayer?.push({
+        event: "begin_checkout",
+        ecommerce: {
+          currency: cart.cost.subtotalAmount.currencyCode,
+          value: Number(cart.cost.subtotalAmount.amount),
+          items: cart.lines.nodes.map((line) => ({
+            item_id: line.merchandise.id,
+            item_name: line.merchandise.product.title,
+            price: Number(line.merchandise.price.amount),
+            quantity: line.quantity,
+          })),
+        },
+      });
+    }}>Continue to secure checkout</a></aside>
   </div>;
 }
