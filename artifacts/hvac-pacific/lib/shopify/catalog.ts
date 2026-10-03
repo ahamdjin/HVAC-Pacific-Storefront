@@ -10,7 +10,7 @@ const PRODUCT_CARD_FIELDS = `
   featuredImage { url altText width height }
   priceRange { minVariantPrice { amount currencyCode } maxVariantPrice { amount currencyCode } }
   variants(first: 50) {
-    nodes { id title availableForSale quantityAvailable price { amount currencyCode } sku selectedOptions { name value } }
+    nodes { id title availableForSale price { amount currencyCode } sku selectedOptions { name value } }
   }
   metafields(identifiers: [
     {namespace:"specs", key:"site_status"},
