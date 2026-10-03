@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { hrefFor } from "@/components/paths";
 import { SITE } from "@/config/site";
+import { localizedAlternates } from "@/lib/seo";
 import { getGuideArticle } from "@/lib/shopify/catalog";
 
 type P={params:Promise<{locale:string;handle:string}>};
@@ -13,7 +14,7 @@ export async function generateMetadata({params}:P):Promise<Metadata>{
   const {locale,handle}=await params;const article=await getGuideArticle(handle,locale);if(!article)return {};
   const path="/guides/"+handle;let noindex=false;
   if(locale==="zh"){const en=await getGuideArticle(handle,"en").catch(()=>null);noindex=Boolean(en&&en.title===article.title&&en.contentHtml===article.contentHtml);}
-  return {title:(article.seo.title||article.title)+" | "+SITE.brand,description:(article.seo.description||article.excerpt||"HVAC guide from HVAC Pacific.").slice(0,160),robots:noindex?{index:false,follow:true}:undefined,alternates:{canonical:hrefFor(locale,path),languages:{"en-US":path,"zh-Hans":hrefFor("zh",path),"x-default":path}},openGraph:{type:"article",title:article.title,images:article.image?[article.image.url]:undefined}};
+  return {title:(article.seo.title||article.title)+" | "+SITE.brand,description:(article.seo.description||article.excerpt||"HVAC guide from HVAC Pacific.").slice(0,160),robots:noindex?{index:false,follow:true}:undefined,alternates:localizedAlternates(locale,path),openGraph:{type:"article",title:article.title,images:article.image?[article.image.url]:undefined}};
 }
 export default async function Page({params}:P){
   const {locale,handle}=await params;const article=await getGuideArticle(handle,locale);if(!article)notFound();
