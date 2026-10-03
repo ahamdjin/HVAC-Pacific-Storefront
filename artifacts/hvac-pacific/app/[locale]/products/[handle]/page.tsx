@@ -17,15 +17,26 @@ function shortTitle(value: string) {
   return value.length > 58 ? value.slice(0, 55).replace(/\s+\S*$/, "") + "…" : value;
 }
 
+function brandSlug(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+function isBlockedStatus(value?: string) {
+  const status = (value ?? "").trim().toUpperCase();
+  return status === "HOLD" || status === "NEEDS DATA";
+}
+
 export async function generateMetadata({ params }: P): Promise<Metadata> {
   const { locale, handle } = await params;
   const product = await getProduct(handle, locale);
   if (!product) return {};
+  const meta = metafieldMap(product);
+  const blocked = isBlockedStatus(meta.site_status);
   const path = "/products/" + handle;
   const description = (product.seo.description || product.description || "Shop " + product.title + " from HVAC Pacific.")
     .replace(/\s+/g, " ")
     .slice(0, 155);
-  let noindex = false;
+  let noindex = blocked;
   if (locale === "zh") {
     const en = await getProduct(handle, "en").catch(() => null);
     noindex = Boolean(en && en.title === product.title && en.description === product.description);
@@ -62,6 +73,7 @@ export default async function ProductPage({ params }: P) {
   if (!product) notFound();
 
   const m = metafieldMap(product);
+  if (isBlockedStatus(m.site_status)) notFound();
   const section = ALL_SECTIONS.find((s) => productMatchesSection(product, s.slug));
   const specs = [
     ["Brand", product.vendor],
@@ -80,8 +92,20 @@ export default async function ProductPage({ params }: P) {
   const faq = parseFaq(m.faq);
   const [recs, guides] = await Promise.all([
     getProductRecommendations(product.id, locale).catch(() => []),
-    getGuideArticles(locale, 6).catch(() => []),
+    getGuideArticles(locale, 20).catch(() => []),
   ]);
+  const guideTerms = [product.vendor, section?.title, m.site_category, m.refrigerant]
+    .filter((value): value is string => Boolean(value))
+    .map((value) => value.toLowerCase());
+  const relatedGuides = guides
+    .map((guide) => {
+      const haystack = [guide.title, ...guide.tags].join(" ").toLowerCase();
+      const score = guideTerms.reduce((total, term) => total + (haystack.includes(term) ? 2 : 0), 0);
+      return { guide, score };
+    })
+    .sort((a, b) => b.score - a.score)
+    .map(({ guide }) => guide);
+
   const variant = product.variants.nodes.find((v) => v.availableForSale) ?? product.variants.nodes[0];
   const mpn =
     product.vendor.toLowerCase() === SITE.brand.toLowerCase()
@@ -98,6 +122,7 @@ export default async function ProductPage({ params }: P) {
     brand: product.vendor ? { "@type": "Brand", name: product.vendor } : undefined,
     sku: variant?.sku || undefined,
     mpn,
+    category: m.site_category || product.productType || undefined,
     offers: variant
       ? {
           "@type": "Offer",
@@ -167,7 +192,7 @@ export default async function ProductPage({ params }: P) {
             )}
           </div>
           <div className="pdp-info">
-            <p className="eyebrow">{product.vendor}</p>
+            <p className="eyebrow"><Link href={hrefFor(locale, "/brands/" + brandSlug(product.vendor))}>{product.vendor}</Link></p>
             <h1>{product.title}</h1>
             {mpn && <p className="model-line">Model: <strong>{mpn}</strong></p>}
             {product.description && <p className="pdp-summary">{product.description}</p>}
@@ -255,11 +280,11 @@ export default async function ProductPage({ params }: P) {
           </section>
         )}
 
-        {guides.length > 0 && (
+        {relatedGuides.length > 0 && (
           <section className="pdp-section">
             <h2>Related HVAC guides</h2>
             <div className="guide-links">
-              {guides.slice(0, 3).map((g) => <Link key={g.id} href={hrefFor(locale, "/guides/" + g.handle)}>{g.title}</Link>)}
+              {relatedGuides.slice(0, 3).map((g) => <Link key={g.id} href={hrefFor(locale, "/guides/" + g.handle)}>{g.title}</Link>)}
             </div>
           </section>
         )}
