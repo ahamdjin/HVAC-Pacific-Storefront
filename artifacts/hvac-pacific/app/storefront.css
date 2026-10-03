@@ -115,3 +115,38 @@
   .checklist>div{grid-template-columns:26px 1fr}.checklist code{grid-column:2}
   .hero-search,.standalone-search{display:block}.hero-search input,.standalone-search input{width:100%;border:2px solid var(--line);border-radius:7px;height:48px}.hero-search button,.standalone-search .btn{width:100%;margin-top:8px;border-radius:7px;min-height:48px}
 }
+
+
+/* Mobile navigation */
+.mobile-menu-root{display:none}
+.mobile-menu-button{display:grid;place-items:center;width:48px;height:48px;border:0;border-radius:8px;background:transparent;color:var(--navy);cursor:pointer}
+.mobile-menu-button:hover{background:var(--surface)}
+.mobile-menu-scrim{position:fixed;inset:0;z-index:48;border:0;background:rgba(8,22,38,.48)}
+.mobile-menu-panel{position:absolute;z-index:70;left:0;right:0;top:100%;max-height:calc(100vh - 112px);overflow:auto;background:#fff;border-top:1px solid var(--line);box-shadow:0 18px 40px rgba(16,35,55,.18);padding:12px 16px 22px}
+.mobile-menu-panel details{border-bottom:1px solid var(--line)}
+.mobile-menu-panel summary{display:flex;align-items:center;min-height:52px;font-weight:800;color:var(--navy);cursor:pointer;list-style:none}
+.mobile-menu-panel summary::-webkit-details-marker{display:none}
+.mobile-menu-panel summary::after{content:"+";margin-left:auto;font-size:1.25rem;color:var(--accent)}
+.mobile-menu-panel details[open] summary::after{content:"–"}
+.mobile-menu-panel details>div{display:grid;grid-template-columns:1fr 1fr;padding:0 0 12px}
+.mobile-menu-panel details a,.mobile-menu-primary a{display:flex;align-items:center;min-height:46px;padding:0 10px;border-radius:7px;text-decoration:none;color:var(--ink)}
+.mobile-menu-panel details a:hover,.mobile-menu-primary a:hover{background:var(--surface);color:var(--accent)}
+.mobile-menu-primary{display:grid;padding-top:10px}
+.mobile-menu-primary a:last-child{margin-top:8px;background:var(--navy);color:#fff;font-weight:800;justify-content:center}
+body.mobile-menu-open{overflow:hidden}
+
+@media(max-width:760px){
+  .desktop-navbar{display:none}
+  .mobile-menu-root{display:block}
+  .top{position:relative}
+  .logo img{width:150px}
+  .actions{gap:2px}
+  .phone,.cart{padding:0 9px}
+  .lang a{min-width:43px;padding:0 7px}
+  .search{flex-basis:100%;order:4}
+}
+@media(max-width:440px){
+  .mobile-menu-panel details>div{grid-template-columns:1fr}
+  .logo img{width:136px}
+  .lang a{min-width:39px}
+}
