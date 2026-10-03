@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { evaluatePurchasePolicy } from "../../artifacts/hvac-pacific/lib/purchase-policy.ts";
+import { evaluatePurchasePolicy } from "../../artifacts/hvac-pacific/lib/purchase-policy";
 
 const ok = evaluatePurchasePolicy({
   availableForSale: true,
