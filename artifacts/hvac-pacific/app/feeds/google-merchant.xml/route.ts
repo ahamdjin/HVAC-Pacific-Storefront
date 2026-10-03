@@ -15,7 +15,7 @@ export async function GET(){
   });
   const items=eligible.map(p=>{
     const m=metafieldMap(p);const v=p.variants.nodes.find(x=>x.availableForSale)??p.variants.nodes[0];
-    const model=m.outdoor_model||m.indoor_model||m.furnace_model||v.sku||"";
+    const model=m.outdoor_model||m.indoor_model||m.furnace_model||"";
     const isHouse=p.vendor.toLowerCase()===SITE.brand.toLowerCase();
     const bundle=[m.outdoor_model,m.indoor_model,m.furnace_model].filter(Boolean).length>1;
     const highlights=parseKeySpecs(m.key_specs).slice(0,10).map(x=>`<g:product_highlight>${esc(x.label+": "+x.value)}</g:product_highlight>`).join("");
@@ -35,7 +35,8 @@ export async function GET(){
 <g:condition>new</g:condition>
 <g:brand>${esc(p.vendor)}</g:brand>
 ${!isHouse&&model?`<g:mpn>${esc(model)}</g:mpn>`:""}
-${isHouse&&!model?"<g:identifier_exists>no</g:identifier_exists>":""}
+${isHouse?"<g:identifier_exists>no</g:identifier_exists>":""}
+<g:shipping_label>local-only</g:shipping_label>
 ${bundle?"<g:is_bundle>yes</g:is_bundle>":""}
 ${productType?`<g:product_type>${esc(productType)}</g:product_type>`:""}
 ${highlights}
