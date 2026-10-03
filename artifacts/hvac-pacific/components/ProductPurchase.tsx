@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { ProductDetailData } from "@/lib/shopify/shared";
 import { boolMeta, metafieldMap } from "@/lib/shopify/shared";
 import { money } from "./ProductCard";
@@ -21,6 +21,19 @@ export function ProductPurchase({ product }: { product: ProductDetailData }) {
   const requiresEpa = boolMeta(m.requires_epa608);
   const requiresInstall = boolMeta(m.requires_licensed_install);
   const canAdd = Boolean(variant?.availableForSale) && (!requiresInstall || installAck);
+
+  useEffect(() => {
+    if (!variant) return;
+    const dataLayer = (window as unknown as { dataLayer?: unknown[] }).dataLayer;
+    dataLayer?.push({
+      event: "view_item",
+      ecommerce: {
+        currency: variant.price.currencyCode,
+        value: Number(variant.price.amount),
+        items: [{ item_id: variant.sku || variant.id, item_name: product.title, item_brand: product.vendor, price: Number(variant.price.amount), quantity: 1 }],
+      },
+    });
+  }, [product.title, product.vendor, variant]);
 
   async function add() {
     if (requiresEpa && (!cert.trim() || !tech.trim() || !epaAck)) {
@@ -46,6 +59,14 @@ export function ProductPurchase({ product }: { product: ProductDetailData }) {
       });
       if (!response.ok) throw new Error("Unable to add to cart.");
       setMessage("Added to cart.");
+      (window as unknown as { dataLayer?: unknown[] }).dataLayer?.push({
+        event: "add_to_cart",
+        ecommerce: {
+          currency: variant.price.currencyCode,
+          value: Number(variant.price.amount),
+          items: [{ item_id: variant.sku || variant.id, item_name: product.title, item_brand: product.vendor, price: Number(variant.price.amount), quantity: 1 }],
+        },
+      });
       setEpaOpen(false);
     } catch (e) {
       setMessage(e instanceof Error ? e.message : "Unable to add to cart.");
