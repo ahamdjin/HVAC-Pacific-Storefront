@@ -8,7 +8,7 @@ import { LeadForm } from "./LeadForm";
 import { hrefFor } from "./paths";
 import { SITE } from "@/config/site";
 import { ALL_SECTIONS, getSection, productMatchesSection, sectionPath } from "@/lib/catalog-config";
-import { getAllProducts, getCollection, metafieldMap, parseFaq } from "@/lib/shopify/catalog";
+import { getAllProducts, getCollection, getGuideArticles, metafieldMap, parseFaq } from "@/lib/shopify/catalog";
 
 export async function categoryMetadata(kind:"units"|"parts", slugs:string[], locale:string, hasParams:boolean): Promise<Metadata> {
   const section=getSection(kind,slugs);
@@ -16,10 +16,15 @@ export async function categoryMetadata(kind:"units"|"parts", slugs:string[], loc
   const path=section?sectionPath(section):`/${kind}`;
   const canonical=hrefFor(locale,path);
   const desc=section?.intro ?? (kind==="units"?"Shop HVAC equipment for Southern California pickup and local delivery.":"Shop HVAC parts and accessories for Southern California pickup and local delivery.");
+  let emptySection=false;
+  if(section&&!hasParams){
+    const all=await getAllProducts(locale).catch(()=>[]);
+    emptySection=!all.some((product)=>productMatchesSection(product,section.slug));
+  }
   return {
     title:`${title} for Sale – Pickup in Southern California | ${SITE.brand}`,
     description:desc.slice(0,160),
-    robots:hasParams?{index:false,follow:true}:undefined,
+    robots:hasParams||emptySection?{index:false,follow:true}:undefined,
     alternates:{canonical,languages:{"en-US":path,"zh-Hans":hrefFor("zh",path),"x-default":path}},
     openGraph:{title,description:desc,url:`${SITE.domain}${canonical}`,type:"website"},
   };
@@ -30,9 +35,10 @@ export async function CategoryPage({kind,slugs,locale}:{kind:"units"|"parts";slu
   if(slugs.length && !section) notFound();
 
   const handle=section?.collectionHandle ?? section?.slug;
-  const [all,collection]=await Promise.all([
+  const [all,collection,guides]=await Promise.all([
     getAllProducts(locale),
     handle?getCollection(handle,locale).catch(()=>null):Promise.resolve(null),
+    getGuideArticles(locale,20).catch(()=>[]),
   ]);
 
   const sections=ALL_SECTIONS.filter((s)=>s.kind===kind && !s.parent);
@@ -49,6 +55,12 @@ export async function CategoryPage({kind,slugs,locale}:{kind:"units"|"parts";slu
 
   const cmeta=Object.fromEntries((collection?.metafields??[]).filter(Boolean).map((m)=>[m!.key,m!.value]));
   const faqs=parseFaq(cmeta.faq);
+  const guideTerms=[title,section?.title,section?.slug].filter((value):value is string=>Boolean(value)).map((value)=>value.toLowerCase().replace(/-/g," "));
+  const relatedGuides=guides.map((guide)=>{
+    const haystack=[guide.title,...guide.tags].join(" ").toLowerCase();
+    return {guide,score:guideTerms.reduce((score,term)=>score+(haystack.includes(term)?2:0),0)};
+  }).sort((a,b)=>b.score-a.score).map(({guide})=>guide);
+  const siblings=section?ALL_SECTIONS.filter((candidate)=>candidate.kind===kind&&candidate.slug!==section.slug&&(candidate.parent??"")===(section.parent??"")).slice(0,6):[];
   const parentPath=section?.parent?`/${kind}/${section.parent}`:`/${kind}`;
   const crumbs=section
     ? [...(section.parent?[{name:kind==="units"?"Units":"Parts & Accessories",path:`/${kind}`},{name:ALL_SECTIONS.find(x=>x.slug===section.parent)?.title??section.parent,path:parentPath}]:[{name:kind==="units"?"Units":"Parts & Accessories",path:`/${kind}`}]),{name:title,path:sectionPath(section)}]
@@ -78,6 +90,8 @@ export async function CategoryPage({kind,slugs,locale}:{kind:"units"|"parts";slu
       {cmeta.guide_html && <section className="rich-guide"><h2>Buying guide</h2><div className="prose" dangerouslySetInnerHTML={{__html:cmeta.guide_html}}/></section>}
       {kind==="units" && <section className="info-callout"><h2>Choosing the right capacity</h2><p>Do not size HVAC equipment from square footage alone. A licensed contractor should perform a Manual J load calculation and verify the matched equipment, electrical service, ductwork and local permit requirements before installation.</p></section>}
       {faqs.length>0 && <FaqBlock faqs={faqs}/>}
+      {section&&siblings.length>0&&<section className="pdp-section"><h2>Related categories</h2><div className="guide-links">{siblings.map((s)=><Link key={s.slug} href={hrefFor(locale,sectionPath(s))}>{s.title}</Link>)}</div></section>}
+      {section&&relatedGuides.length>0&&<section className="pdp-section"><h2>Helpful HVAC guides</h2><div className="guide-links">{relatedGuides.slice(0,4).map((guide)=><Link key={guide.id} href={hrefFor(locale,`/guides/${guide.handle}`)}>{guide.title}</Link>)}</div></section>}
     </div>
   </main>;
 }
