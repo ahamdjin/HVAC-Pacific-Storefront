@@ -110,7 +110,7 @@ export default async function ProductPage({ params }: P) {
   const mpn =
     product.vendor.toLowerCase() === SITE.brand.toLowerCase()
       ? undefined
-      : m.outdoor_model || m.indoor_model || m.furnace_model || variant?.sku || undefined;
+      : m.outdoor_model || m.indoor_model || m.furnace_model || undefined;
 
   const productJson = {
     "@context": "https://schema.org",
