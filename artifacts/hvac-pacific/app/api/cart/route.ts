@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
     }
     cart = data.cartCreate.cart;
     id = cart.id;
-    jar.set(COOKIE,id,{httpOnly:true,sameSite:"lax",secure:process.env.NODE_ENV==="production",path:"/",maxAge:60*60*24*30});
+    jar.set(COOKIE,cart.id,{httpOnly:true,sameSite:"lax",secure:process.env.NODE_ENV==="production",path:"/",maxAge:60*60*24*30});
   }
 
   if (body.note && id) {
