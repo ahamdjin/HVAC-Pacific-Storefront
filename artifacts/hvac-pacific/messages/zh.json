@@ -61,30 +61,87 @@
     "language": "语言",
     "mainNav": "主导航"
   },
-  "Home": {
-    "unitsText": "热泵、一体式机组、迷你分体机以及空调与炉体系统。",
-    "partsText": "电气、电机、控制、制冷、工具等。",
-    "emptyTitle": "产品目录尚未发布",
-    "emptyDescription": "本网站目前没有上架产品。我们只在信息核实后才显示产品详情，因此这里没有任何占位商品。如有设备或零件问题，请致电或发送邮件。",
-    "browseHeading": "按类别浏览",
-    "factsHeading": "本地服务",
-    "factPickup": "本地自取",
-    "factPickupText": "订单完成后提供自取地点。",
-    "factDelivery": "{miles} 英里内配送",
-    "factDeliveryText": "{miles} 英里范围内提供本地配送。",
-    "factLanguagesText": "可用 English 或中文与我们沟通。",
-    "factLanguages": "英文和中文支持",
-    "email": "邮件支持",
-    "needInstallerText": "需要安装协助？安装人员申请将在后续阶段开放。",
-    "status": "商店状态"
-  },
-  "Scaffold": {
-    "breadcrumb": "当前位置",
-    "title": "此页面属于后续阶段",
-    "description": "在线目录、搜索、指南和申请表单暂未开放。如有问题，请致电或发送邮件。",
-    "back": "返回首页",
-    "searchTitle": "搜索暂未开放",
-    "cartTitle": "购物车为空",
-    "cartDescription": "结账功能暂未开放。"
+  "Commerce": {
+    "productCard": {
+      "imageUnavailable": "暂无图片",
+      "available": "可购买",
+      "unavailable": "暂不可购买",
+      "fulfillment": "20 英里内本地自取 / 配送",
+      "ton": "{value} 吨"
+    },
+    "catalog": {
+      "aria": "产品筛选",
+      "title": "筛选产品",
+      "reset": "重置",
+      "brand": "品牌",
+      "tonnage": "吨位",
+      "refrigerant": "制冷剂",
+      "systemType": "系统类型",
+      "keySpecification": "关键规格",
+      "price": "价格",
+      "all": "全部",
+      "products": "件产品",
+      "noMatchingTitle": "没有符合条件的产品",
+      "noMatchingText": "请尝试移除一个或多个筛选条件。",
+      "clearFilters": "清除筛选",
+      "under100": "低于 $100",
+      "from100to500": "$100–$500",
+      "from500to2000": "$500–$2,000",
+      "over2000": "$2,000 以上"
+    },
+    "purchase": {
+      "option": "选项",
+      "unavailableSuffix": " — 暂不可购买",
+      "unavailable": "暂不可购买",
+      "fulfillment": "本地自取 · 20 英里内本地配送",
+      "installAck": "我了解此设备必须由持证承包商安装，并由具备 EPA 608 认证的技术人员进行相关制冷剂工作，且可能需要许可证。",
+      "adding": "正在加入…",
+      "addToCart": "加入购物车",
+      "added": "已加入购物车。",
+      "addError": "无法加入购物车。",
+      "gateNote": "制冷剂自取或配送前需要核验 EPA 608 认证。",
+      "close": "关闭",
+      "epaTitle": "需要 EPA 608 认证核验",
+      "epaDescription": "我们会在自取/配送前核验认证。无法提供有效认证的订单将被取消并退款。",
+      "certNumber": "EPA 608 认证编号",
+      "techName": "认证技术人员姓名",
+      "epaAck": "本人具备 EPA 608 认证，或代表具备认证的技术人员购买。",
+      "verifyAdd": "核验信息并加入购物车"
+    },
+    "cart": {
+      "loading": "正在加载购物车…",
+      "emptyTitle": "购物车为空",
+      "emptyText": "浏览设备和零件以开始下单。",
+      "qty": "数量",
+      "remove": "移除",
+      "summary": "订单摘要",
+      "subtotal": "小计",
+      "fulfillmentNote": "自取或本地配送详情将在结账过程中确认。",
+      "checkout": "继续安全结账"
+    },
+    "lead": {
+      "name": "姓名",
+      "phone": "电话",
+      "email": "电子邮箱",
+      "zip": "邮政编码",
+      "preferredLanguage": "首选语言",
+      "english": "English",
+      "chinese": "中文",
+      "message": "留言",
+      "consent": "我同意 HVAC Pacific 就此请求与我联系。",
+      "sending": "正在发送…",
+      "send": "发送请求",
+      "success": "谢谢 — 您的请求已发送。",
+      "error": "无法发送请求。"
+    },
+    "search": {
+      "breadcrumb": "搜索",
+      "title": "搜索暖通设备与零件",
+      "results": "“{query}” 的搜索结果：{count} 项",
+      "placeholder": "型号、零件、品牌或规格",
+      "button": "搜索",
+      "noneTitle": "未找到产品",
+      "noneText": "请尝试型号、品牌、部件类型或更短的搜索词。"
+    }
   }
 }
