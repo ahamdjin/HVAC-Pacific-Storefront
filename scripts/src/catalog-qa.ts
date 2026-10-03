@@ -1,3 +1,5 @@
+export {};
+
 type Metafield = { key: string; value: string } | null;
 type Product = {
   id: string;
