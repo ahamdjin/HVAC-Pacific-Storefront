@@ -103,7 +103,7 @@ export async function upsertProduct(input: {
   productType: string;
   status: "ACTIVE" | "DRAFT";
   sku: string;
-  price: string;
+  price?: string;
   cost?: string;
   qty?: number;
   locationId?: string;
@@ -115,7 +115,7 @@ export async function upsertProduct(input: {
   const variant: Record<string, unknown> = {
     ...(variantId ? { id: variantId } : {}),
     sku: input.sku,
-    price: input.price,
+    ...(input.price ? { price: input.price } : {}),
     optionValues: [{ optionName: "Title", name: "Default Title" }],
   };
   if (input.cost || input.qty !== undefined) {
@@ -157,7 +157,7 @@ export async function upsertProduct(input: {
     };
   }>(mutation, {
     input: productInput,
-    identifier: input.existing ? { id: input.existing.id } : { handle: input.handle },
+    identifier: input.existing ? { id: input.existing.id } : undefined,
   });
   assertNoUserErrors(data.productSet.userErrors, `productSet ${input.sku}`);
   if (!data.productSet.product) throw new Error(`productSet returned no product for ${input.sku}`);
@@ -240,4 +240,35 @@ export async function setPublication(resourceId: string, publicationId: string, 
   }>(mutation, { id: resourceId, publicationId });
   const errors = data.publishablePublish?.userErrors ?? data.publishableUnpublish?.userErrors ?? [];
   assertNoUserErrors(errors, publish ? "publishablePublish" : "publishableUnpublish");
+}
+
+
+export async function deleteMetafields(ownerId: string, identifiers: Array<{ namespace: string; key: string }>) {
+  if (!identifiers.length) return;
+  const mutation = `
+    mutation DeleteMetafields($metafields:[MetafieldIdentifierInput!]!) {
+      metafieldsDelete(metafields:$metafields) {
+        deletedMetafields { ownerId namespace key }
+        userErrors { field message }
+      }
+    }`;
+  const data = await adminRequest<{ metafieldsDelete: { userErrors: UserError[] } }>(
+    mutation,
+    { metafields: identifiers.map((m) => ({ ...m, ownerId })) },
+  );
+  assertNoUserErrors(data.metafieldsDelete.userErrors, "metafieldsDelete");
+}
+
+export async function findProductByHandle(handle: string) {
+  const query = `
+    query ByHandle($identifier:ProductIdentifierInput!) {
+      productByIdentifier(identifier:$identifier) {
+        id title handle
+        variants(first:5) { nodes { id sku } }
+      }
+    }`;
+  const data = await adminRequest<{
+    productByIdentifier: { id: string; title: string; handle: string; variants: { nodes: Array<{ id: string; sku: string | null }> } } | null;
+  }>(query, { identifier: { handle } });
+  return data.productByIdentifier;
 }
