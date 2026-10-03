@@ -7,6 +7,7 @@ import { Breadcrumbs } from "./Breadcrumbs";
 import { LeadForm } from "./LeadForm";
 import { hrefFor } from "./paths";
 import { SITE } from "@/config/site";
+import { localizedAlternates } from "@/lib/seo";
 import { ALL_SECTIONS, getSection, productMatchesSection, sectionPath } from "@/lib/catalog-config";
 import { getAllProducts, getCollection, getGuideArticles, metafieldMap, parseFaq } from "@/lib/shopify/catalog";
 
@@ -25,7 +26,7 @@ export async function categoryMetadata(kind:"units"|"parts", slugs:string[], loc
     title:`${title} for Sale – Pickup in Southern California | ${SITE.brand}`,
     description:desc.slice(0,160),
     robots:hasParams||emptySection?{index:false,follow:true}:undefined,
-    alternates:{canonical,languages:{"en-US":path,"zh-Hans":hrefFor("zh",path),"x-default":path}},
+    alternates:localizedAlternates(locale,path),
     openGraph:{title,description:desc,url:`${SITE.domain}${canonical}`,type:"website"},
   };
 }
