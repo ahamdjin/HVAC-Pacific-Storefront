@@ -4,7 +4,9 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   attachProductToCollection,
+  deleteMetafields,
   ensureCollection,
+  findProductByHandle,
   findProductBySku,
   setManagedTags,
   setMetafields,
@@ -160,11 +162,19 @@ function baseMetafields(row: SheetRow, isUnit: boolean) {
     mf("internal","source_brand","single_line_text_field",row.source_brand?.trim()),
     mf("internal","compliant_alternative","single_line_text_field",row.compliant_alternative?.trim()),
   ];
-  return {
-    metafields: values.filter((x): x is NonNullable<typeof x> => Boolean(x)),
-    pickupOnly,
-    requiresInstall,
-  };
+  const metafields = values.filter((x): x is NonNullable<typeof x> => Boolean(x));
+  const controlled = [
+    ["specs","site_status"],["specs","site_category"],["specs","subcategory"],["specs","tonnage"],
+    ["specs","system_type"],["specs","outdoor_model"],["specs","indoor_model"],["specs","furnace_model"],
+    ["specs","refrigerant"],["specs","ahri_number"],["specs","seer2"],["specs","eer2"],["specs","hspf2"],
+    ["specs","requires_epa608"],["specs","requires_licensed_install"],["specs","three_phase"],["specs","prop65"],
+    ["specs","key_specs"],["specs","google_title"],["specs","search_keywords"],["internal","flags"],
+    ["internal","margin"],["internal","ship_weight_lb"],["internal","shipping_scope"],["internal","source_category"],
+    ["internal","source_brand"],["internal","compliant_alternative"],
+  ].map(([namespace,key]) => ({ namespace, key }));
+  const present = new Set(metafields.map((m) => `${m.namespace}.${m.key}`));
+  const clearMetafields = controlled.filter((m) => !present.has(`${m.namespace}.${m.key}`));
+  return { metafields, clearMetafields, pickupOnly, requiresInstall };
 }
 
 function desiredStatus(row: SheetRow) {
@@ -190,13 +200,9 @@ async function processRow(sheet: "Units" | "Accessories", row: SheetRow, apply: 
   const category = required(row.site_category, "site_category", key);
   const state = desiredStatus(row);
   const handle = productHandle(row, key);
-  const { metafields, pickupOnly } = baseMetafields(row, isUnit);
+  const { metafields, clearMetafields, pickupOnly } = baseMetafields(row, isUnit);
   const qty = isUnit ? undefined : integer(row.qty);
   const locationId = process.env.SHOPIFY_LOCATION_ID?.trim();
-
-  if (!state.price) {
-    return { sheet, key, title, action: apply ? "skipped" : "planned", reason: "Will remain DRAFT because price is empty or invalid." };
-  }
 
   if (!apply) {
     return {
@@ -209,6 +215,13 @@ async function processRow(sheet: "Units" | "Accessories", row: SheetRow, apply: 
   }
 
   const existing = await findProductBySku(key);
+  if (!existing) {
+    const byHandle = await findProductByHandle(handle);
+    const handleSkus = byHandle?.variants.nodes.map((v) => v.sku).filter(Boolean) ?? [];
+    if (byHandle && !handleSkus.includes(key)) {
+      throw new Error(`Handle collision: ${handle} already belongs to another Shopify product (${handleSkus.join(", ") || "no SKU"})`);
+    }
+  }
   const product = await upsertProduct({
     existing,
     title,
@@ -224,6 +237,7 @@ async function processRow(sheet: "Units" | "Accessories", row: SheetRow, apply: 
   });
 
   await setMetafields(product.id, metafields);
+  await deleteMetafields(product.id, clearMetafields);
   await setManagedTags(product.id, pickupOnly);
 
   const pubId = publicationId();
