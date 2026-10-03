@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
           const candidate = x as { key?: unknown; value?: unknown };
           return typeof candidate.key === "string" && typeof candidate.value === "string";
         })
-        .map((x) => ({ key: x.key.slice(0, 120), value: x.value.slice(0, 240) }))
+        .map((x: CartAttribute) => ({ key: x.key.slice(0, 120), value: x.value.slice(0, 240) }))
     : [];
 
   const policy = await validatePurchasePolicy(body.variantId, attributes);
