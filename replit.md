@@ -1,57 +1,69 @@
 # HVAC Pacific
 
-An SEO-first Shopify-backed storefront for a Southern California HVAC equipment and parts seller.
+SEO-first, headless Shopify storefront for a Southern California HVAC equipment and parts seller.
 
-## Run & Operate
+## Active storefront
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm --filter @workspace/hvac-pacific run dev` — storefront, via its managed workflow
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- App: `artifacts/hvac-pacific`
+- Framework: Next.js App Router + TypeScript + Tailwind CSS + next-intl
+- Commerce source of truth: Shopify
+- Checkout: Shopify Cart / Checkout via Storefront API
+- English: `/`
+- Simplified Chinese: `/zh`
 
-## Stack
+The legacy Vite scaffold under `artifacts/hvac-pacific/src` is not the active storefront.
 
-- pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
-- Storefront: Next.js App Router, Tailwind CSS, next-intl. Its active source is `artifacts/hvac-pacific/app/`, not the unused Vite scaffold under `src/`.
+## Commands
 
-## Where things live
+- `pnpm --filter @workspace/hvac-pacific run dev` — storefront dev server
+- `pnpm --filter @workspace/hvac-pacific run typecheck`
+- `pnpm --filter @workspace/hvac-pacific run build`
+- `pnpm run typecheck` — whole workspace typecheck
+- `pnpm run build` — whole workspace build
 
-- `artifacts/hvac-pacific/config/site.ts` — business configuration
-- `artifacts/hvac-pacific/lib/shopify/storefront.ts` — server-only Storefront client using the Replit Shopify connection
-- `artifacts/hvac-pacific/messages/` — UI messages; Simplified Chinese is a machine draft pending native review
+## Shopify environment
+
+Preferred production secrets:
+- `SHOPIFY_STORE_DOMAIN`
+- `SHOPIFY_STOREFRONT_TOKEN`
+- `SHOPIFY_ADMIN_TOKEN` (imports/admin only)
+- `SHOPIFY_WEBHOOK_SECRET`
+
+The Replit Shopify connector remains supported as a Storefront credential fallback.
+
+Other production config:
+- `LEAD_WEBHOOK_URL`
+- `GA4_ID`
+- `GSC_VERIFICATION`
+- `MERCHANT_VERIFICATION`
+- `ZH_TRANSLATIONS_REVIEWED=true` only after native Chinese review
+
+See `docs/shopify-launch.md`.
 
 ## Architecture decisions
 
-- Shopify is the system of record for products, inventory, pricing, translations, carts and checkout. Do not create a second local catalog.
-- Use server-rendered Next.js pages for crawlable HTML. Never replace the storefront with client-only routing.
-  **Why:** SEO and server-rendered content are explicit, non-negotiable requirements in the user's brief.
-- Shopify Admin calls belong only in import/setup scripts through the integration proxy. Never expose Admin credentials to the browser.
+- Shopify is the only product/inventory/price/cart/checkout source of truth. Do not create a second local catalog.
+- Storefront reads are server-side through `artifacts/hvac-pacific/lib/shopify/storefront.ts`.
+- Shopify Admin API credentials must never be exposed to browser code.
+- Product/category/guide pages are server-rendered for crawlable HTML.
+- Filter query URLs are UX state, not SEO landing pages.
+- Product facts are rendered only when present in Shopify. Never invent ratings, AHRI data, certifications, compatibility, inventory or pricing.
+- Draft legal/policy content stays noindex until explicitly reviewed.
+- Chinese pages stay noindex until native review is explicitly enabled.
 
-## Product
+## Commerce / compliance rules
 
-- Local pickup and delivery within 20 miles. No carrier shipping at launch; refrigerant and units stay pickup/local-delivery only.
-- English at `/`, Simplified Chinese at `/zh`; visible language links, no browser-language redirects.
-- Showroom location is not yet set. Hide showroom/pickup addresses and Store/LocalBusiness address schema; say “Pickup location provided after order.”
+- Local pickup and eligible local delivery within 20 miles at launch.
+- No nationwide carrier shipping unless the business intentionally enables it.
+- EPA 608 gated products require certification details before add-to-cart.
+- Equipment flagged for licensed installation requires acknowledgement.
+- Three-phase and Proposition 65 warnings render only when flagged in catalog data.
+- HOLD / NEEDS DATA products should not be published to the headless channel or Merchant feed.
 
-## User preferences
+## SEO / Google
 
-- Build in the seven phases from the uploaded brief. Stop after each phase, show the result, and wait for the user's OK before continuing.
-- Never invent product specifications, certifications, AHRI numbers, availability or pricing. Omit empty Shopify fields rather than using placeholders.
-- No fake testimonials, star ratings, dealer status, price guarantees, stock counters or countdowns.
-- EPA 608 certification, licensed-install acknowledgments and hidden HOLD products are mandatory business logic.
-
-## Gotchas
-
-_Populate as you build — sharp edges, "always run X before Y" rules._
-
-## Pointers
-
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- Sitemap index: `/sitemap.xml`
+- Merchant Center feed: `/feeds/google-merchant.xml`
+- Local inventory feed is disabled until a real showroom/store code is configured.
+- Shopify update webhook endpoint: `/api/revalidate`
+- Keep Shopify's theme storefront password-protected or redirected to the headless domain to prevent duplicate indexable pages.
