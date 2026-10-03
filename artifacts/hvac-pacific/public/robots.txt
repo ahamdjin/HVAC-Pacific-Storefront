@@ -1,2 +1,9 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /cart
+Disallow: /zh/cart
+Disallow: /account
+Disallow: /search?
+
+Sitemap: https://hvacpacific.com/sitemap.xml
