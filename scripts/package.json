@@ -10,7 +10,8 @@
     "qa:catalog": "tsx ./src/catalog-qa.ts",
     "check:xlsx-reader": "python3 -m py_compile ./src/read-xlsx.py",
     "seed:guides": "tsx ./src/seed-guides.ts",
-    "test:purchase-policy": "tsx ./src/purchase-policy-test.ts"
+    "test:purchase-policy": "tsx ./src/purchase-policy-test.ts",
+    "test:storefront-smoke": "tsx ./src/storefront-smoke-test.ts"
   },
   "devDependencies": {
     "@types/node": "catalog:",
