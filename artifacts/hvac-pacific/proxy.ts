@@ -7,9 +7,7 @@ const intlMiddleware = createMiddleware(routing);
 export default function proxy(request: NextRequest) {
   const host = request.headers.get("host")?.split(":")[0]?.toLowerCase();
   if (host === "www.hvacpacific.com") {
-    const url = request.nextUrl.clone();
-    url.protocol = "https:";
-    url.host = "hvacpacific.com";
+    const url = new URL(request.nextUrl.pathname + request.nextUrl.search, "https://hvacpacific.com");
     return NextResponse.redirect(url, 301);
   }
   return intlMiddleware(request);
