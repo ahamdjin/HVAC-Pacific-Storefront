@@ -78,7 +78,7 @@
     "allGuides": "全部指南 →",
     "helpFind": "需要帮助寻找产品？",
     "talkWith": "联系 HVAC Pacific",
-    "sendModel": "致电 {phone}，或把型号和您的需求发送给我们。"
+    "sendModel": "致电 <call>{phone}</call>，或把型号和您的需求发送给我们。"
   },
   "Footer": {
     "pickupDelivery": "自取与配送",
