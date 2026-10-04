@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ProductCard } from "@/components/ProductCard";
 import { SITE } from "@/config/site";
@@ -16,12 +17,23 @@ async function resolveBrand(requested:string,locale:string){
   return {vendor,products:vendor?products.filter(p=>p.vendor===vendor):[]};
 }
 export async function generateMetadata({params}:P):Promise<Metadata>{
-  const {locale,brand}=await params;const {vendor}=await resolveBrand(brand,locale);
+  const {locale,brand}=await params;
+  const [{vendor},t]=await Promise.all([resolveBrand(brand,locale),getTranslations({locale,namespace:"BrandsPage"})]);
   if(!vendor)return {};
   const path="/brands/"+brand;
-  return {title:vendor+" HVAC Equipment & Parts | "+SITE.brand,description:"Shop published "+vendor+" HVAC equipment and parts from HVAC Pacific.",alternates:localizedAlternates(locale,path)};
+  return {
+    title:t("brandMetaTitle",{brand:vendor,site:SITE.brand}),
+    description:t("brandMetaDescription",{brand:vendor}),
+    alternates:localizedAlternates(locale,path)
+  };
 }
 export default async function Page({params}:P){
-  const {locale,brand}=await params;const {vendor,products}=await resolveBrand(brand,locale);if(!vendor||!products.length)notFound();
-  return <main id="main"><div className="wrap page-shell"><Breadcrumbs locale={locale} items={[{name:"Brands",path:"/brands"},{name:vendor,path:"/brands/"+brand}]}/><header className="page-head"><p className="eyebrow">Brand</p><h1>{vendor} HVAC equipment & parts</h1><p>Published {vendor} products currently available through HVAC Pacific.</p></header><div className="product-grid">{products.map(p=><ProductCard key={p.id} product={p} locale={locale}/>)}</div></div></main>;
+  const {locale,brand}=await params;
+  const [{vendor,products},t]=await Promise.all([resolveBrand(brand,locale),getTranslations({locale,namespace:"BrandsPage"})]);
+  if(!vendor||!products.length)notFound();
+  return <main id="main"><div className="wrap page-shell">
+    <Breadcrumbs locale={locale} items={[{name:t("breadcrumb"),path:"/brands"},{name:vendor,path:"/brands/"+brand}]}/>
+    <header className="page-head"><p className="eyebrow">{t("brandEyebrow")}</p><h1>{t("brandTitle",{brand:vendor})}</h1><p>{t("brandDescription",{brand:vendor})}</p></header>
+    <div className="product-grid">{products.map(p=><ProductCard key={p.id} product={p} locale={locale}/>)}</div>
+  </div></main>;
 }
