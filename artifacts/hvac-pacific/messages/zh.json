@@ -35,7 +35,7 @@
   },
   "HomePage": {
     "eyebrow": "本地暖通设备与零件",
-    "title": "南加州暖通设备与零件",
+    "title": "暖通设备与零件",
     "subtitle": "20 英里范围内提供本地自取和配送。提供 English 和中文支持。",
     "shopUnits": "选购设备",
     "shopParts": "选购零件",
@@ -47,8 +47,8 @@
     "metaTitle": "南加州暖通设备与零件 | hvacpacific",
     "metaDescription": "选购暖通设备、系统和替换零件，支持南加州本地自取与配送。",
     "ogDescription": "在 HVAC Pacific 选购已核实信息的暖通设备与零件。",
-    "supplyEyebrow": "南加州暖通设备供应",
-    "lead": "选购已核实的设备、系统和维修零件；{miles} 英里范围内提供本地自取与配送。支持 English 和中文。",
+    "supplyEyebrow": "南加州暖通供应",
+    "lead": "南加州暖通设备、零件、本地自取与配送。",
     "verifiedData": "已核实的产品数据",
     "localFulfillment": "本地履约",
     "phoneSupport": "真人电话支持",
@@ -79,7 +79,7 @@
     "allGuides": "全部指南 →",
     "helpFind": "需要帮助寻找产品？",
     "talkWith": "联系 HVAC Pacific",
-    "sendModel": "致电 <call>{phone}</call>，或把型号和您的需求发送给我们。"
+    "sendModel": "致电 <call>{phone}</call>，或发送产品型号。"
   },
   "Footer": {
     "pickupDelivery": "自取与配送",
