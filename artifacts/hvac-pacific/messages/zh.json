@@ -136,7 +136,8 @@
       "under100": "低于 $100",
       "from100to500": "$100–$500",
       "from500to2000": "$500–$2,000",
-      "over2000": "$2,000 以上"
+      "over2000": "$2,000 以上",
+      "subcategory": "子类别"
     },
     "purchase": {
       "option": "选项",
@@ -294,7 +295,7 @@
     "systemType": "系统类型",
     "refrigerant": "制冷剂",
     "threePhaseTitle": "需要三相电源。",
-    "threePhaseText": "此设备需要兼容的电气服务。",
+    "threePhaseText": "这是轻型商用三相电设备。大多数住宅使用单相电；下单前请核实现场电气服务。",
     "imageUnavailable": "暂无产品图片",
     "imageAlt": "{title} 产品图片 {number}",
     "needInstaller": "需要安装人员？",
@@ -304,7 +305,7 @@
     "furnace": "暖炉",
     "specifications": "规格",
     "compliance": "合规信息",
-    "scaqmd": "符合 SCAQMD Rule 1111",
+    "scaqmd": "符合 SCAQMD Rule 1111（14 ng/J）",
     "cec": "已列入 CEC",
     "documents": "文件",
     "specSheet": "规格表",
@@ -319,7 +320,8 @@
     "completeInstall": "完成安装所需产品",
     "relatedGuides": "相关暖通指南",
     "call": "致电",
-    "order": "下单"
+    "order": "下单",
+    "highlights": "关键亮点"
   },
   "Pages": {
     "cart": {
