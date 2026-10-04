@@ -18,3 +18,9 @@ expertMode = true
 [postMerge]
 path = "scripts/post-merge.sh"
 timeoutMs = 20000
+
+[userenv]
+
+[userenv.shared]
+SHOPIFY_STORE_DOMAIN = "1sv11x-tg.myshopify.com"
+SHOPIFY_STOREFRONT_TOKEN = "778d708ff856056cce4e553b4c5f529f"
