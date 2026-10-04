@@ -1,9 +1,10 @@
 import "server-only";
 import { shopifyStorefrontRequest } from "./storefront";
 
+import { isVisibleCatalogProduct } from "./shared";
 import type { ArticleData, CollectionData, ProductCardData, ProductDetailData } from "./shared";
 export type { ArticleData, CollectionData, ProductCardData, ProductDetailData } from "./shared";
-export { boolMeta, metafieldMap, parseFaq, parseKeySpecs } from "./shared";
+export { boolMeta, isBlockedCatalogProduct, isVisibleCatalogProduct, metafieldMap, parseFaq, parseKeySpecs } from "./shared";
 
 const PRODUCT_CARD_FIELDS = `
   id handle title description vendor productType availableForSale tags
@@ -63,7 +64,7 @@ export async function getAllProducts(locale = "en", first = 250) {
     query,
     { first, language: language(locale) },
   );
-  return data.products.nodes;
+  return data.products.nodes.filter(isVisibleCatalogProduct);
 }
 
 export async function getFeaturedProducts(locale = "en") {
@@ -76,7 +77,8 @@ export async function getFeaturedProducts(locale = "en") {
     query,
     { language: language(locale) },
   );
-  if (data.collection?.products.nodes.length) return data.collection.products.nodes;
+  const featured = data.collection?.products.nodes.filter(isVisibleCatalogProduct) ?? [];
+  if (featured.length) return featured;
   return (await getAllProducts(locale, 12)).slice(0, 8);
 }
 
@@ -96,7 +98,7 @@ export async function getProduct(handle: string, locale = "en") {
     query,
     { handle, language: language(locale) },
   );
-  return data.product;
+  return data.product && isVisibleCatalogProduct(data.product) ? data.product : null;
 }
 
 export async function getCollection(handle: string, locale = "en") {
@@ -165,7 +167,7 @@ export async function getProductsByVendor(vendor: string, locale = "en") {
     query,
     { query: `vendor:"${vendor.replace(/"/g, "\\\"")}"`, language: language(locale) },
   );
-  return data.products.nodes;
+  return data.products.nodes.filter(isVisibleCatalogProduct);
 }
 
 export async function getGuideArticles(locale = "en", first = 50) {
@@ -221,5 +223,6 @@ export async function getProductRecommendations(productId: string, locale = "en"
     query,
     { id: productId, language: language(locale) },
   );
-  return data.complementary?.length ? data.complementary : (data.related ?? []);
+  const recommendations = data.complementary?.length ? data.complementary : (data.related ?? []);
+  return recommendations.filter(isVisibleCatalogProduct);
 }
