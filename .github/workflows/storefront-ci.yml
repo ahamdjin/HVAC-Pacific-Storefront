@@ -36,10 +36,12 @@ jobs:
       - name: Build storefront
         env:
           SHOPIFY_MOCK_BUILD: "true"
+          CI_SITE_ORIGIN: "http://127.0.0.1:3000"
         run: pnpm --filter @workspace/hvac-pacific run build
       - name: Smoke test production storefront
         env:
           SHOPIFY_MOCK_BUILD: "true"
+          CI_SITE_ORIGIN: "http://127.0.0.1:3000"
           ZH_TRANSLATIONS_REVIEWED: "false"
           PORT: "3000"
           QA_BASE_URL: "http://127.0.0.1:3000"
