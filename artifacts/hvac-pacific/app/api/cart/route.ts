@@ -121,6 +121,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: policy.error }, { status: policy.status });
   }
 
+  // "Buy now" uses a separate one-item Shopify cart so existing cart
+  // contents are preserved and never leak into the direct checkout.
+  const checkoutOnly = body.checkoutOnly === true;
+
   const line = {
     merchandiseId: body.variantId,
     quantity: Math.max(1, Number(body.quantity) || 1),
@@ -128,7 +132,7 @@ export async function POST(request: NextRequest) {
   };
 
   const jar = await cookies();
-  let id = jar.get(COOKIE)?.value;
+  let id = checkoutOnly ? undefined : jar.get(COOKIE)?.value;
   let cart: any = null;
 
   if (id) {
@@ -150,7 +154,9 @@ export async function POST(request: NextRequest) {
     }
     cart = data.cartCreate.cart;
     id = cart.id;
-    jar.set(COOKIE,cart.id,{httpOnly:true,sameSite:"lax",secure:process.env.NODE_ENV==="production",path:"/",maxAge:60*60*24*30});
+    if (!checkoutOnly) {
+      jar.set(COOKIE,cart.id,{httpOnly:true,sameSite:"lax",secure:process.env.NODE_ENV==="production",path:"/",maxAge:60*60*24*30});
+    }
   }
 
   if (policy.epaNote && id) {
