@@ -17,6 +17,11 @@ export function LeadForm({ type, product = "", compact = false }: { type:"instal
       const data=await r.json();
       if(!r.ok) throw new Error(t("error"));
       setStatus(t("success"));
+      (window as unknown as { dataLayer?: unknown[] }).dataLayer?.push({
+        event: "generate_lead",
+        lead_type: type,
+        product_context: product || undefined,
+      });
       e.currentTarget.reset();
     } catch(err) { setStatus(err instanceof Error ? err.message : t("error")); }
     finally { setBusy(false); }
