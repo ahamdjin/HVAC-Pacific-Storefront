@@ -50,3 +50,6 @@ Thumbs.db
 
 # generated catalog import reports
 scripts/reports/*.csv
+
+# Next.js generated files
+**/.next/

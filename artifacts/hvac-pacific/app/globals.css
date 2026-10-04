@@ -63,6 +63,7 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(-
 .actions{display:flex;align-items:center;gap:8px;margin-left:auto}
 .phone,.cart{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 12px;border-radius:8px;font-weight:700;text-decoration:none;color:var(--navy)}
 .phone:hover,.cart:hover{background:var(--surface)}
+.cart-count{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 6px;border-radius:999px;background:var(--navy);color:#fff;font-size:13px;font-variant-numeric:tabular-nums;line-height:1}
 .phone svg{color:var(--accent)}
 .lang{display:flex;border:2px solid var(--line);border-radius:8px;overflow:hidden}
 .lang a{display:grid;place-items:center;min-width:48px;min-height:44px;padding:0 10px;text-decoration:none;font-weight:700;color:var(--muted)}

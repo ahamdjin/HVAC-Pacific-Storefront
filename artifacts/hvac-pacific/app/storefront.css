@@ -63,6 +63,7 @@
 .purchase-box{border-top:1px solid var(--line);margin-top:24px;padding-top:24px}.pdp-price{font-size:2rem;font-weight:800;color:var(--navy);letter-spacing:-.02em}.fulfillment{color:var(--muted);margin:4px 0 18px}.variant-picker{display:block;margin-bottom:16px}.variant-picker>span{display:block;font-weight:700;margin-bottom:7px}.variant-picker select{width:100%;min-height:46px;border:1px solid #bfcbd5;border-radius:7px;padding:0 10px;background:#fff}
 .ack{display:flex!important;align-items:flex-start!important;gap:10px!important;margin:14px 0!important;font-size:.92rem;color:#3e5369}.ack input{width:18px;height:18px;margin-top:2px;flex:0 0 auto}
 .add-cart{width:100%;border:0;cursor:pointer}.add-cart:disabled,.btn:disabled{opacity:.48;cursor:not-allowed}
+.buy-now{width:100%;margin-top:10px;cursor:pointer}.checkout[aria-disabled="true"]{opacity:.48;cursor:not-allowed}
 .gate-note{font-size:.88rem;color:#7b4e00;background:#fff8e5;border:1px solid #eed596;border-radius:7px;padding:11px 12px}.form-message{font-weight:700;color:var(--accent)}
 .installer-link{display:flex;justify-content:center;margin-top:12px;padding:12px;color:var(--accent);font-weight:800;text-decoration:none}.installer-link:hover{text-decoration:underline}
 .warning-banner{margin-bottom:24px;padding:14px 18px;border:1px solid #e9c875;background:#fff8df;border-radius:8px;color:#684900}

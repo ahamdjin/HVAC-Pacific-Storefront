@@ -16,6 +16,7 @@ type ShopifyConnectionResponse = {
 export type ShopifyStorefrontConfig = {
   shopDomain: string;
   storefrontAccessToken: string;
+  accessTokenType: "public" | "private";
 };
 
 let cachedConfig:
@@ -28,13 +29,16 @@ function normalizeDomain(value: string) {
 
 function envConfig(): ShopifyStorefrontConfig | null {
   const shopDomain = process.env.SHOPIFY_STORE_DOMAIN;
+  const privateToken = process.env.SHOPIFY_STOREFRONT_PRIVATE_TOKEN;
   const storefrontAccessToken =
+    privateToken ??
     process.env.SHOPIFY_STOREFRONT_TOKEN ??
     process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
   if (!shopDomain || !storefrontAccessToken) return null;
   return {
     shopDomain: normalizeDomain(shopDomain),
     storefrontAccessToken,
+    accessTokenType: privateToken ? "private" : "public",
   };
 }
 
@@ -100,6 +104,7 @@ export async function getShopifyStorefrontConfig(
     value: {
       shopDomain: normalizeDomain(settings.shop_domain),
       storefrontAccessToken: settings.storefront_access_token,
+      accessTokenType: "public",
     },
     expiresAt: Date.now() + CONFIG_CACHE_TTL_MS,
   };
@@ -109,7 +114,7 @@ export async function getShopifyStorefrontConfig(
 export async function shopifyStorefrontRequest<T>(
   query: string,
   variables?: Record<string, unknown>,
-  options: { cache?: RequestCache; revalidate?: number } = {},
+  options: { cache?: RequestCache; revalidate?: number; buyerIp?: string } = {},
 ): Promise<T> {
   const config = await getShopifyStorefrontConfig();
   const request = async (current: ShopifyStorefrontConfig) =>
@@ -119,8 +124,12 @@ export async function shopifyStorefrontRequest<T>(
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-Shopify-Storefront-Access-Token":
-            current.storefrontAccessToken,
+          [current.accessTokenType === "private"
+            ? "Shopify-Storefront-Private-Token"
+            : "X-Shopify-Storefront-Access-Token"]: current.storefrontAccessToken,
+          ...(current.accessTokenType === "private" && options.buyerIp
+            ? { "Shopify-Storefront-Buyer-IP": options.buyerIp }
+            : {}),
         },
         body: JSON.stringify({ query, variables }),
         cache: options.cache ?? "force-cache",

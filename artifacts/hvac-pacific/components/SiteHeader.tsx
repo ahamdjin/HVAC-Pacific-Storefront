@@ -5,6 +5,7 @@ import { SITE } from "@/config/site";
 import { MegaMenu } from "./MegaMenu";
 import { LanguageSwitch } from "./LanguageSwitch";
 import { MobileMenu } from "./MobileMenu";
+import { HeaderCart } from "./HeaderCart";
 import { hrefFor, partLinks, unitLinks } from "./paths";
 
 export async function SiteHeader({ locale }: { locale: string }) {
@@ -32,10 +33,7 @@ export async function SiteHeader({ locale }: { locale: string }) {
             <span>{SITE.phone}</span>
           </a>
           <LanguageSwitch locale={locale} en={t("languageEnglish")} zh={t("languageChinese")} label={n("language")} />
-          <Link href={h("/cart")} className="cart" aria-label={t("cart")}>
-            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" d="M3 4h2.5l2 11h10l2-8H7M9 20h.01M17 20h.01"/></svg>
-            <span>{t("cart")}</span>
-          </Link>
+          <HeaderCart href={h("/cart")} />
           <MobileMenu
             menuLabel={n("menu")}
             unitsLabel={t("units")}
