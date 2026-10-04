@@ -320,13 +320,6 @@ export default async function ProductPage({ params }: P) {
           </section>
         )}
       </div>
-      {variant && (
-        <div className="mobile-buy">
-          <strong>{new Intl.NumberFormat(locale === "zh" ? "zh-CN" : "en-US", { style: "currency", currency: variant.price.currencyCode }).format(Number(variant.price.amount))}</strong>
-          <a href={"tel:" + SITE.phoneE164}>{t("call")}</a>
-          <a href="#purchase">{t("order")}</a>
-        </div>
-      )}
-    </main>
+  </main>
   );
 }
