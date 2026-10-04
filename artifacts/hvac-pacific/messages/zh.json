@@ -422,5 +422,9 @@
         "description": "关于 HVAC Pacific 产品页面 Proposition 65 警告的信息。"
       }
     }
+  },
+  "_meta": {
+    "status": "machine draft – needs native review",
+    "locale": "zh-Hans"
   }
 }
