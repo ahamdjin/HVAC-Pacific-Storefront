@@ -13,9 +13,14 @@ This storefront treats Shopify as the only source of truth for products, prices,
 - `GSC_VERIFICATION`
 - `MERCHANT_VERIFICATION`
 
-Optional:
+Optional / launch-stage:
+- `SHOPIFY_HEADLESS_PUBLICATION_ID` — required before importer can publish ACTIVE products
+- `SHOPIFY_LOCATION_ID` — required for importer inventory quantities
+- `MERCHANT_LOCAL_DELIVERY_ZIP_CODES` — comma-separated real delivery ZIPs; only set after service area is confirmed
+- `MERCHANT_LOCAL_DELIVERY_PRICE` — exact local delivery price in USD; only set when accurate
 - `ENABLE_LOCAL_INVENTORY_FEED=true` only after a real showroom/pickup location is configured
 - `GOOGLE_LOCAL_STORE_CODE` when Local Inventory is enabled
+- `ZH_TRANSLATIONS_REVIEWED=true` only after native Chinese review
 
 The Replit Shopify connector remains supported as a Storefront credential fallback.
 
@@ -55,6 +60,8 @@ Create these product metafields in namespace `specs` and enable Storefront acces
 | prop65 | boolean | warning |
 | key_specs | multiline text | semicolon/newline-separated `label: value` pairs |
 | google_title | single line text | Merchant title override |
+| google_product_category | single line text | optional Google taxonomy ID/path override; leave blank unless verified |
+| search_keywords | multiline text | internal search synonyms |
 | spec_sheet_url | URL | product document |
 | manual_url | URL | product document |
 | sds_url | URL | product document |
@@ -98,11 +105,15 @@ Primary custom feed:
 The feed:
 - uses the headless product URL, never the Shopify theme URL
 - excludes refrigerant products requiring EPA 608 verification
-- excludes products without images
+- excludes products without images or valid positive prices
 - excludes HOLD / NEEDS DATA statuses
-- includes brand, MPN when available, price, availability and product highlights
+- includes brand, MPN when a real manufacturer model exists, price, availability and product highlights
+- emits `google_product_category` only when the verified optional metafield is populated
+- emits per-product `g:shipping` only when real delivery ZIPs and an exact delivery price are configured
+- otherwise relies on accurate Merchant Center account-level shipping settings
+- never invents nationwide shipping, delivery ZIPs or shipping prices
 
-Shipping/delivery settings must also be configured accurately in Merchant Center or the connected Shopify Google channel. Do not advertise nationwide shipping if the store only offers local pickup/delivery.
+Google can automatically assign a product category, so leave the optional category override blank unless the taxonomy value is known to be correct.
 
 Local inventory scaffold:
 
@@ -210,4 +221,20 @@ The seeder creates the `guides` blog if necessary and creates or updates article
 
 Guide seeding requires Shopify Admin content permissions: `read_content` and `write_content` (or the equivalent Online Store page scopes supported by the installed app).
 
-Before publishing a guide, review its current regulatory claims against the linked primary sources, add any needed product/category links, and perform editorial/legal review where appropriate.
+Before publishing a guide, review its current regulatory claims against the linked primary sources and perform editorial/legal review where appropriate. The eight seeded drafts already include an FAQ and at least two relevant catalog/category links.
+
+
+## Analytics events
+
+When `GA4_ID` is configured, the storefront emits:
+
+- `view_item`
+- `add_to_cart`
+- `begin_checkout`
+- `generate_lead` with a non-PII `lead_type` value of `contact` or `installer`
+
+Do not send names, phone numbers, email addresses or EPA certification numbers to GA4.
+
+## Current Merchant Center note
+
+Google's current product data specification makes `google_product_category` optional and allows Google to automatically categorize products. Shipping cost remains required for U.S. Shopping/free listings unless supplied through another valid Merchant Center shipping configuration. The storefront therefore supports exact per-product local-delivery shipping data but will not guess missing service-area or price values.
