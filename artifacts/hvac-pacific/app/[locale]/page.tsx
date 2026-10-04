@@ -48,6 +48,6 @@ export default async function HomePage({params}:HomePageProps){
 
     {guides.length>0&&<section className="wrap section"><div className="section-title"><div><p className="eyebrow">{t("knowledgeCenter")}</p><h2>{t("latestGuides")}</h2></div><Link href={h("/guides")}>{t("allGuides")}</Link></div><div className="guide-teasers">{guides.map(g=><article key={g.id}>{g.image&&<Image src={g.image.url} alt={g.image.altText||g.title} width={g.image.width||800} height={g.image.height||500}/>}<div><h3><Link href={h("/guides/"+g.handle)}>{g.title}</Link></h3>{g.excerpt&&<p>{g.excerpt}</p>}</div></article>)}</div></section>}
 
-    <section className="contact-band"><div className="wrap contact-band-grid"><div><p className="eyebrow">{t("helpFind")}</p><h2>{t("talkWith")}</h2><p>{t.rich("sendModel",{phone:SITE.phone,a:(chunks)=><a href={"tel:"+SITE.phoneE164}>{chunks}</a>})}</p></div><LeadForm type="contact" compact/></div></section>
+    <section className="contact-band"><div className="wrap contact-band-grid"><div><p className="eyebrow">{t("helpFind")}</p><h2>{t("talkWith")}</h2><p>{t.rich("sendModel",{phone:SITE.phone,call:(chunks)=><a href={"tel:"+SITE.phoneE164}>{chunks}</a>})}</p></div><LeadForm type="contact" compact/></div></section>
   </main>;
 }
