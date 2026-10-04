@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import type { ProductDetailData } from "@/lib/shopify/shared";
 import { boolMeta, metafieldMap } from "@/lib/shopify/shared";
 import { money } from "./ProductCard";
+import { SITE } from "@/config/site";
 
 export function ProductPurchase({ product }: { product: ProductDetailData }) {
   const t = useTranslations("Commerce.purchase");
@@ -128,6 +129,14 @@ export function ProductPurchase({ product }: { product: ProductDetailData }) {
       <button ref={addButtonRef} className="btn primary add-cart" type="button" disabled={!canAdd || busy} onClick={add}>{busy ? t("adding") : t("addToCart")}</button>
       {message && <p className="form-message" role="status">{message}</p>}
       {requiresEpa && <p className="gate-note">{t("gateNote")}</p>}
+
+      {variant && (
+        <div className="mobile-buy" aria-label={t("mobilePurchase")}>
+          <strong>{money(variant.price.amount, variant.price.currencyCode, locale)}</strong>
+          <a href={"tel:" + SITE.phoneE164}>{t("call")}</a>
+          <button type="button" disabled={!canAdd || busy} onClick={add}>{busy ? t("adding") : t("addToCart")}</button>
+        </div>
+      )}
 
       {epaOpen && (
         <div className="modal-backdrop" role="presentation" onMouseDown={(e)=>e.currentTarget===e.target && closeEpa()}>
