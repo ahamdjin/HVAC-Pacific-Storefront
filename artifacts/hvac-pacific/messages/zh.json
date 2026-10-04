@@ -156,7 +156,9 @@
       "certNumber": "EPA 608 认证编号",
       "techName": "认证技术人员姓名",
       "epaAck": "本人具备 EPA 608 认证，或代表具备认证的技术人员购买。",
-      "verifyAdd": "核验信息并加入购物车"
+      "verifyAdd": "核验信息并加入购物车",
+      "call": "致电",
+      "mobilePurchase": "移动端购买操作"
     },
     "cart": {
       "loading": "正在加载购物车…",
