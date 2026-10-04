@@ -78,6 +78,7 @@ export default async function ProductPage({ params }: P) {
   const m = metafieldMap(product);
   if (isBlockedStatus(m.site_status)) notFound();
   const section = ALL_SECTIONS.find((s) => productMatchesSection(product, s.slug));
+  const keySpecs = parseKeySpecs(m.key_specs);
   const specs = [
     [t("brand"), product.vendor],
     [t("model"), m.outdoor_model || m.indoor_model || m.furnace_model || product.variants.nodes[0]?.sku || ""],
@@ -89,8 +90,17 @@ export default async function ProductPage({ params }: P) {
     ["EER2", m.eer2],
     ["HSPF2", m.hspf2],
     ["AFUE", m.afue],
-    ...parseKeySpecs(m.key_specs).map((x) => [x.label, x.value]),
+    ...keySpecs.map((x) => [x.label, x.value]),
   ].filter((x) => x[1]);
+
+  const highlights = [
+    [t("capacity"), m.tonnage ? (locale === "zh" ? m.tonnage + " 吨" : m.tonnage + " Ton") : ""],
+    [t("refrigerant"), m.refrigerant],
+    ["SEER2", m.seer2],
+    ["HSPF2", m.hspf2],
+    ["EER2", m.eer2],
+    ...keySpecs.slice(0, 4).map((item) => [item.label, item.value]),
+  ].filter((item) => item[1]).slice(0, 6);
 
   const productFaq = parseFaq(m.faq);
   const [recs, guides, categoryCollection] = await Promise.all([
@@ -215,6 +225,15 @@ export default async function ProductPage({ params }: P) {
           </div>
         </section>
 
+        {highlights.length > 0 && (
+          <section className="pdp-section">
+            <h2>{t("highlights")}</h2>
+            <div className="highlight-grid">
+              {highlights.map(([label,value])=><div key={label}><span>{label}</span><strong>{value}</strong></div>)}
+            </div>
+          </section>
+        )}
+
         {components.length > 0 && (
           <section className="pdp-section">
             <h2>{t("systemComponents")}</h2>
@@ -238,6 +257,9 @@ export default async function ProductPage({ params }: P) {
             <h2>{t("compliance")}</h2>
             <div className="badges">
               {m.ahri_number && <a className="badge" href="https://www.ahridirectory.org/" target="_blank" rel="noreferrer">AHRI #{m.ahri_number}</a>}
+              {m.seer2 && <span className="badge">SEER2 {m.seer2}</span>}
+              {m.eer2 && <span className="badge">EER2 {m.eer2}</span>}
+              {m.hspf2 && <span className="badge">HSPF2 {m.hspf2}</span>}
               {boolMeta(m.scaqmd_1111_compliant) && <span className="badge">{t("scaqmd")}</span>}
               {boolMeta(m.cec_listed) && <span className="badge">{t("cec")}</span>}
             </div>
