@@ -4,23 +4,48 @@ import { boolMeta, getAllProducts, metafieldMap, parseKeySpecs } from "@/lib/sho
 
 function esc(v:unknown){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 function plain(v:string){return v.replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim();}
+function shippingBlocks(){
+  const priceRaw=process.env.MERCHANT_LOCAL_DELIVERY_PRICE?.trim();
+  const zips=(process.env.MERCHANT_LOCAL_DELIVERY_ZIP_CODES||"")
+    .split(",").map((zip)=>zip.trim()).filter(Boolean);
+  const price=priceRaw===undefined||priceRaw===""?null:Number(priceRaw);
+  if(price===null||!Number.isFinite(price)||price<0||!zips.length)return "";
+  return zips.map((zip)=>`<g:shipping>
+<g:country>US</g:country>
+<g:postal_code>${esc(zip)}</g:postal_code>
+<g:service>Local delivery</g:service>
+<g:price>${esc(price.toFixed(2)+" USD")}</g:price>
+</g:shipping>`).join("");
+}
 export const revalidate=3600;
 
 export async function GET(){
   const products=await getAllProducts("en");
+  const shipping=shippingBlocks();
   const eligible=products.filter(p=>{
     const m=metafieldMap(p);
-    const status=(m.site_status||"").toUpperCase();
-    return p.featuredImage && p.variants.nodes.length && !boolMeta(m.requires_epa608) && !["HOLD","NEEDS DATA"].includes(status);
+    const status=(m.site_status||"").trim().toUpperCase();
+    const price=Number(p.priceRange.minVariantPrice.amount);
+    return p.featuredImage
+      && p.variants.nodes.length
+      && Number.isFinite(price)
+      && price>0
+      && !boolMeta(m.requires_epa608)
+      && !["HOLD","NEEDS DATA"].includes(status);
   });
+
   const items=eligible.map(p=>{
-    const m=metafieldMap(p);const v=p.variants.nodes.find(x=>x.availableForSale)??p.variants.nodes[0];
+    const m=metafieldMap(p);
+    const v=p.variants.nodes.find(x=>x.availableForSale)??p.variants.nodes[0];
     const model=m.outdoor_model||m.indoor_model||m.furnace_model||"";
     const isHouse=p.vendor.toLowerCase()===SITE.brand.toLowerCase();
     const bundle=[m.outdoor_model,m.indoor_model,m.furnace_model].filter(Boolean).length>1;
-    const highlights=parseKeySpecs(m.key_specs).slice(0,10).map(x=>`<g:product_highlight>${esc(x.label+": "+x.value)}</g:product_highlight>`).join("");
+    const highlights=parseKeySpecs(m.key_specs).slice(0,10)
+      .map(x=>`<g:product_highlight>${esc(x.label+": "+x.value)}</g:product_highlight>`).join("");
     const productType=[m.site_category,m.subcategory].filter(Boolean).join(" > ");
     const description=plain(p.description)||[p.title,productType,m.refrigerant].filter(Boolean).join(" – ");
+    const googleCategory=m.google_product_category?.trim()||"";
+
     return `<item>
 <title>${esc((m.google_title||p.title).slice(0,150))}</title>
 <description>${esc(description.slice(0,5000))}</description>
@@ -36,12 +61,15 @@ export async function GET(){
 <g:brand>${esc(p.vendor)}</g:brand>
 ${!isHouse&&model?`<g:mpn>${esc(model)}</g:mpn>`:""}
 ${isHouse?"<g:identifier_exists>no</g:identifier_exists>":""}
-<g:shipping_label>local-only</g:shipping_label>
 ${bundle?"<g:is_bundle>yes</g:is_bundle>":""}
+${googleCategory?`<g:google_product_category>${esc(googleCategory)}</g:google_product_category>`:""}
 ${productType?`<g:product_type>${esc(productType)}</g:product_type>`:""}
+<g:shipping_label>local-only</g:shipping_label>
+${shipping}
 ${highlights}
 </item>`;
   }).join("");
+
   const xml=`<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0"><channel><title>${esc(SITE.displayName)}</title><link>${SITE.domain}</link><description>HVAC equipment and parts</description>${items}</channel></rss>`;
   return new NextResponse(xml,{headers:{"Content-Type":"application/xml; charset=utf-8","Cache-Control":"public, s-maxage=3600, stale-while-revalidate=86400"}});
 }
