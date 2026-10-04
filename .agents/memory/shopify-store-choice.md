@@ -20,3 +20,9 @@ The merchant's Shopify store is live, not a development/test store. Keep the nor
 **Why:** The user explicitly confirmed the store type when a checkout browser test reached Shopify's password page. A password-protected storefront does not imply a development store.
 
 **How to apply:** Do not enable development-store preview parameters or disable store protection to bypass a checkout blocker. Recheck the real hosted checkout and report any remaining Shopify-side gate accurately.
+
+The merchant reports more than 100 products in Shopify Admin. Storefront API results are not the merchant's total Admin inventory.
+
+**Why:** The user corrected an earlier statement that treated the products exposed to the current Headless token as the full Shopify catalog. Shopify can publish different product sets to each named Headless storefront.
+
+**How to apply:** Distinguish Admin product totals from the token's published, market-visible product set. Check raw API pagination and website exclusions, then inspect a missing product's status and publication to the exact named Headless storefront. Do not automatically activate or publish every Admin product.
