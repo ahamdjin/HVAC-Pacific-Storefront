@@ -56,3 +56,22 @@ jobs:
             exit 1
           fi
           pnpm --filter @workspace/scripts run test:storefront-smoke
+          npx -y lighthouse@13.5.0 http://127.0.0.1:3000/ --quiet --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --only-categories=performance,accessibility,seo --output=json --output-path=/tmp/lh-home.json
+          npx -y lighthouse@13.5.0 http://127.0.0.1:3000/units --quiet --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --only-categories=performance,accessibility,seo --output=json --output-path=/tmp/lh-units.json
+          node - <<'NODE'
+          const fs = require("fs");
+          const reports = [
+            ["home", "/tmp/lh-home.json"],
+            ["units", "/tmp/lh-units.json"],
+          ];
+          let failed = false;
+          for (const [name, path] of reports) {
+            const report = JSON.parse(fs.readFileSync(path, "utf8"));
+            const performance = Math.round((report.categories.performance.score || 0) * 100);
+            const accessibility = Math.round((report.categories.accessibility.score || 0) * 100);
+            const seo = Math.round((report.categories.seo.score || 0) * 100);
+            console.log(`Lighthouse ${name}: Performance ${performance} · Accessibility ${accessibility} · SEO ${seo}`);
+            if (performance < 90 || seo < 100 || accessibility < 95) failed = true;
+          }
+          if (failed) process.exit(1);
+          NODE
