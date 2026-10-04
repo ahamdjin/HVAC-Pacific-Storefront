@@ -36,6 +36,7 @@ const PRODUCT_CARD_FIELDS = `
     {namespace:"specs", key:"prop65"},
     {namespace:"specs", key:"key_specs"},
     {namespace:"specs", key:"google_title"},
+    {namespace:"specs", key:"google_product_category"},
     {namespace:"specs", key:"search_keywords"},
     {namespace:"specs", key:"spec_sheet_url"},
     {namespace:"specs", key:"manual_url"},
