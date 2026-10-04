@@ -86,7 +86,20 @@
     "about": "关于我们",
     "compliance": "加州暖通合规",
     "copyright": "HVAC Pacific",
-    "pickupNote": "订单完成后提供自取地点。"
+    "pickupNote": "订单完成后提供自取地点。",
+    "company": "公司",
+    "contactLink": "联系我们",
+    "pickupLink": "自取与本地配送",
+    "resources": "资源",
+    "guides": "暖通指南",
+    "californiaCompliance": "加州暖通合规",
+    "refrigerantPolicy": "制冷剂销售政策",
+    "policies": "政策",
+    "shippingReturns": "配送与退货",
+    "warranty": "保修",
+    "privacy": "隐私",
+    "terms": "条款",
+    "prop65": "Proposition 65"
   },
   "Nav": {
     "skip": "跳到正文",
@@ -331,5 +344,43 @@
       "talk": "联系我们",
       "pickup": "订单完成后提供自取地点。"
     }
+  },
+  "BrandsPage": {
+    "breadcrumb": "品牌",
+    "metaTitle": "暖通品牌 | hvacpacific",
+    "metaDescription": "按品牌浏览 HVAC Pacific 的暖通设备和零件。",
+    "eyebrow": "制造商",
+    "title": "暖通品牌",
+    "description": "按制造商浏览已发布的设备和零件。",
+    "products": "{count} 件产品",
+    "brandEyebrow": "品牌",
+    "brandTitle": "{brand} 暖通设备与零件",
+    "brandDescription": "浏览 HVAC Pacific 当前已发布的 {brand} 产品。",
+    "brandMetaTitle": "{brand} 暖通设备与零件 | {site}",
+    "brandMetaDescription": "在 HVAC Pacific 选购已发布的 {brand} 暖通设备和零件。"
+  },
+  "GuidesPage": {
+    "breadcrumb": "指南",
+    "metaTitle": "暖通指南 | hvacpacific",
+    "metaDescription": "来自 HVAC Pacific 的实用暖通设备、零件与购买指南。",
+    "eyebrow": "知识中心",
+    "title": "暖通指南",
+    "description": "用于比较暖通设备、部件和技术规格的实用信息。",
+    "noneTitle": "暂时没有已发布的指南。",
+    "noneText": "草稿文章会保持不被搜索引擎收录，直到在 Shopify 中审核并发布。",
+    "articleEyebrow": "暖通指南",
+    "updated": "更新于 {date}",
+    "fallbackDescription": "来自 HVAC Pacific 的暖通指南。"
+  },
+  "NotFound": {
+    "title": "找不到该页面。",
+    "description": "请搜索产品目录，或浏览暖通设备和零件。",
+    "search": "搜索产品",
+    "units": "浏览设备",
+    "parts": "浏览零件"
+  },
+  "StaticPage": {
+    "draft": "草稿 — 待审核",
+    "translationNotice": "以下政策内容仍在进行中文法律/编辑审核。正式发布前请以审核后的英文政策和订单条款为准。"
   }
 }
