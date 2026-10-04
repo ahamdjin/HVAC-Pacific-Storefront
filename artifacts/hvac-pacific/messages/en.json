@@ -155,7 +155,9 @@
       "certNumber": "EPA 608 certification number",
       "techName": "Certified technician name",
       "epaAck": "I am EPA 608 certified or purchasing for a certified technician.",
-      "verifyAdd": "Verify details & add"
+      "verifyAdd": "Verify details & add",
+      "call": "Call",
+      "mobilePurchase": "Mobile purchase actions"
     },
     "cart": {
       "loading": "Loading cart…",
