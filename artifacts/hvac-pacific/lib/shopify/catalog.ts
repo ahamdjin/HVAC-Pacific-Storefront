@@ -138,7 +138,7 @@ export async function searchProducts(term: string, locale = "en") {
     ),
     getAllProducts(locale),
   ]);
-  const native = data.search.nodes.filter(Boolean);
+  const native = data.search.nodes.filter(Boolean).filter(isVisibleCatalogProduct);
   const needle = clean.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
   const synonymMatches = all.filter((product) => {
     const m = Object.fromEntries((product.metafields ?? []).filter(Boolean).map((x) => [x!.key, x!.value]));
