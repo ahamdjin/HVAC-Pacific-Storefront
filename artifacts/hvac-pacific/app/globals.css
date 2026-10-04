@@ -7,7 +7,7 @@
   --muted: #53677e;
   --line: #d7e0e8;
   --surface: #f3f7fa;
-  --accent: #2c8197;
+  --accent: #0875ab;
 }
 
 * {
@@ -47,7 +47,7 @@ a {
   background: #c9e4ed;
   color: #12263d;
 }
-:root{--accent:#0a7fb8;--cyan:#1fb6e8}
+:root{--accent:#0875ab;--cyan:#1fb6e8}
 .wrap{max-width:1200px;margin:0 auto;padding:0 24px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .skip{position:absolute;left:-999px;top:0;background:var(--navy);color:#fff;padding:12px 16px;z-index:60}
