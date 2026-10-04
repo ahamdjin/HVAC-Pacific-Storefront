@@ -109,23 +109,30 @@ export function ProductPurchase({ product }: { product: ProductDetailData }) {
       const response = await fetch("/api/cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ variantId: variant.id, quantity: 1, attributes }),
+        body: JSON.stringify({
+          variantId: variant.id,
+          quantity: 1,
+          attributes,
+          checkoutOnly: action === "checkout",
+        }),
       });
       const data = await response.json().catch(() => null);
       if (!response.ok || !data?.id || !Array.isArray(data?.lines?.nodes)) {
         throw new Error(typeof data?.error === "string" ? data.error : t("addError"));
       }
-      setMessage(t("added"));
-      setAdded(true);
-      notifyCartChanged(data);
-      (window as unknown as { dataLayer?: unknown[] }).dataLayer?.push({
-        event: "add_to_cart",
-        ecommerce: {
-          currency: variant.price.currencyCode,
-          value: Number(variant.price.amount),
-          items: [{ item_id: variant.sku || variant.id, item_name: product.title, item_brand: product.vendor, price: Number(variant.price.amount), quantity: 1 }],
-        },
-      });
+      if (action === "cart") {
+        setMessage(t("added"));
+        setAdded(true);
+        notifyCartChanged(data);
+        (window as unknown as { dataLayer?: unknown[] }).dataLayer?.push({
+          event: "add_to_cart",
+          ecommerce: {
+            currency: variant.price.currencyCode,
+            value: Number(variant.price.amount),
+            items: [{ item_id: variant.sku || variant.id, item_name: product.title, item_brand: product.vendor, price: Number(variant.price.amount), quantity: 1 }],
+          },
+        });
+      }
       if (action === "checkout") {
         const destination = new URL(data.checkoutUrl);
         if (destination.protocol !== "https:") throw new Error(t("checkoutError"));
