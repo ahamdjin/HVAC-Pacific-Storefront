@@ -6,6 +6,12 @@ export type GuideDraft = {
   body: string;
 };
 
+function faq(items: Array<{ q: string; a: string }>) {
+  return `<section class="faq"><h2>Frequently asked questions</h2>${items
+    .map((item) => `<details><summary>${item.q}</summary><p>${item.a}</p></details>`)
+    .join("")}</section>`;
+}
+
 function sources(items: Array<{ label: string; url: string }>) {
   return `<section class="guide-sources"><h2>Sources reviewed</h2><ul>${items
     .map((item) => `<li><a href="${item.url}" rel="noopener noreferrer">${item.label}</a></li>`)
@@ -35,7 +41,12 @@ export const GUIDE_DRAFTS: GuideDraft[] = [
       <p>For buyers in the Los Angeles area, this is one reason a furnace cannot be selected on AFUE and capacity alone. The installation address and air-district requirements matter too.</p>
       <h2 id="checklist">A practical pre-purchase checklist</h2>
       <ol><li>Write down every exact model number in the proposed system.</li><li>Confirm the system's current SEER2/EER2/HSPF2 data rather than converting from older ratings.</li><li>Search regulated models in California's MAEDbS.</li><li>Use the AHRI Directory to verify the exact matched combination when an AHRI reference is available.</li><li>For a gas furnace in South Coast AQMD territory, verify current Rule 1111 compliance.</li><li>Have the licensed contractor confirm electrical service, refrigerant, ductwork, load calculation and permit requirements for the job address.</li></ol>
-      <p><a href="/units">Browse HVAC equipment</a> or <a href="/need-installer">request an independent installer referral</a> after you have the project details.</p>
+      <p>Compare <a href="/units/heat-pump-systems">heat pump systems</a> and <a href="/units/ac-furnace-systems">AC + furnace systems</a> after the project requirements are verified. You can also <a href="/need-installer">request an independent installer referral</a>.</p>
+      ${faq([
+        {q:"Is a SEER2 rating by itself enough to prove California compliance?",a:"No. The exact system, federal regional standards, California appliance certification where applicable, local air-district rules and permit requirements can all matter."},
+        {q:"Does an AHRI match automatically mean a model is CEC listed?",a:"No. AHRI certification and California appliance certification are separate checks."},
+        {q:"Does South Coast AQMD Rule 1111 apply to every furnace in California?",a:"No. Rule 1111 is a South Coast AQMD rule; verify whether the installation address is within its jurisdiction and check the current rule."}
+      ])}
       ${sources([
         {label:"California Energy Commission — Appliance Regulations Certification Assistance",url:"https://www.energy.ca.gov/rules-and-regulations/appliance-efficiency-regulations-title-20/appliance-regulations-certification"},
         {label:"California Energy Commission — Appliance Efficiency Outreach and MAEDbS guidance",url:"https://www.energy.ca.gov/programs-and-topics/programs/appliance-efficiency-program-outreach-and-education"},
@@ -63,7 +74,12 @@ export const GUIDE_DRAFTS: GuideDraft[] = [
       <p>On HVAC Pacific product pages, an AHRI reference appears only when the catalog contains one. The component table likewise uses the stored outdoor, indoor and furnace model fields instead of a guessed pairing.</p>
       <h2 id="pitfalls">Common matching mistakes</h2>
       <ul><li><strong>Matching by tonnage:</strong> nominal capacity is not a certification identifier.</li><li><strong>Using one component's efficiency:</strong> split-system efficiency is tied to the tested combination.</li><li><strong>Ignoring suffixes:</strong> model-number suffixes can identify a different revision or configuration.</li><li><strong>Assuming a replacement component preserves the old rating:</strong> verify the new combination.</li><li><strong>Treating AHRI as the only approval:</strong> California appliance certification, local air-district rules and permitting can be separate checks.</li></ul>
-      <p>When comparing products, start from the exact model number on <a href="/units">HVAC Pacific's equipment catalog</a>, then verify the matched-system record before installation.</p>
+      <p>When comparing products, start with exact models in <a href="/units/heat-pump-systems">heat pump systems</a> or <a href="/units/ac-furnace-systems">AC + furnace systems</a>, then verify the matched-system record before installation.</p>
+      ${faq([
+        {q:"Can I match an outdoor unit and coil only by tonnage?",a:"No. Nominal tonnage does not establish an AHRI-certified combination; verify the exact component model numbers."},
+        {q:"Where do I look up an AHRI reference number?",a:"Use the AHRI Directory of Certified Product Performance and search by the reference number or exact model numbers."},
+        {q:"Can changing one component change the certified efficiency?",a:"Yes. Published split-system ratings apply to specific certified combinations."}
+      ])}
       ${sources([
         {label:"AHRI Directory of Certified Product Performance",url:"https://www.ahridirectory.org/"},
         {label:"California Energy Commission — Appliance certification guidance",url:"https://www.energy.ca.gov/rules-and-regulations/appliance-efficiency-regulations-title-20/appliance-regulations-certification"}
@@ -88,7 +104,12 @@ export const GUIDE_DRAFTS: GuideDraft[] = [
       <p>A credible load calculation therefore starts with the building, not with a product page. After the load is known, the contractor can move to equipment selection and verify that the proposed matched system can deliver the required capacity under the design conditions.</p>
       <h2 id="buying">Questions to ask before ordering equipment</h2>
       <ul><li>Was a Manual J or equivalent code-accepted load calculation completed?</li><li>What are the design heating and cooling loads?</li><li>Is the proposed equipment an AHRI-certified match?</li><li>Is the existing duct system appropriate for the required airflow?</li><li>Does the electrical service match the equipment requirements?</li><li>What permit, refrigerant and local compliance rules apply at the address?</li></ul>
-      <p>If you already know the required capacity, you can use the tonnage and model filters in our <a href="/units">HVAC equipment catalog</a>. If you still need job-specific sizing, <a href="/need-installer">request an installer referral</a> before purchasing.</p>
+      <p>If you already know the required capacity, compare <a href="/units/heat-pump-systems">heat pump systems</a> or <a href="/units/mini-splits">ductless mini splits</a>. If you still need job-specific sizing, <a href="/need-installer">request an installer referral</a> before purchasing.</p>
+      ${faq([
+        {q:"How many square feet does one ton of AC cool?",a:"There is no reliable universal square-foot rule. Building envelope, climate, glass, orientation, infiltration, occupancy and ducts all affect the load."},
+        {q:"What is Manual J?",a:"Manual J is ACCA's ANSI-recognized residential heating and cooling load-calculation procedure."},
+        {q:"Should I replace an old unit with the same tonnage automatically?",a:"Not automatically. A replacement is a good time to verify the current building load, duct system and equipment selection."}
+      ])}
       ${sources([
         {label:"ACCA — Manual J Residential Load Calculation",url:"https://www.acca.org/standards/technical-manuals/manual-j"},
         {label:"ACCA — Approved Manual J Software",url:"https://www.acca.org/acca/standards/approved-software"}
@@ -113,7 +134,12 @@ export const GUIDE_DRAFTS: GuideDraft[] = [
       <ul><li><strong>Existing layout:</strong> is the building already configured for a package unit or separate indoor/outdoor equipment?</li><li><strong>Fuel and system type:</strong> heat pump, gas/electric, AC with furnace, or another design?</li><li><strong>Capacity:</strong> use the calculated load, not just the old unit's nominal size.</li><li><strong>Efficiency:</strong> compare the certified SEER2/EER2/HSPF2 or AFUE values that apply to the exact product or combination.</li><li><strong>Electrical service:</strong> verify voltage, phase, minimum circuit ampacity and overcurrent protection from manufacturer data.</li><li><strong>Physical fit:</strong> cabinet dimensions and duct connection locations can matter as much as tonnage on a replacement.</li></ul>
       <h2 id="replacement">For a replacement job</h2>
       <p>Photograph the existing nameplate and record the full model number. A contractor can then compare capacity, configuration, duct connection, electrical requirements and current code requirements. Do not order solely because a new unit shares the same tonnage as the old one.</p>
-      <p>Browse <a href="/units/packaged-units">packaged units</a> or compare other <a href="/units">HVAC equipment</a> once the job requirements are known.</p>
+      <p>Browse <a href="/units/packaged-units">packaged units</a> or compare <a href="/units/heat-pump-systems">heat pump systems</a> once the job requirements are known.</p>
+      ${faq([
+        {q:"Is a packaged unit the same as a split system?",a:"No. A packaged unit contains the major heating and cooling components in one outdoor cabinet; a split system separates major components between indoor and outdoor sections."},
+        {q:"Can a packaged unit replace any rooftop unit with the same tonnage?",a:"No. Cabinet dimensions, curb or duct connections, electrical or gas requirements, airflow and controls must be checked for the specific replacement."},
+        {q:"Which type is more efficient?",a:"Efficiency depends on the exact certified product or system, not simply whether the equipment is packaged or split."}
+      ])}
       ${sources([
         {label:"Carrier — Types of HVAC Systems and Units",url:"https://www.carrier.com/us/en/residential/hvac-resources/types-of-hvac-systems-and-hvac-units/"},
         {label:"Carrier — What Is a Split HVAC System?",url:"https://www.carrier.com/us/en/residential/hvac-resources/air-conditioners/what-is-split-hvac-system/"}
@@ -137,7 +163,12 @@ export const GUIDE_DRAFTS: GuideDraft[] = [
       <p>EPA's SNAP program lists R-32 and R-454B as acceptable for new residential and light-commercial AC and heat-pump equipment subject to use conditions. A2L indicates lower flammability than higher-flammability refrigerant classes, but it still changes equipment, installation and service requirements. Follow the exact manufacturer instructions and applicable codes.</p>
       <h2 id="legacy">What about an existing R-410A system?</h2>
       <p>The transition does not mean every existing R-410A system must be removed. EPA distinguishes new systems from service components and allows continued sale of R-410A components for servicing legacy equipment under the applicable rules. A replacement condenser intended for service is not the same regulatory situation as assembling a new R-410A system.</p>
-      <p>When shopping, use the refrigerant filter on <a href="/units">HVAC equipment</a> and verify the refrigerant printed on every matched component. For refrigerant cylinders, see our <a href="/refrigerant-sales-policy">refrigerant sales policy</a>.</p>
+      <p>Compare refrigerant-specific equipment in <a href="/units/heat-pump-systems">heat pump systems</a> and <a href="/units/mini-splits">ductless mini splits</a>, and verify the refrigerant printed on every matched component. For cylinders, see our <a href="/refrigerant-sales-policy">refrigerant sales policy</a>.</p>
+      ${faq([
+        {q:"Can R-32, R-454B and R-410A be mixed or swapped in the same system?",a:"No. Use only the refrigerant and service procedures approved by the equipment manufacturer for the exact model."},
+        {q:"Are R-32 and R-454B A2L refrigerants?",a:"Yes. EPA lists both for applicable new equipment subject to the specified use conditions."},
+        {q:"Do existing R-410A systems have to be replaced immediately?",a:"No. EPA distinguishes existing-system service from the requirements that apply to new systems and products."}
+      ])}
       ${sources([
         {label:"U.S. EPA — Technology Transitions HFC Restrictions by Sector",url:"https://www.epa.gov/hfcs/technology-transitions-hfc-restrictions-sector"},
         {label:"U.S. EPA — Technology Transitions GWP Reference Table",url:"https://www.epa.gov/hfcs/technology-transitions-gwp-reference-table"},
@@ -166,6 +197,11 @@ export const GUIDE_DRAFTS: GuideDraft[] = [
       <h2 id="safety">Capacitors can retain electrical charge</h2>
       <p>HVAC electrical work can expose you to line voltage and stored energy even after power is switched off. If you are not trained to isolate, verify and service the circuit safely, have a qualified technician diagnose and replace the component.</p>
       <p>Browse <a href="/parts/capacitors">HVAC capacitors</a>, including <a href="/parts/capacitors/dual-run-capacitors">dual run capacitors</a>. Filter and product specs should be matched to the equipment requirement, not to appearance alone.</p>
+      ${faq([
+        {q:"What does 45/5 MFD mean on a dual run capacitor?",a:"It identifies two capacitance values in one capacitor, commonly one section for the compressor and one for the fan motor."},
+        {q:"Can I use a lower voltage-rated capacitor?",a:"No. Replacement guidance warns against using a lower voltage rating."},
+        {q:"Does round versus oval change the electrical rating?",a:"The electrical requirements come from capacitance and voltage ratings; case shape mainly affects physical fit and mounting."}
+      ])}
       ${sources([
         {label:"MARS — Capacitor Basics",url:"https://c3.marsdelivers.com/wps/wcm/connect/56f57020-4764-429e-810e-ca911432dc10/Capacitor_Basics-98610.pdf?CONVERT_TO=url&MOD=AJPERES"},
         {label:"Trane — Heat Pump Capacitors and Signs of Trouble",url:"https://www.trane.com/residential/en/resources/troubleshooting/heat-pumps/heat-pump-capacitor/"}
@@ -189,7 +225,12 @@ export const GUIDE_DRAFTS: GuideDraft[] = [
       <p>EPA's reclamation rules restrict resale of used ozone-depleting or substitute refrigerant to a new owner unless it has been reclaimed by an EPA-certified reclaimer. EPA says properly reclaimed refrigerant must be reprocessed to the required purity level and verified using the specified laboratory protocol. Refrigerant recovered and reused within equipment owned by the same person can fall under different rules.</p>
       <h2 id="existing">Should an existing R-22 system be repaired or replaced?</h2>
       <p>EPA does not require automatic replacement merely because a system uses R-22. The decision is project-specific and can involve equipment condition, repair scope, refrigerant availability, efficiency, parts availability and the economics of keeping the older system in service.</p>
-      <p>If refrigerant is being purchased, verify the product, certification requirement, cylinder size and pickup/delivery restrictions. Browse <a href="/parts/refrigerant">refrigerant products</a> and read the <a href="/refrigerant-sales-policy">HVAC Pacific refrigerant sales policy</a> before ordering.</p>
+      <p>If refrigerant is being purchased, verify the product, certification requirement, cylinder size and pickup/delivery restrictions. Browse <a href="/parts/refrigerant">refrigerant products</a> and <a href="/parts/refrigeration-parts">refrigeration parts</a>, then read the <a href="/refrigerant-sales-policy">HVAC Pacific refrigerant sales policy</a> before ordering.</p>
+      ${faq([
+        {q:"Can existing R-22 equipment still be serviced?",a:"Yes. EPA states existing R-22 equipment can continue to be serviced even though ordinary production and import of new HCFC-22 ended in 2020."},
+        {q:"Who can buy stationary refrigerant?",a:"Federal Section 608 sales restrictions generally require an appropriately certified technician or qualifying employer/authorized representative."},
+        {q:"Is recovered refrigerant automatically reclaimed?",a:"No. Reclaimed refrigerant must be processed and verified to the required standard by an EPA-certified reclaimer."}
+      ])}
       ${sources([
         {label:"U.S. EPA — Refrigerant Sales Restriction",url:"https://www.epa.gov/section608/refrigerant-sales-restriction"},
         {label:"U.S. EPA — Refrigerant Reclamation Requirements",url:"https://www.epa.gov/section608/stationary-refrigeration-refrigerant-reclamation-requirements"},
@@ -217,7 +258,12 @@ export const GUIDE_DRAFTS: GuideDraft[] = [
       <p>For heat-pump mini splits, SEER2 describes seasonal cooling efficiency and HSPF2 describes seasonal heating efficiency. Ratings vary by model and, in multi-zone systems, can depend on the certified combination. ENERGY STAR maintains certification criteria and model datasets, but an ENERGY STAR label is not a substitute for checking the exact model and job requirements.</p>
       <h2 id="checklist">Mini split buying checklist</h2>
       <ol><li>Decide which rooms or zones need conditioning.</li><li>Have the heating and cooling load determined for those spaces.</li><li>Choose single-zone or multi-zone architecture.</li><li>Verify the exact indoor/outdoor combination and refrigerant.</li><li>Check voltage, phase and circuit requirements from manufacturer literature.</li><li>Check line-set length, elevation and condensate-routing limits.</li><li>Confirm efficiency ratings and applicable California certification.</li><li>Have a qualified installer confirm the final design and permit requirements.</li></ol>
-      <p>Browse <a href="/units/mini-splits">ductless mini split systems</a> or <a href="/need-installer">request an independent installer referral</a>.</p>
+      <p>Browse <a href="/units/mini-splits">ductless mini split systems</a> and compare them with <a href="/units/heat-pump-systems">central heat pump systems</a>, or <a href="/need-installer">request an independent installer referral</a>.</p>
+      ${faq([
+        {q:"What is the difference between single-zone and multi-zone mini splits?",a:"Single-zone systems connect one outdoor unit to one indoor unit. Multi-zone systems connect a compatible outdoor unit to multiple approved indoor units."},
+        {q:"Can I choose 115V or 230V after selecting the mini split?",a:"No. Voltage and circuit requirements are model-specific and must match the equipment and available electrical service."},
+        {q:"Can I size a mini split by room square footage alone?",a:"No. Square footage is only one input; the heating and cooling load depends on the building and design conditions."}
+      ])}
       ${sources([
         {label:"ENERGY STAR — Air-Source Heat Pumps",url:"https://www.energystar.gov/products/air_source_heat_pumps"},
         {label:"Carrier — Single vs. Multi-Zone Mini Split Systems",url:"https://www.carrier.com/us/en/residential/hvac-resources/ductless-mini-splits/multi-zone-mini-split/"},
