@@ -10,6 +10,7 @@ const nextConfig:NextConfig={
     remotePatterns:[
       {protocol:"https",hostname:"cdn.shopify.com"},
       {protocol:"https",hostname:"*.shopifycdn.com"},
+      {protocol:"https",hostname:"images.unsplash.com"},
     ],
   },
   allowedDevOrigins:["127.0.0.1","localhost",...(process.env.REPLIT_DEV_DOMAIN?[process.env.REPLIT_DEV_DOMAIN]:[])],

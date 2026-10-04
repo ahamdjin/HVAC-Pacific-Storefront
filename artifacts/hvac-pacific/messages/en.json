@@ -34,7 +34,7 @@
   },
   "HomePage": {
     "eyebrow": "Local HVAC equipment and parts",
-    "title": "HVAC Equipment & Parts for Southern California",
+    "title": "HVAC Equipment & Parts",
     "subtitle": "Local pickup and delivery within 20 miles. Support in English and 中文.",
     "shopUnits": "Shop units",
     "shopParts": "Shop parts",
@@ -47,7 +47,7 @@
     "metaDescription": "Shop HVAC equipment, systems and replacement parts with local pickup and delivery in Southern California.",
     "ogDescription": "Shop verified HVAC equipment and parts from HVAC Pacific.",
     "supplyEyebrow": "Southern California HVAC supply",
-    "lead": "Shop verified equipment, systems and service parts with local pickup and delivery within {miles} miles. Support in English and 中文.",
+    "lead": "Equipment, parts, pickup and local delivery across Southern California.",
     "verifiedData": "Verified product data",
     "localFulfillment": "Local fulfillment",
     "phoneSupport": "Real phone support",
@@ -78,7 +78,7 @@
     "allGuides": "All guides →",
     "helpFind": "Need help finding a product?",
     "talkWith": "Talk with HVAC Pacific",
-    "sendModel": "Call <call>{phone}</call> or send the model number and what you need."
+    "sendModel": "Call <call>{phone}</call> or send us the model number."
   },
   "Footer": {
     "pickupDelivery": "Pickup & delivery",
