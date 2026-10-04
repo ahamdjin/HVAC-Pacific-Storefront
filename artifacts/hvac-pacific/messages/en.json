@@ -135,7 +135,8 @@
       "under100": "Under $100",
       "from100to500": "$100–$500",
       "from500to2000": "$500–$2,000",
-      "over2000": "$2,000+"
+      "over2000": "$2,000+",
+      "subcategory": "Subcategory"
     },
     "purchase": {
       "option": "Option",
@@ -293,7 +294,7 @@
     "systemType": "System type",
     "refrigerant": "Refrigerant",
     "threePhaseTitle": "3-phase power required.",
-    "threePhaseText": "This equipment requires compatible electrical service.",
+    "threePhaseText": "This is light-commercial 3-phase equipment. Most homes use single-phase power; verify the electrical service before ordering.",
     "imageUnavailable": "Product image unavailable",
     "imageAlt": "{title} product image {number}",
     "needInstaller": "Need an Installer?",
@@ -303,7 +304,7 @@
     "furnace": "Furnace",
     "specifications": "Specifications",
     "compliance": "Compliance information",
-    "scaqmd": "SCAQMD Rule 1111 compliant",
+    "scaqmd": "SCAQMD Rule 1111 compliant (14 ng/J)",
     "cec": "CEC listed",
     "documents": "Documents",
     "specSheet": "Spec sheet",
@@ -318,7 +319,8 @@
     "completeInstall": "Complete the install",
     "relatedGuides": "Related HVAC guides",
     "call": "Call",
-    "order": "Order"
+    "order": "Order",
+    "highlights": "Key highlights"
   },
   "Pages": {
     "cart": {
