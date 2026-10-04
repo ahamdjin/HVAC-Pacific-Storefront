@@ -97,6 +97,7 @@ export async function CategoryPage({kind,slugs,locale}:{kind:"units"|"parts";slu
       )}
 
       {cmeta.guide_html && <section className="rich-guide"><h2>{t("buyingGuide")}</h2><div className="prose" dangerouslySetInnerHTML={{__html:cmeta.guide_html}}/></section>}
+      {kind==="units" && cmeta.sizing_table_html && <section className="pdp-section"><div className="prose sizing-table" dangerouslySetInnerHTML={{__html:cmeta.sizing_table_html}}/></section>}
       {kind==="units" && <section className="info-callout"><h2>{t("capacityTitle")}</h2><p>{t("capacityText")}</p></section>}
       {faqs.length>0 && <FaqBlock title={t("faq")} faqs={faqs}/>}
       {section&&siblings.length>0&&<section className="pdp-section"><h2>{t("relatedCategories")}</h2><div className="guide-links">{siblings.map((s)=><Link key={s.slug} href={hrefFor(locale,sectionPath(s))}>{t(`sections.${s.slug}.title`)}</Link>)}</div></section>}
