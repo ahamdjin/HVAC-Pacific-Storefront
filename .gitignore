@@ -47,3 +47,6 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# generated catalog import reports
+scripts/reports/*.csv

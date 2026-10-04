@@ -27,7 +27,66 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Typecheck storefront
         run: pnpm --filter @workspace/hvac-pacific run typecheck
+      - name: Typecheck catalog scripts
+        run: pnpm --filter @workspace/scripts run typecheck
+      - name: Check XLSX reader
+        run: pnpm --filter @workspace/scripts run check:xlsx-reader
+      - name: Test purchase compliance policy
+        run: pnpm --filter @workspace/scripts run test:purchase-policy
       - name: Build storefront
         env:
           SHOPIFY_MOCK_BUILD: "true"
+          CI_SITE_ORIGIN: "http://127.0.0.1:3000"
         run: pnpm --filter @workspace/hvac-pacific run build
+      - name: Smoke test production storefront
+        env:
+          SHOPIFY_MOCK_BUILD: "true"
+          CI_SITE_ORIGIN: "http://127.0.0.1:3000"
+          ZH_TRANSLATIONS_REVIEWED: "false"
+          PORT: "3000"
+          QA_BASE_URL: "http://127.0.0.1:3000"
+        run: |
+          pnpm --filter @workspace/hvac-pacific run start > /tmp/hvac-storefront.log 2>&1 &
+          APP_PID=$!
+          trap 'kill $APP_PID 2>/dev/null || true' EXIT
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:3000/ >/dev/null; then break; fi
+            sleep 1
+          done
+          if ! curl -fsS http://127.0.0.1:3000/ >/dev/null; then
+            cat /tmp/hvac-storefront.log
+            exit 1
+          fi
+          pnpm --filter @workspace/scripts run test:storefront-smoke
+          npx -y lighthouse@13.5.0 http://127.0.0.1:3000/ --quiet --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --only-categories=performance,accessibility,seo --output=json --output-path=/tmp/lh-home.json
+          npx -y lighthouse@13.5.0 http://127.0.0.1:3000/units --quiet --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --only-categories=performance,accessibility,seo --output=json --output-path=/tmp/lh-units.json
+          node - <<'NODE'
+          const fs = require("fs");
+          const reports = [
+            ["home", "/tmp/lh-home.json"],
+            ["units", "/tmp/lh-units.json"],
+          ];
+          let failed = false;
+          for (const [name, path] of reports) {
+            const report = JSON.parse(fs.readFileSync(path, "utf8"));
+            const performance = Math.round((report.categories.performance.score || 0) * 100);
+            const accessibility = Math.round((report.categories.accessibility.score || 0) * 100);
+            const seo = Math.round((report.categories.seo.score || 0) * 100);
+            console.log(`Lighthouse ${name}: Performance ${performance} · Accessibility ${accessibility} · SEO ${seo}`);
+            for (const categoryName of ["seo","accessibility"]) {
+              const category = report.categories[categoryName];
+              const failedAudits = category.auditRefs
+                .map((ref) => report.audits[ref.id])
+                .filter((audit) => audit && audit.score !== null && audit.score < 1);
+              for (const audit of failedAudits) {
+                console.log(`  FAIL ${categoryName}: ${audit.id} · ${audit.title} · score=${audit.score} ${audit.displayValue || ""}`);
+              }
+            }
+            for (const id of ["first-contentful-paint","largest-contentful-paint","total-blocking-time","cumulative-layout-shift","speed-index"]) {
+              const audit = report.audits[id];
+              if (audit) console.log(`  PERF ${id}: ${audit.displayValue || audit.numericValue}`);
+            }
+            if (performance < 90 || seo < 100 || accessibility < 95) failed = true;
+          }
+          if (failed) process.exit(1);
+          NODE

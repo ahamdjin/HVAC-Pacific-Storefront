@@ -1,8 +1,65 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { shopifyStorefrontRequest } from "@/lib/shopify/storefront";
+import { evaluatePurchasePolicy, type PurchaseAttribute } from "@/lib/purchase-policy";
 
 const COOKIE = "hvac_cart_id";
+
+type VariantPolicy = {
+  id: string;
+  availableForSale: boolean;
+  product: {
+    metafields: Array<{ key: string; value: string } | null>;
+  };
+};
+
+async function getVariantPolicy(variantId: string) {
+  const query = `
+    query VariantPolicy($id:ID!) {
+      node(id:$id) {
+        ... on ProductVariant {
+          id
+          availableForSale
+          product {
+            metafields(identifiers:[
+              {namespace:"specs",key:"site_status"},
+              {namespace:"specs",key:"requires_epa608"},
+              {namespace:"specs",key:"requires_licensed_install"}
+            ]) { key value }
+          }
+        }
+      }
+    }`;
+  const data = await shopifyStorefrontRequest<{ node: VariantPolicy | null }>(
+    query,
+    { id: variantId },
+    { cache: "no-store", revalidate: 0 },
+  );
+  return data.node;
+}
+
+async function validatePurchasePolicy(variantId: string, attributes: PurchaseAttribute[]) {
+  const variant = await getVariantPolicy(variantId);
+  if (!variant) {
+    return evaluatePurchasePolicy({
+      found: false,
+      availableForSale: false,
+      meta: {},
+      attributes,
+    });
+  }
+  const meta = Object.fromEntries(
+    variant.product.metafields
+      .filter((item): item is NonNullable<typeof item> => Boolean(item))
+      .map((item) => [item.key, item.value]),
+  );
+  return evaluatePurchasePolicy({
+    availableForSale: variant.availableForSale,
+    meta,
+    attributes,
+  });
+}
+
 const CART_FIELDS = `
   id checkoutUrl
   cost { subtotalAmount { amount currencyCode } totalAmount { amount currencyCode } }
@@ -41,9 +98,21 @@ export async function POST(request: NextRequest) {
   if (typeof body.variantId !== "string" || !body.variantId) {
     return NextResponse.json({ error: "Missing product variant." }, { status: 400 });
   }
-  const attributes = Array.isArray(body.attributes)
-    ? body.attributes.filter((x:any) => typeof x?.key === "string" && typeof x?.value === "string")
+  const attributes: PurchaseAttribute[] = Array.isArray(body.attributes)
+    ? body.attributes
+        .filter((x: unknown): x is PurchaseAttribute => {
+          if (!x || typeof x !== "object") return false;
+          const candidate = x as { key?: unknown; value?: unknown };
+          return typeof candidate.key === "string" && typeof candidate.value === "string";
+        })
+        .map((x: PurchaseAttribute) => ({ key: x.key.slice(0, 120), value: x.value.slice(0, 240) }))
     : [];
+
+  const policy = await validatePurchasePolicy(body.variantId, attributes);
+  if (!policy.ok) {
+    return NextResponse.json({ error: policy.error }, { status: policy.status });
+  }
+
   const line = {
     merchandiseId: body.variantId,
     quantity: Math.max(1, Number(body.quantity) || 1),
@@ -76,13 +145,13 @@ export async function POST(request: NextRequest) {
     jar.set(COOKIE,cart.id,{httpOnly:true,sameSite:"lax",secure:process.env.NODE_ENV==="production",path:"/",maxAge:60*60*24*30});
   }
 
-  if (body.note && id) {
+  if (policy.epaNote && id) {
     const noteMutation = `mutation Note($cartId:ID!,$note:String!){cartNoteUpdate(cartId:$cartId,note:$note){userErrors{message}}}`;
     await shopifyStorefrontRequest(
       noteMutation,
-      {cartId:id,note:String(body.note).slice(0,500)},
-      {cache:"no-store",revalidate:0},
-    ).catch(()=>null);
+      { cartId: id, note: policy.epaNote.slice(0, 500) },
+      { cache: "no-store", revalidate: 0 },
+    ).catch(() => null);
   }
   return NextResponse.json(cart);
 }

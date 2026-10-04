@@ -1,21 +1,24 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { CartClient } from "@/components/CartClient";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 
-export const metadata: Metadata = {
-  title: "Cart | hvacpacific",
-  robots: { index:false, follow:false },
-};
+export async function generateMetadata({params}:{params:Promise<{locale:string}>}):Promise<Metadata>{
+  const {locale}=await params;
+  const t=await getTranslations({locale,namespace:"Pages.cart"});
+  return { title:t("title")+" | hvacpacific", robots:{index:false,follow:false} };
+}
 
 export default async function Page({params}:{params:Promise<{locale:string}>}) {
   const {locale}=await params;
+  const t=await getTranslations({locale,namespace:"Pages.cart"});
   return (
     <main id="main">
       <div className="wrap page-shell">
-        <Breadcrumbs locale={locale} items={[{name:"Cart",path:"/cart"}]} />
+        <Breadcrumbs locale={locale} items={[{name:t("breadcrumb"),path:"/cart"}]} />
         <header className="page-head">
-          <h1>Your cart</h1>
-          <p>Review your order before continuing to Shopify's secure checkout.</p>
+          <h1>{t("title")}</h1>
+          <p>{t("description")}</p>
         </header>
         <CartClient />
       </div>

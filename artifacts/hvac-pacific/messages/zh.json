@@ -42,7 +42,43 @@
     "partsHeading": "零件与配件",
     "pickupNote": "订单完成后提供自取地点。",
     "contactTitle": "有问题？请联系我们。",
-    "contactDescription": "致电获取真实的产品和订单支持。"
+    "contactDescription": "致电获取真实的产品和订单支持。",
+    "metaTitle": "南加州暖通设备与零件 | hvacpacific",
+    "metaDescription": "选购暖通设备、系统和替换零件，支持南加州本地自取与配送。",
+    "ogDescription": "在 HVAC Pacific 选购已核实信息的暖通设备与零件。",
+    "supplyEyebrow": "南加州暖通设备供应",
+    "lead": "选购已核实的设备、系统和维修零件；{miles} 英里范围内提供本地自取与配送。支持 English 和中文。",
+    "verifiedData": "已核实的产品数据",
+    "localFulfillment": "本地履约",
+    "phoneSupport": "真人电话支持",
+    "findPart": "找到准确的零件",
+    "searchBy": "按型号、SKU 或规格搜索",
+    "searchExample": "例如：GA5SAN53600W",
+    "searchCatalog": "搜索目录",
+    "notSure": "不确定是否匹配？",
+    "call": "致电 {phone}",
+    "shopEquipment": "选购设备",
+    "viewAllUnits": "查看全部设备 →",
+    "repairService": "维修与服务零件",
+    "viewAllParts": "查看全部零件 →",
+    "currentCatalog": "当前目录",
+    "featuredProducts": "精选产品",
+    "whyEyebrow": "为什么选择 HVAC Pacific",
+    "whyTitle": "围绕准确型号与规格进行采购",
+    "californiaFocused": "聚焦加州要求",
+    "californiaFocusedText": "只有目录中确有数据时，产品页面才显示相应的合规字段。",
+    "localPickupDelivery": "本地自取与配送",
+    "localPickupDeliveryText": "履约范围聚焦南加州已配置的本地服务区域。",
+    "bilingual": "English & 中文",
+    "bilingualText": "提供清晰的语言版本入口和电话支持，不根据浏览器语言自动跳转。",
+    "contractorData": "面向承包商的产品数据",
+    "contractorDataText": "型号、电气要求、制冷剂和兼容性信息紧邻产品展示。",
+    "knowledgeCenter": "知识中心",
+    "latestGuides": "最新暖通指南",
+    "allGuides": "全部指南 →",
+    "helpFind": "需要帮助寻找产品？",
+    "talkWith": "联系 HVAC Pacific",
+    "sendModel": "致电 <call>{phone}</call>，或把型号和您的需求发送给我们。"
   },
   "Footer": {
     "pickupDelivery": "自取与配送",
@@ -50,7 +86,20 @@
     "about": "关于我们",
     "compliance": "加州暖通合规",
     "copyright": "HVAC Pacific",
-    "pickupNote": "订单完成后提供自取地点。"
+    "pickupNote": "订单完成后提供自取地点。",
+    "company": "公司",
+    "contactLink": "联系我们",
+    "pickupLink": "自取与本地配送",
+    "resources": "资源",
+    "guides": "暖通指南",
+    "californiaCompliance": "加州暖通合规",
+    "refrigerantPolicy": "制冷剂销售政策",
+    "policies": "政策",
+    "shippingReturns": "配送与退货",
+    "warranty": "保修",
+    "privacy": "隐私",
+    "terms": "条款",
+    "prop65": "Proposition 65"
   },
   "Nav": {
     "skip": "跳到正文",
@@ -61,30 +110,323 @@
     "language": "语言",
     "mainNav": "主导航"
   },
-  "Home": {
-    "unitsText": "热泵、一体式机组、迷你分体机以及空调与炉体系统。",
-    "partsText": "电气、电机、控制、制冷、工具等。",
-    "emptyTitle": "产品目录尚未发布",
-    "emptyDescription": "本网站目前没有上架产品。我们只在信息核实后才显示产品详情，因此这里没有任何占位商品。如有设备或零件问题，请致电或发送邮件。",
-    "browseHeading": "按类别浏览",
-    "factsHeading": "本地服务",
-    "factPickup": "本地自取",
-    "factPickupText": "订单完成后提供自取地点。",
-    "factDelivery": "{miles} 英里内配送",
-    "factDeliveryText": "{miles} 英里范围内提供本地配送。",
-    "factLanguagesText": "可用 English 或中文与我们沟通。",
-    "factLanguages": "英文和中文支持",
-    "email": "邮件支持",
-    "needInstallerText": "需要安装协助？安装人员申请将在后续阶段开放。",
-    "status": "商店状态"
+  "Commerce": {
+    "productCard": {
+      "imageUnavailable": "暂无图片",
+      "available": "可购买",
+      "unavailable": "暂不可购买",
+      "fulfillment": "20 英里内本地自取 / 配送",
+      "ton": "{value} 吨"
+    },
+    "catalog": {
+      "aria": "产品筛选",
+      "title": "筛选产品",
+      "reset": "重置",
+      "brand": "品牌",
+      "tonnage": "吨位",
+      "refrigerant": "制冷剂",
+      "systemType": "系统类型",
+      "keySpecification": "关键规格",
+      "price": "价格",
+      "all": "全部",
+      "products": "件产品",
+      "noMatchingTitle": "没有符合条件的产品",
+      "noMatchingText": "请尝试移除一个或多个筛选条件。",
+      "clearFilters": "清除筛选",
+      "under100": "低于 $100",
+      "from100to500": "$100–$500",
+      "from500to2000": "$500–$2,000",
+      "over2000": "$2,000 以上",
+      "subcategory": "子类别"
+    },
+    "purchase": {
+      "option": "选项",
+      "unavailableSuffix": " — 暂不可购买",
+      "unavailable": "暂不可购买",
+      "fulfillment": "本地自取 · 20 英里内本地配送",
+      "installAck": "我了解此设备必须由持证承包商安装，并由具备 EPA 608 认证的技术人员进行相关制冷剂工作，且可能需要许可证。",
+      "adding": "正在加入…",
+      "addToCart": "加入购物车",
+      "added": "已加入购物车。",
+      "addError": "无法加入购物车。",
+      "gateNote": "制冷剂自取或配送前需要核验 EPA 608 认证。",
+      "close": "关闭",
+      "epaTitle": "需要 EPA 608 认证核验",
+      "epaDescription": "我们会在自取/配送前核验认证。无法提供有效认证的订单将被取消并退款。",
+      "certNumber": "EPA 608 认证编号",
+      "techName": "认证技术人员姓名",
+      "epaAck": "本人具备 EPA 608 认证，或代表具备认证的技术人员购买。",
+      "verifyAdd": "核验信息并加入购物车",
+      "call": "致电",
+      "mobilePurchase": "移动端购买操作"
+    },
+    "cart": {
+      "loading": "正在加载购物车…",
+      "emptyTitle": "购物车为空",
+      "emptyText": "浏览设备和零件以开始下单。",
+      "qty": "数量",
+      "remove": "移除",
+      "summary": "订单摘要",
+      "subtotal": "小计",
+      "fulfillmentNote": "自取或本地配送详情将在结账过程中确认。",
+      "checkout": "继续安全结账"
+    },
+    "lead": {
+      "name": "姓名",
+      "phone": "电话",
+      "email": "电子邮箱",
+      "zip": "邮政编码",
+      "preferredLanguage": "首选语言",
+      "english": "English",
+      "chinese": "中文",
+      "message": "留言",
+      "consent": "我同意 HVAC Pacific 就此请求与我联系。",
+      "sending": "正在发送…",
+      "send": "发送请求",
+      "success": "谢谢 — 您的请求已发送。",
+      "error": "无法发送请求。"
+    },
+    "search": {
+      "breadcrumb": "搜索",
+      "title": "搜索暖通设备与零件",
+      "results": "“{query}” 的搜索结果：{count} 项",
+      "placeholder": "型号、零件、品牌或规格",
+      "button": "搜索",
+      "noneTitle": "未找到产品",
+      "noneText": "请尝试型号、品牌、部件类型或更短的搜索词。"
+    }
   },
-  "Scaffold": {
-    "breadcrumb": "当前位置",
-    "title": "此页面属于后续阶段",
-    "description": "在线目录、搜索、指南和申请表单暂未开放。如有问题，请致电或发送邮件。",
-    "back": "返回首页",
-    "searchTitle": "搜索暂未开放",
-    "cartTitle": "购物车为空",
-    "cartDescription": "结账功能暂未开放。"
+  "Category": {
+    "units": "设备",
+    "parts": "零件与配件",
+    "equipment": "暖通设备",
+    "partsEyebrow": "零件与配件",
+    "allUnitsTitle": "暖通设备",
+    "allPartsTitle": "暖通零件与配件",
+    "unitsMetaDescription": "选购暖通设备，支持南加州本地自取和配送。",
+    "partsMetaDescription": "选购暖通零件与配件，支持南加州本地自取和配送。",
+    "forSaleTitle": "{title} – 南加州本地自取 | {brand}",
+    "unitsIntro": "按系统类型、品牌、容量和制冷剂浏览暖通设备。只有目录中存在的信息才会显示在产品页面。",
+    "partsIntro": "按类别、品牌和关键规格浏览暖通零件与配件。",
+    "loadingFilters": "正在加载筛选条件…",
+    "emptyTitle": "此类别目前没有已核实并发布的产品。",
+    "emptyText": "我们不会发布占位库存。如需特定型号或设备，请联系我们。",
+    "buyingGuide": "购买指南",
+    "capacityTitle": "选择合适容量",
+    "capacityText": "不要只根据房屋面积确定暖通设备容量。持证承包商应进行 Manual J 负荷计算，并在安装前核实匹配设备、电气服务、风管和当地许可要求。",
+    "faq": "常见问题",
+    "relatedCategories": "相关类别",
+    "helpfulGuides": "实用暖通指南",
+    "sections": {
+      "heat-pump-systems": {
+        "title": "热泵系统",
+        "intro": "选购全年供暖和制冷的热泵设备。下单前比较容量、制冷剂、效率数据和兼容部件。"
+      },
+      "packaged-units": {
+        "title": "一体式机组",
+        "intro": "选购将主要制热和制冷部件集中在一个室外机柜中的一体式暖通设备。购买前请核实电气服务、容量和安装要求。"
+      },
+      "mini-splits": {
+        "title": "无管道迷你分体系统",
+        "intro": "按 BTU 容量、电压、制冷剂和品牌选购无管道迷你分体系统及部件。"
+      },
+      "ac-furnace-systems": {
+        "title": "空调 + 暖炉系统",
+        "intro": "匹配的中央空调与暖炉设备。只有产品数据核实后，系统才会发布。"
+      },
+      "capacitors": {
+        "title": "暖通电容器",
+        "intro": "用于空调、热泵和电机的替换电容器。请按照设备要求匹配电容量、电压和尺寸。"
+      },
+      "dual-run-capacitors": {
+        "title": "双联运行电容器",
+        "intro": "双联运行电容器将压缩机和风扇电容组合在一个外壳中。更换时请同时匹配两个 MFD 数值和电压。"
+      },
+      "single-run-capacitors": {
+        "title": "单联运行电容器",
+        "intro": "用于暖通电机和设备的单联运行电容器。请匹配原部件标注的 MFD 和电压。"
+      },
+      "contactors-relays": {
+        "title": "接触器与继电器",
+        "intro": "用于切换压缩机、电机和控制电路的暖通接触器与继电器。"
+      },
+      "motors": {
+        "title": "暖通电机",
+        "intro": "冷凝风扇、鼓风机和替换暖通电机。订购前请核实马力、RPM、电压、机架、轴和旋转方向。"
+      },
+      "thermostats": {
+        "title": "温控器",
+        "intro": "适用于传统系统和热泵系统的温控器与控制器。购买前请核实级数和系统兼容性。"
+      },
+      "furnace-parts": {
+        "title": "暖炉零件",
+        "intro": "点火、安全和暖炉替换部件。安装前请确认型号兼容性和额定参数。"
+      },
+      "refrigeration-parts": {
+        "title": "制冷零件",
+        "intro": "用于合格暖通与制冷维修工作的制冷服务零件和部件。"
+      },
+      "electrical": {
+        "title": "暖通电气零件",
+        "intro": "用于暖通维修和设备检修的电气部件。"
+      },
+      "condensate": {
+        "title": "冷凝水部件",
+        "intro": "用于空调和暖通系统的冷凝水管理部件。"
+      },
+      "chemicals-leak-detection": {
+        "title": "化学品与检漏",
+        "intro": "暖通维修化学品和检漏产品。请遵守制造商说明和适用的安全要求。"
+      },
+      "tools": {
+        "title": "暖通工具",
+        "intro": "用于暖通安装、诊断和维护的工具与服务配件。"
+      },
+      "refrigerant": {
+        "title": "制冷剂",
+        "intro": "制冷剂产品的销售受适用的 EPA 销售限制和我们的认证核验政策约束。"
+      }
+    }
+  },
+  "ProductPage": {
+    "units": "设备",
+    "parts": "零件与配件",
+    "brand": "品牌",
+    "model": "型号",
+    "capacity": "容量",
+    "systemType": "系统类型",
+    "refrigerant": "制冷剂",
+    "threePhaseTitle": "需要三相电源。",
+    "threePhaseText": "这是轻型商用三相电设备。大多数住宅使用单相电；下单前请核实现场电气服务。",
+    "imageUnavailable": "暂无产品图片",
+    "imageAlt": "{title} 产品图片 {number}",
+    "needInstaller": "需要安装人员？",
+    "systemComponents": "系统部件",
+    "outdoorUnit": "室外机",
+    "indoorUnit": "室内盘管 / 空气处理机",
+    "furnace": "暖炉",
+    "specifications": "规格",
+    "compliance": "合规信息",
+    "scaqmd": "符合 SCAQMD Rule 1111（14 ng/J）",
+    "cec": "已列入 CEC",
+    "documents": "文件",
+    "specSheet": "规格表",
+    "installationManual": "安装手册",
+    "safetyDataSheet": "安全数据表",
+    "installNoteTitle": "重要安装提示",
+    "installNote": "暖通设备必须针对实际应用进行选择和安装。可能适用当地许可、持证安装和制冷剂操作要求。制造商保修受其条款约束，并可能要求注册。",
+    "prop65Title": "加州 Proposition 65",
+    "prop65Text": "此产品在目录中被标记为需要加州 Proposition 65 警告。使用前请查看产品包装和制造商文件。",
+    "productDetails": "产品详情",
+    "faq": "常见问题",
+    "completeInstall": "完成安装所需产品",
+    "relatedGuides": "相关暖通指南",
+    "call": "致电",
+    "order": "下单",
+    "highlights": "关键亮点"
+  },
+  "Pages": {
+    "cart": {
+      "breadcrumb": "购物车",
+      "title": "您的购物车",
+      "description": "查看订单后继续前往 Shopify 安全结账。"
+    },
+    "installer": {
+      "breadcrumb": "需要安装人员？",
+      "eyebrow": "安装人员转介",
+      "title": "需要暖通安装人员？",
+      "description": "告诉我们您准备购买的产品和项目所在位置。我们可以将您的请求转介给独立的持证承包商。",
+      "important": "重要：",
+      "disclaimer": "HVAC Pacific 不提供安装服务。转介的承包商均为独立企业。",
+      "callPrompt": "想直接沟通？请致电 {phone}。"
+    },
+    "contact": {
+      "breadcrumb": "联系我们",
+      "eyebrow": "客户支持",
+      "title": "联系 HVAC Pacific",
+      "description": "对型号、零件、订单或本地自取有疑问？请发送消息或致电。",
+      "talk": "联系我们",
+      "pickup": "订单完成后提供自取地点。"
+    }
+  },
+  "BrandsPage": {
+    "breadcrumb": "品牌",
+    "metaTitle": "暖通品牌 | hvacpacific",
+    "metaDescription": "按品牌浏览 HVAC Pacific 的暖通设备和零件。",
+    "eyebrow": "制造商",
+    "title": "暖通品牌",
+    "description": "按制造商浏览已发布的设备和零件。",
+    "products": "{count} 件产品",
+    "brandEyebrow": "品牌",
+    "brandTitle": "{brand} 暖通设备与零件",
+    "brandDescription": "浏览 HVAC Pacific 当前已发布的 {brand} 产品。",
+    "brandMetaTitle": "{brand} 暖通设备与零件 | {site}",
+    "brandMetaDescription": "在 HVAC Pacific 选购已发布的 {brand} 暖通设备和零件。"
+  },
+  "GuidesPage": {
+    "breadcrumb": "指南",
+    "metaTitle": "暖通指南 | hvacpacific",
+    "metaDescription": "来自 HVAC Pacific 的实用暖通设备、零件与购买指南。",
+    "eyebrow": "知识中心",
+    "title": "暖通指南",
+    "description": "用于比较暖通设备、部件和技术规格的实用信息。",
+    "noneTitle": "暂时没有已发布的指南。",
+    "noneText": "草稿文章会保持不被搜索引擎收录，直到在 Shopify 中审核并发布。",
+    "articleEyebrow": "暖通指南",
+    "updated": "更新于 {date}",
+    "fallbackDescription": "来自 HVAC Pacific 的暖通指南。"
+  },
+  "NotFound": {
+    "title": "找不到该页面。",
+    "description": "请搜索产品目录，或浏览暖通设备和零件。",
+    "search": "搜索产品",
+    "units": "浏览设备",
+    "parts": "浏览零件"
+  },
+  "StaticPage": {
+    "draft": "草稿 — 待审核",
+    "translationNotice": "本页详细政策/说明内容正在进行中文编辑与法律审核，目前正文仍以英文工作版本显示。正式交易请以审核后的政策和订单条款为准。",
+    "pages": {
+      "about": {
+        "title": "关于 HVAC Pacific",
+        "description": "HVAC Pacific 在南加州供应暖通设备和零件，并提供本地自取与配送。"
+      },
+      "pickup-delivery": {
+        "title": "自取与本地配送",
+        "description": "了解 HVAC Pacific 在已配置服务区域内的本地自取和配送方式。"
+      },
+      "california-hvac-compliance": {
+        "title": "加州暖通合规指南",
+        "description": "用于核查加州暖通设备要求的实用起点。"
+      },
+      "refrigerant-sales-policy": {
+        "title": "制冷剂销售政策",
+        "description": "HVAC Pacific 的制冷剂销售与认证核验政策。"
+      },
+      "shipping-returns": {
+        "title": "配送与退货",
+        "description": "HVAC Pacific 的自取、本地配送与退货政策。"
+      },
+      "warranty": {
+        "title": "保修",
+        "description": "HVAC Pacific 的制造商保修信息。"
+      },
+      "privacy": {
+        "title": "隐私政策",
+        "description": "HVAC Pacific 隐私政策。"
+      },
+      "terms": {
+        "title": "使用条款",
+        "description": "HVAC Pacific 网站与销售条款。"
+      },
+      "prop-65": {
+        "title": "加州 Proposition 65",
+        "description": "关于 HVAC Pacific 产品页面 Proposition 65 警告的信息。"
+      }
+    }
+  },
+  "_meta": {
+    "status": "machine draft – needs native review",
+    "locale": "zh-Hans"
   }
 }

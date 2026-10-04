@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { ProductCard } from "@/components/ProductCard";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { searchProducts } from "@/lib/shopify/catalog";
 
-export const metadata: Metadata = {
-  title: "Search | hvacpacific",
-  robots: { index: false, follow: true },
-};
+export async function generateMetadata({params}:{params:Promise<{locale:string}>}):Promise<Metadata>{
+  const {locale}=await params;
+  const t=await getTranslations({locale,namespace:"Commerce.search"});
+  return { title: t("title")+" | hvacpacific", robots:{index:false,follow:true} };
+}
 
 export default async function Page({
   params,
@@ -17,25 +19,22 @@ export default async function Page({
 }) {
   const { locale } = await params;
   const { q = "" } = await searchParams;
-  const products = q ? await searchProducts(q, locale) : [];
+  const [products,t]=await Promise.all([
+    q ? searchProducts(q, locale) : Promise.resolve([]),
+    getTranslations({locale,namespace:"Commerce.search"}),
+  ]);
 
   return (
     <main id="main">
       <div className="wrap page-shell">
-        <Breadcrumbs locale={locale} items={[{ name: "Search", path: "/search" }]} />
+        <Breadcrumbs locale={locale} items={[{ name: t("breadcrumb"), path: "/search" }]} />
         <header className="page-head">
-          <h1>Search HVAC equipment &amp; parts</h1>
-          {q && <p>{products.length} results for <strong>{q}</strong></p>}
+          <h1>{t("title")}</h1>
+          {q && <p>{t("results",{count:products.length,query:q})}</p>}
         </header>
         <form action={locale === "zh" ? "/zh/search" : "/search"} className="standalone-search">
-          <input
-            type="search"
-            name="q"
-            defaultValue={q}
-            required
-            placeholder="Model, part, brand or specification"
-          />
-          <button className="btn primary">Search</button>
+          <input type="search" name="q" defaultValue={q} required placeholder={t("placeholder")} />
+          <button className="btn primary">{t("button")}</button>
         </form>
         {products.length ? (
           <div className="product-grid search-results">
@@ -43,8 +42,8 @@ export default async function Page({
           </div>
         ) : q ? (
           <div className="empty-state">
-            <h2>No products found</h2>
-            <p>Try a model number, brand, component type or shorter search.</p>
+            <h2>{t("noneTitle")}</h2>
+            <p>{t("noneText")}</p>
           </div>
         ) : null}
       </div>

@@ -13,9 +13,14 @@ This storefront treats Shopify as the only source of truth for products, prices,
 - `GSC_VERIFICATION`
 - `MERCHANT_VERIFICATION`
 
-Optional:
+Optional / launch-stage:
+- `SHOPIFY_HEADLESS_PUBLICATION_ID` — required before importer can publish ACTIVE products
+- `SHOPIFY_LOCATION_ID` — required for importer inventory quantities
+- `MERCHANT_LOCAL_DELIVERY_ZIP_CODES` — comma-separated real delivery ZIPs; only set after service area is confirmed
+- `MERCHANT_LOCAL_DELIVERY_PRICE` — exact local delivery price in USD; only set when accurate
 - `ENABLE_LOCAL_INVENTORY_FEED=true` only after a real showroom/pickup location is configured
 - `GOOGLE_LOCAL_STORE_CODE` when Local Inventory is enabled
+- `ZH_TRANSLATIONS_REVIEWED=true` only after native Chinese review
 
 The Replit Shopify connector remains supported as a Storefront credential fallback.
 
@@ -55,6 +60,8 @@ Create these product metafields in namespace `specs` and enable Storefront acces
 | prop65 | boolean | warning |
 | key_specs | multiline text | semicolon/newline-separated `label: value` pairs |
 | google_title | single line text | Merchant title override |
+| google_product_category | single line text | optional Google taxonomy ID/path override; leave blank unless verified |
+| search_keywords | multiline text | internal search synonyms |
 | spec_sheet_url | URL | product document |
 | manual_url | URL | product document |
 | sds_url | URL | product document |
@@ -62,6 +69,7 @@ Create these product metafields in namespace `specs` and enable Storefront acces
 
 Collection metafields:
 - `content.guide_html`
+- `content.sizing_table_html` — optional, units only; use only verified/reviewed sizing guidance and include a Manual J caveat
 - `content.faq`
 
 ## Catalog conventions
@@ -98,11 +106,15 @@ Primary custom feed:
 The feed:
 - uses the headless product URL, never the Shopify theme URL
 - excludes refrigerant products requiring EPA 608 verification
-- excludes products without images
+- excludes products without images or valid positive prices
 - excludes HOLD / NEEDS DATA statuses
-- includes brand, MPN when available, price, availability and product highlights
+- includes brand, MPN when a real manufacturer model exists, price, availability and product highlights
+- emits `google_product_category` only when the verified optional metafield is populated
+- emits per-product `g:shipping` only when real delivery ZIPs and an exact delivery price are configured
+- otherwise relies on accurate Merchant Center account-level shipping settings
+- never invents nationwide shipping, delivery ZIPs or shipping prices
 
-Shipping/delivery settings must also be configured accurately in Merchant Center or the connected Shopify Google channel. Do not advertise nationwide shipping if the store only offers local pickup/delivery.
+Google can automatically assign a product category, so leave the optional category override blank unless the taxonomy value is known to be correct.
 
 Local inventory scaffold:
 
@@ -131,3 +143,104 @@ It stays disabled until `SITE.showroom`, the feature flag and Google store code 
 8. Submit sitemap in Search Console.
 9. Review draft legal/policy pages before marking them indexable.
 10. Native-review Simplified Chinese copy before treating Chinese pages as final.
+
+
+## Excel product import
+
+The importer lives in `scripts/src/import-products.ts` and reads the exact `Units` and `Accessories` worksheets from the approved workbook.
+
+Dry run is the default and performs **no Shopify writes**:
+
+```bash
+pnpm --filter @workspace/scripts import:products -- ../hvacpacific_product_list.xlsx
+```
+
+After reviewing the generated CSV report, apply the import explicitly:
+
+```bash
+pnpm --filter @workspace/scripts import:products -- ../hvacpacific_product_list.xlsx --apply
+```
+
+Additional apply-mode environment values:
+
+- `SHOPIFY_HEADLESS_PUBLICATION_ID` — required before any ACTIVE row can be published to the headless channel.
+- `SHOPIFY_LOCATION_ID` — required if accessory `qty` values should update Shopify inventory at a location.
+
+Safety behavior:
+
+- upsert lookup is by exact variant SKU (`listing_id` for Units, `sku` for Accessories)
+- duplicate SKUs fail instead of guessing
+- multi-option / multi-variant products are refused rather than destructively replaced
+- a handle already owned by a different SKU is refused
+- `DECIDE`, HOLD/NEEDS DATA, unknown statuses and missing prices remain DRAFT
+- missing price is never invented
+- controlled blank metafields are deleted so re-running the workbook is truly idempotent
+- `efficiency_stated` is intentionally never mapped to public efficiency fields
+- refrigerant rows receive the `pickup-only` tag and EPA 608 gate
+- equipment categories receive the licensed-install acknowledgement gate
+- collections are created/attached from `site_category` and `subcategory`
+- every run writes a CSV report under `scripts/reports/`
+
+The XLSX reader uses Python's standard library only, so there is no third-party spreadsheet parsing dependency in the production workspace.
+
+## Catalog QA
+
+Run catalog data checks against the live Storefront API:
+
+```bash
+pnpm --filter @workspace/scripts qa:catalog
+```
+
+Set `QA_SITE_URL=https://hvacpacific.com` to also check server-rendered PDP H1s, self-referencing canonicals, Product JSON-LD, and filtered-URL `noindex,follow` behavior.
+
+The QA command fails non-zero for blocking issues such as:
+
+- a published product without an image or valid price
+- a published HOLD / NEEDS DATA product
+- a unit missing its installer gate
+- a refrigerant item missing its EPA 608 gate
+- missing Product schema/canonical on a rendered PDP
+
+
+## Source-backed Shopify guide drafts
+
+Eight full guide drafts are stored in `scripts/src/guide-drafts.ts`. Each draft includes a short-answer block, table of contents, internal catalog links, and a source section using primary or manufacturer technical sources.
+
+Preview the seeding plan without any Shopify writes:
+
+```bash
+pnpm --filter @workspace/scripts seed:guides
+```
+
+Sync the drafts to the Shopify `guides` blog:
+
+```bash
+pnpm --filter @workspace/scripts seed:guides -- --apply
+```
+
+The seeder creates the `guides` blog if necessary and creates or updates articles as **unpublished**. It will not overwrite an article that is already published, which protects reviewed live content from a later seed run.
+
+Guide seeding requires Shopify Admin content permissions: `read_content` and `write_content` (or the equivalent Online Store page scopes supported by the installed app).
+
+Before publishing a guide, review its current regulatory claims against the linked primary sources and perform editorial/legal review where appropriate. The eight seeded drafts already include an FAQ and at least two relevant catalog/category links.
+
+
+## Analytics events
+
+When `GA4_ID` is configured, the storefront emits:
+
+- `view_item`
+- `add_to_cart`
+- `begin_checkout`
+- `generate_lead` with a non-PII `lead_type` value of `contact` or `installer`
+
+Do not send names, phone numbers, email addresses or EPA certification numbers to GA4.
+
+## Current Merchant Center note
+
+Google's current product data specification makes `google_product_category` optional and allows Google to automatically categorize products. Shipping cost remains required for U.S. Shopping/free listings unless supplied through another valid Merchant Center shipping configuration. The storefront therefore supports exact per-product local-delivery shipping data but will not guess missing service-area or price values.
+
+
+### Unit sizing tables
+
+The storefront intentionally does **not** invent a tons-to-square-feet chart. If a reviewed sizing table is supplied, add it to the unit collection's `content.sizing_table_html` metafield. It will render above the Manual J caveat. This keeps the requested category template without turning a rough rule of thumb into unsupported product-sizing advice.

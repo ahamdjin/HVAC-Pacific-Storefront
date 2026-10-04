@@ -1,9 +1,10 @@
 import "server-only";
 import { shopifyStorefrontRequest } from "./storefront";
 
+import { isVisibleCatalogProduct } from "./shared";
 import type { ArticleData, CollectionData, ProductCardData, ProductDetailData } from "./shared";
 export type { ArticleData, CollectionData, ProductCardData, ProductDetailData } from "./shared";
-export { boolMeta, metafieldMap, parseFaq, parseKeySpecs } from "./shared";
+export { boolMeta, isBlockedCatalogProduct, isVisibleCatalogProduct, metafieldMap, parseFaq, parseKeySpecs } from "./shared";
 
 const PRODUCT_CARD_FIELDS = `
   id handle title description vendor productType availableForSale tags
@@ -36,6 +37,8 @@ const PRODUCT_CARD_FIELDS = `
     {namespace:"specs", key:"prop65"},
     {namespace:"specs", key:"key_specs"},
     {namespace:"specs", key:"google_title"},
+    {namespace:"specs", key:"google_product_category"},
+    {namespace:"specs", key:"search_keywords"},
     {namespace:"specs", key:"spec_sheet_url"},
     {namespace:"specs", key:"manual_url"},
     {namespace:"specs", key:"sds_url"},
@@ -61,7 +64,7 @@ export async function getAllProducts(locale = "en", first = 250) {
     query,
     { first, language: language(locale) },
   );
-  return data.products.nodes;
+  return data.products.nodes.filter(isVisibleCatalogProduct);
 }
 
 export async function getFeaturedProducts(locale = "en") {
@@ -74,7 +77,8 @@ export async function getFeaturedProducts(locale = "en") {
     query,
     { language: language(locale) },
   );
-  if (data.collection?.products.nodes.length) return data.collection.products.nodes;
+  const featured = data.collection?.products.nodes.filter(isVisibleCatalogProduct) ?? [];
+  if (featured.length) return featured;
   return (await getAllProducts(locale, 12)).slice(0, 8);
 }
 
@@ -94,7 +98,7 @@ export async function getProduct(handle: string, locale = "en") {
     query,
     { handle, language: language(locale) },
   );
-  return data.product;
+  return data.product && isVisibleCatalogProduct(data.product) ? data.product : null;
 }
 
 export async function getCollection(handle: string, locale = "en") {
@@ -105,6 +109,7 @@ export async function getCollection(handle: string, locale = "en") {
         id handle title description descriptionHtml seo { title description }
         metafields(identifiers:[
           {namespace:"content",key:"guide_html"},
+          {namespace:"content",key:"sizing_table_html"},
           {namespace:"content",key:"faq"}
         ]) { namespace key value type }
       }
@@ -118,19 +123,39 @@ export async function getCollection(handle: string, locale = "en") {
 
 export async function searchProducts(term: string, locale = "en") {
   if (mockBuild()) return [] as ProductCardData[];
-  if (!term.trim()) return [];
+  const clean = term.trim();
+  if (!clean) return [];
   const query = `
     query Search($query:String!, $language:LanguageCode!) @inContext(language:$language) {
       search(first:60, query:$query, types:[PRODUCT], unavailableProducts:HIDE) {
         nodes { ... on Product { ${PRODUCT_CARD_FIELDS} } }
       }
     }`;
-  const data = await shopifyStorefrontRequest<{ search: { nodes: ProductCardData[] } }>(
-    query,
-    { query: term, language: language(locale) },
-    { cache: "no-store", revalidate: 0 },
-  );
-  return data.search.nodes.filter(Boolean);
+  const [data, all] = await Promise.all([
+    shopifyStorefrontRequest<{ search: { nodes: ProductCardData[] } }>(
+      query,
+      { query: clean, language: language(locale) },
+      { cache: "no-store", revalidate: 0 },
+    ),
+    getAllProducts(locale),
+  ]);
+  const native = data.search.nodes.filter(Boolean).filter(isVisibleCatalogProduct);
+  const needle = clean.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  const synonymMatches = all.filter((product) => {
+    const m = Object.fromEntries((product.metafields ?? []).filter(Boolean).map((x) => [x!.key, x!.value]));
+    const haystack = [
+      product.title,
+      product.vendor,
+      product.productType,
+      m.search_keywords,
+      m.outdoor_model,
+      m.indoor_model,
+      m.furnace_model,
+      ...product.variants.nodes.map((v) => v.sku ?? ""),
+    ].join(" ").toLowerCase().replace(/[^a-z0-9]+/g, " ");
+    return needle.length >= 2 && haystack.includes(needle);
+  });
+  return Array.from(new Map([...native, ...synonymMatches].map((product) => [product.id, product])).values()).slice(0, 60);
 }
 
 export async function getProductsByVendor(vendor: string, locale = "en") {
@@ -143,7 +168,7 @@ export async function getProductsByVendor(vendor: string, locale = "en") {
     query,
     { query: `vendor:"${vendor.replace(/"/g, "\\\"")}"`, language: language(locale) },
   );
-  return data.products.nodes;
+  return data.products.nodes.filter(isVisibleCatalogProduct);
 }
 
 export async function getGuideArticles(locale = "en", first = 50) {
@@ -192,11 +217,13 @@ export async function getProductRecommendations(productId: string, locale = "en"
   if (mockBuild()) return [] as ProductCardData[];
   const query = `
     query Recs($id:ID!, $language:LanguageCode!) @inContext(language:$language) {
-      productRecommendations(productId:$id) { ${PRODUCT_CARD_FIELDS} }
+      complementary: productRecommendations(productId:$id, intent:COMPLEMENTARY) { ${PRODUCT_CARD_FIELDS} }
+      related: productRecommendations(productId:$id, intent:RELATED) { ${PRODUCT_CARD_FIELDS} }
     }`;
-  const data = await shopifyStorefrontRequest<{ productRecommendations: ProductCardData[] }>(
+  const data = await shopifyStorefrontRequest<{ complementary: ProductCardData[]; related: ProductCardData[] }>(
     query,
     { id: productId, language: language(locale) },
   );
-  return data.productRecommendations ?? [];
+  const recommendations = data.complementary?.length ? data.complementary : (data.related ?? []);
+  return recommendations.filter(isVisibleCatalogProduct);
 }

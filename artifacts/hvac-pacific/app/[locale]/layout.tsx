@@ -14,7 +14,7 @@ import "../storefront.css";
 const verification=[process.env.GSC_VERIFICATION,process.env.MERCHANT_VERIFICATION].filter(Boolean) as string[];
 
 export const metadata:Metadata={
-  metadataBase:new URL(SITE.domain),
+  metadataBase:new URL(process.env.CI_SITE_ORIGIN || SITE.domain),
   icons:{icon:SITE.logoPath},
   title:{default:"HVAC Equipment & Parts for Southern California | hvacpacific",template:"%s | hvacpacific"},
   description:"HVAC equipment and parts for Southern California with local pickup, local delivery and model-specific product data.",
