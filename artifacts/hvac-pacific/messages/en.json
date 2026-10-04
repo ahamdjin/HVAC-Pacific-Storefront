@@ -85,7 +85,20 @@
     "about": "About",
     "compliance": "California HVAC compliance",
     "copyright": "HVAC Pacific",
-    "pickupNote": "Pickup location provided after order."
+    "pickupNote": "Pickup location provided after order.",
+    "company": "Company",
+    "contactLink": "Contact",
+    "pickupLink": "Pickup & delivery",
+    "resources": "Resources",
+    "guides": "HVAC guides",
+    "californiaCompliance": "California compliance",
+    "refrigerantPolicy": "Refrigerant policy",
+    "policies": "Policies",
+    "shippingReturns": "Shipping & returns",
+    "warranty": "Warranty",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "prop65": "Prop 65"
   },
   "Nav": {
     "skip": "Skip to content",
@@ -330,5 +343,43 @@
       "talk": "Talk with us",
       "pickup": "Pickup location provided after order."
     }
+  },
+  "BrandsPage": {
+    "breadcrumb": "Brands",
+    "metaTitle": "HVAC Brands | hvacpacific",
+    "metaDescription": "Browse HVAC equipment and parts by brand at HVAC Pacific.",
+    "eyebrow": "Manufacturers",
+    "title": "HVAC brands",
+    "description": "Browse published equipment and parts by manufacturer.",
+    "products": "{count, plural, one {# product} other {# products}}",
+    "brandEyebrow": "Brand",
+    "brandTitle": "{brand} HVAC equipment & parts",
+    "brandDescription": "Published {brand} products currently available through HVAC Pacific.",
+    "brandMetaTitle": "{brand} HVAC Equipment & Parts | {site}",
+    "brandMetaDescription": "Shop published {brand} HVAC equipment and parts from HVAC Pacific."
+  },
+  "GuidesPage": {
+    "breadcrumb": "Guides",
+    "metaTitle": "HVAC Guides | hvacpacific",
+    "metaDescription": "Practical HVAC equipment, parts and buying guides from HVAC Pacific.",
+    "eyebrow": "Knowledge center",
+    "title": "HVAC guides",
+    "description": "Practical information for comparing equipment, components and HVAC specifications.",
+    "noneTitle": "No guides are published yet.",
+    "noneText": "Draft articles stay out of search until they are reviewed and published in Shopify.",
+    "articleEyebrow": "HVAC Guide",
+    "updated": "Updated {date}",
+    "fallbackDescription": "HVAC guide from HVAC Pacific."
+  },
+  "NotFound": {
+    "title": "We couldn't find that page.",
+    "description": "Search the catalog or browse HVAC equipment and parts.",
+    "search": "Search products",
+    "units": "Browse units",
+    "parts": "Browse parts"
+  },
+  "StaticPage": {
+    "draft": "DRAFT – pending review",
+    "translationNotice": ""
   }
 }
