@@ -381,6 +381,44 @@
   },
   "StaticPage": {
     "draft": "草稿 — 待审核",
-    "translationNotice": "以下政策内容仍在进行中文法律/编辑审核。正式发布前请以审核后的英文政策和订单条款为准。"
+    "translationNotice": "本页详细政策/说明内容正在进行中文编辑与法律审核，目前正文仍以英文工作版本显示。正式交易请以审核后的政策和订单条款为准。",
+    "pages": {
+      "about": {
+        "title": "关于 HVAC Pacific",
+        "description": "HVAC Pacific 在南加州供应暖通设备和零件，并提供本地自取与配送。"
+      },
+      "pickup-delivery": {
+        "title": "自取与本地配送",
+        "description": "了解 HVAC Pacific 在已配置服务区域内的本地自取和配送方式。"
+      },
+      "california-hvac-compliance": {
+        "title": "加州暖通合规指南",
+        "description": "用于核查加州暖通设备要求的实用起点。"
+      },
+      "refrigerant-sales-policy": {
+        "title": "制冷剂销售政策",
+        "description": "HVAC Pacific 的制冷剂销售与认证核验政策。"
+      },
+      "shipping-returns": {
+        "title": "配送与退货",
+        "description": "HVAC Pacific 的自取、本地配送与退货政策。"
+      },
+      "warranty": {
+        "title": "保修",
+        "description": "HVAC Pacific 的制造商保修信息。"
+      },
+      "privacy": {
+        "title": "隐私政策",
+        "description": "HVAC Pacific 隐私政策。"
+      },
+      "terms": {
+        "title": "使用条款",
+        "description": "HVAC Pacific 网站与销售条款。"
+      },
+      "prop-65": {
+        "title": "加州 Proposition 65",
+        "description": "关于 HVAC Pacific 产品页面 Proposition 65 警告的信息。"
+      }
+    }
   }
 }
