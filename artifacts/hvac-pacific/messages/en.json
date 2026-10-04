@@ -380,6 +380,44 @@
   },
   "StaticPage": {
     "draft": "DRAFT – pending review",
-    "translationNotice": ""
+    "translationNotice": "",
+    "pages": {
+      "about": {
+        "title": "About HVAC Pacific",
+        "description": "HVAC Pacific supplies HVAC equipment and parts with local pickup and delivery in Southern California."
+      },
+      "pickup-delivery": {
+        "title": "Pickup & Local Delivery",
+        "description": "Information about HVAC Pacific local pickup and delivery within the configured service area."
+      },
+      "california-hvac-compliance": {
+        "title": "California HVAC Compliance Guide",
+        "description": "A practical starting point for checking HVAC equipment requirements in California."
+      },
+      "refrigerant-sales-policy": {
+        "title": "Refrigerant Sales Policy",
+        "description": "HVAC Pacific refrigerant sales and certification-verification policy."
+      },
+      "shipping-returns": {
+        "title": "Shipping & Returns",
+        "description": "HVAC Pacific pickup, local-delivery and returns policy."
+      },
+      "warranty": {
+        "title": "Warranty",
+        "description": "HVAC Pacific manufacturer warranty information."
+      },
+      "privacy": {
+        "title": "Privacy Policy",
+        "description": "HVAC Pacific privacy policy."
+      },
+      "terms": {
+        "title": "Terms of Use",
+        "description": "HVAC Pacific website and sales terms."
+      },
+      "prop-65": {
+        "title": "California Proposition 65",
+        "description": "Information about Proposition 65 warnings on HVAC Pacific product pages."
+      }
+    }
   }
 }
