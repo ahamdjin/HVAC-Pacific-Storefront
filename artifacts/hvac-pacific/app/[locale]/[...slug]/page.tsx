@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { hrefFor } from "@/components/paths";
 import { SITE } from "@/config/site";
@@ -16,9 +17,10 @@ export async function generateMetadata({params}:P):Promise<Metadata>{
   const page=STATIC_PAGES[key];
   if(!page)return {};
   const path="/"+key;
+  const t=await getTranslations({locale,namespace:"StaticPage"});
   return {
-    title:page.title+" | "+SITE.brand,
-    description:page.description,
+    title:t(`pages.${key}.title`)+" | "+SITE.brand,
+    description:t(`pages.${key}.description`),
     robots:!page.reviewed||locale==="zh"?{index:false,follow:true}:undefined,
     alternates:localizedAlternates(locale,path),
   };
@@ -29,15 +31,19 @@ export default async function StaticPage({params}:P){
   const key=keyFrom(slug);
   const page=STATIC_PAGES[key];
   if(!page)notFound();
+  const t=await getTranslations({locale,namespace:"StaticPage"});
+  const title=t(`pages.${key}.title`);
+  const description=t(`pages.${key}.description`);
   return (
     <main id="main">
       <div className="wrap page-shell narrow">
-        <Breadcrumbs locale={locale} items={[{name:page.title,path:"/"+key}]} />
-        {process.env.NODE_ENV!=="production"&&!page.reviewed&&<div className="draft-banner">DRAFT – pending review</div>}
+        <Breadcrumbs locale={locale} items={[{name:title,path:"/"+key}]} />
+        {process.env.NODE_ENV!=="production"&&!page.reviewed&&<div className="draft-banner">{t("draft")}</div>}
+        {locale==="zh"&&<div className="info-callout translation-notice">{t("translationNotice")}</div>}
         <header className="page-head">
           <p className="eyebrow">HVAC Pacific</p>
-          <h1>{page.title}</h1>
-          <p>{page.description}</p>
+          <h1>{title}</h1>
+          <p>{description}</p>
         </header>
         <div className="policy-content">
           {page.sections.map((section,i)=><section key={i}>
