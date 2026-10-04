@@ -109,6 +109,7 @@ export async function getCollection(handle: string, locale = "en") {
         id handle title description descriptionHtml seo { title description }
         metafields(identifiers:[
           {namespace:"content",key:"guide_html"},
+          {namespace:"content",key:"sizing_table_html"},
           {namespace:"content",key:"faq"}
         ]) { namespace key value type }
       }
