@@ -70,18 +70,74 @@ async function fetchProducts(){
   return (await storefrontRequest<{products:{nodes:Product[]}}>(query)).products.nodes;
 }
 
+function jsonLdBlocks(html:string){
+  const blocks:unknown[]=[];
+  const pattern=/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+  for(const match of html.matchAll(pattern)){
+    try{blocks.push(JSON.parse(match[1]));}catch{}
+  }
+  return blocks;
+}
+function findType(value:unknown,type:string):Record<string,unknown>|null{
+  if(!value||typeof value!=="object")return null;
+  const object=value as Record<string,unknown>;
+  if(object["@type"]===type)return object;
+  const graph=object["@graph"];
+  if(Array.isArray(graph)){
+    for(const item of graph){const found=findType(item,type);if(found)return found;}
+  }
+  return null;
+}
+function visibleText(html:string){
+  return html.replace(/<script[\s\S]*?<\/script>/gi," ").replace(/<style[\s\S]*?<\/style>/gi," ").replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim();
+}
+
 async function checkRenderedPage(base:string,product:Product,results:Result[]){
   const path=`/products/${product.handle}`;
   const response=await fetch(base+path,{redirect:"manual",signal:AbortSignal.timeout(20_000)});
+  const meta=mapMeta(product);
+  const blocked=["HOLD","NEEDS DATA"].includes((meta.site_status||"").trim().toUpperCase());
+  if(blocked){
+    if(response.status===404)add(results,"PASS",product.title,"Blocked PDP","HOLD / NEEDS DATA product returns 404.");
+    else add(results,"FAIL",product.title,"Blocked PDP",`Blocked product returned HTTP ${response.status} instead of 404.`);
+    return;
+  }
   if(!response.ok){add(results,"FAIL",product.title,"Rendered PDP",`${path} returned HTTP ${response.status}`);return;}
   const html=await response.text();
   const canonical=`<link rel="canonical" href="${base}${path}"`;
   if(!html.includes(canonical)&&!html.includes(`href="${path}" rel="canonical"`))add(results,"FAIL",product.title,"Canonical","Canonical link is missing or unexpected.");
   else add(results,"PASS",product.title,"Canonical","Self-referencing canonical present.");
-  if(!html.includes('"@type":"Product"'))add(results,"FAIL",product.title,"Product schema","Product JSON-LD not found.");
-  else add(results,"PASS",product.title,"Product schema","Product JSON-LD present.");
-  if(!html.includes("<h1"))add(results,"FAIL",product.title,"H1","No H1 found in server-rendered HTML.");
-  else add(results,"PASS",product.title,"H1","Server-rendered H1 present.");
+
+  const blocks=jsonLdBlocks(html);
+  const schema=blocks.map((block)=>findType(block,"Product")).find(Boolean);
+  if(!schema){
+    add(results,"FAIL",product.title,"Product schema","Product JSON-LD not found.");
+  }else{
+    const offer=typeof schema.offers==="object"&&schema.offers?schema.offers as Record<string,unknown>:null;
+    const required=[
+      ["name",schema.name],["url",schema.url],["offers.price",offer?.price],["offers.priceCurrency",offer?.priceCurrency],
+      ["offers.availability",offer?.availability],["offers.itemCondition",offer?.itemCondition],["offers.seller",offer?.seller],
+    ];
+    const missing=required.filter(([,value])=>!value).map(([key])=>key);
+    if(missing.length)add(results,"FAIL",product.title,"Product schema",`Missing required fields: ${missing.join(", ")}`);
+    else add(results,"PASS",product.title,"Product schema","Product/Offer JSON-LD contains the required commerce fields.");
+    if(JSON.stringify(schema).includes('"AggregateRating"')||JSON.stringify(schema).includes('"Review"')){
+      add(results,"FAIL",product.title,"Trust signals","Unexpected review/rating schema found.");
+    }
+  }
+
+  const modelCandidates=[meta.outdoor_model,meta.indoor_model,meta.furnace_model,...product.variants.nodes.map((variant)=>variant.sku||"")].filter(Boolean);
+  const meaningful=modelCandidates.find((value)=>normalize(value).length>=4);
+  const h1Match=html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
+  const h1=visibleText(h1Match?.[1]||"");
+  if(!h1)add(results,"FAIL",product.title,"H1","No H1 found in server-rendered HTML.");
+  else if(meaningful&&!normalize(h1).includes(normalize(meaningful)))add(results,"FAIL",product.title,"H1 model",`H1 does not include model/SKU ${meaningful}.`);
+  else add(results,"PASS",product.title,"H1","Server-rendered product H1 includes the expected model/SKU.");
+
+  const text=visibleText(html).toLowerCase();
+  const banned=["best price guaranteed","authorized dealer","#1 hvac","countdown timer"];
+  const found=banned.find((phrase)=>text.includes(phrase));
+  if(found)add(results,"FAIL",product.title,"Trust signals",`Prohibited claim found: ${found}`);
 }
 
 async function main(){
@@ -109,9 +165,9 @@ async function main(){
 
     const modelCandidates=[m.outdoor_model,m.indoor_model,m.furnace_model,...product.variants.nodes.map(v=>v.sku||"")].filter(Boolean);
     const meaningful=modelCandidates.find(v=>normalize(v).length>=4);
-    if(meaningful&&!normalize(product.title).includes(normalize(meaningful)))add(results,"WARN",product.title,"Model in title",`Title does not include model/SKU ${meaningful}.`);
+    if(meaningful&&!normalize(product.title).includes(normalize(meaningful)))add(results,"FAIL",product.title,"Model in title",`Title does not include model/SKU ${meaningful}.`);
     else if(meaningful)add(results,"PASS",product.title,"Model in title",`Title includes ${meaningful}.`);
-    else add(results,"WARN",product.title,"Model in title","No model number or SKU is available to verify against the title.");
+    else add(results,"FAIL",product.title,"Model in title","No model number or SKU is available to verify against the title.");
   }
 
   const base=(process.env.QA_SITE_URL||"").replace(/\/$/,"");
