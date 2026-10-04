@@ -35,8 +35,17 @@ function requestWithHost(path: string, host: string) {
   });
 }
 
+function assertNoFakeTrust(html:string,label:string){
+  assert.doesNotMatch(html, /"@type":"AggregateRating"|"@type":"Review"/i, label+" should not contain review/rating schema.");
+  const visible=html.replace(/<script[\s\S]*?<\/script>/gi," ").replace(/<style[\s\S]*?<\/style>/gi," ").replace(/<[^>]+>/g," ").replace(/\s+/g," ").toLowerCase();
+  for(const phrase of ["best price guaranteed","authorized dealer","#1 hvac","countdown timer","customer testimonials"]){
+    assert.ok(!visible.includes(phrase), label+" contains prohibited trust claim: "+phrase);
+  }
+}
+
 const home = await get("/");
 assert.equal(home.response.status, 200);
+assertNoFakeTrust(home.text,"Home");
 assert.match(home.text, /HVAC Equipment &amp; Parts for Southern California|HVAC Equipment & Parts for Southern California/);
 assert.doesNotMatch(
   home.text,
@@ -54,6 +63,10 @@ assert.equal(sitemap.response.status, 200);
 assert.match(sitemap.response.headers.get("content-type") || "", /xml/i);
 assert.match(sitemap.text, /\/sitemaps\/en\/products\.xml/);
 assert.doesNotMatch(sitemap.text, /\/sitemaps\/zh\//, "Unreviewed Chinese URLs should not be in the sitemap index.");
+
+const units = await get("/units");
+assert.equal(units.response.status, 200);
+assertNoFakeTrust(units.text,"Units");
 
 const filtered = await get("/units?brand=qa-test");
 assert.equal(filtered.response.status, 200);
