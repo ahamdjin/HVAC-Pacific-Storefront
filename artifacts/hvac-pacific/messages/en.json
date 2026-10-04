@@ -77,7 +77,7 @@
     "allGuides": "All guides →",
     "helpFind": "Need help finding a product?",
     "talkWith": "Talk with HVAC Pacific",
-    "sendModel": "Call {phone} or send the model number and what you need."
+    "sendModel": "Call <call>{phone}</call> or send the model number and what you need."
   },
   "Footer": {
     "pickupDelivery": "Pickup & delivery",
