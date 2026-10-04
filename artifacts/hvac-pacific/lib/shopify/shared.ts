@@ -52,3 +52,13 @@ export function parseFaq(value?: string) {
   catch { return []; }
 }
 export function boolMeta(value?: string) { return value === "true" || value === "1"; }
+
+
+export function isBlockedCatalogProduct(product: Pick<ProductCardData, "metafields">) {
+  const status = (metafieldMap(product).site_status || "").trim().toUpperCase();
+  return status === "HOLD" || status === "NEEDS DATA";
+}
+
+export function isVisibleCatalogProduct(product: Pick<ProductCardData, "metafields">) {
+  return !isBlockedCatalogProduct(product);
+}
