@@ -69,6 +69,7 @@ Create these product metafields in namespace `specs` and enable Storefront acces
 
 Collection metafields:
 - `content.guide_html`
+- `content.sizing_table_html` — optional, units only; use only verified/reviewed sizing guidance and include a Manual J caveat
 - `content.faq`
 
 ## Catalog conventions
@@ -238,3 +239,8 @@ Do not send names, phone numbers, email addresses or EPA certification numbers t
 ## Current Merchant Center note
 
 Google's current product data specification makes `google_product_category` optional and allows Google to automatically categorize products. Shipping cost remains required for U.S. Shopping/free listings unless supplied through another valid Merchant Center shipping configuration. The storefront therefore supports exact per-product local-delivery shipping data but will not guess missing service-area or price values.
+
+
+### Unit sizing tables
+
+The storefront intentionally does **not** invent a tons-to-square-feet chart. If a reviewed sizing table is supplied, add it to the unit collection's `content.sizing_table_html` metafield. It will render above the Manual J caveat. This keeps the requested category template without turning a rough rule of thumb into unsupported product-sizing advice.
