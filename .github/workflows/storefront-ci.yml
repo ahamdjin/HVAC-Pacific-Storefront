@@ -71,6 +71,19 @@ jobs:
             const accessibility = Math.round((report.categories.accessibility.score || 0) * 100);
             const seo = Math.round((report.categories.seo.score || 0) * 100);
             console.log(`Lighthouse ${name}: Performance ${performance} · Accessibility ${accessibility} · SEO ${seo}`);
+            for (const categoryName of ["seo","accessibility"]) {
+              const category = report.categories[categoryName];
+              const failedAudits = category.auditRefs
+                .map((ref) => report.audits[ref.id])
+                .filter((audit) => audit && audit.score !== null && audit.score < 1);
+              for (const audit of failedAudits) {
+                console.log(`  FAIL ${categoryName}: ${audit.id} · ${audit.title} · score=${audit.score} ${audit.displayValue || ""}`);
+              }
+            }
+            for (const id of ["first-contentful-paint","largest-contentful-paint","total-blocking-time","cumulative-layout-shift","speed-index"]) {
+              const audit = report.audits[id];
+              if (audit) console.log(`  PERF ${id}: ${audit.displayValue || audit.numericValue}`);
+            }
             if (performance < 90 || seo < 100 || accessibility < 95) failed = true;
           }
           if (failed) process.exit(1);
