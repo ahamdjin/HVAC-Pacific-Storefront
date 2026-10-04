@@ -1,13 +1,28 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type { ProductCardData } from "@/lib/shopify/shared";
-import { metafieldMap, parseKeySpecs } from "@/lib/shopify/shared";
+import { parseKeySpecs } from "@/lib/shopify/shared";
+import { getCatalogFacets } from "@/lib/catalog-config";
 import { ProductCard } from "./ProductCard";
 
-type Props = { products: ProductCardData[]; locale: string; kind: "units" | "parts" };
+type Props = { products: ProductCardData[]; locale: string; kind: "units" | "parts" | "all" };
+
+function readFilters(search: { get: (key: string) => string | null }) {
+  return {
+    brand: search.get("brand") || "",
+    tonnage: search.get("tonnage") || "",
+    refrigerant: search.get("refrigerant") || "",
+    subcategory: search.get("subcategory") || "",
+    system: search.get("system") || "",
+    attribute: search.get("attribute") || "",
+    price: search.get("price") || "",
+    collection: search.get("collection") || "",
+    productType: search.get("productType") || "",
+  };
+}
 
 function unique(values: string[]) {
   return Array.from(new Set(values.filter(Boolean))).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
@@ -18,21 +33,17 @@ export function CatalogGrid({ products, locale, kind }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const search = useSearchParams();
-  const initial = {
-    brand: search.get("brand") || "",
-    tonnage: search.get("tonnage") || "",
-    refrigerant: search.get("refrigerant") || "",
-    subcategory: search.get("subcategory") || "",
-    system: search.get("system") || "",
-    attribute: search.get("attribute") || "",
-    price: search.get("price") || "",
-  };
-  const [filters, setFilters] = useState(initial);
+  const [filters, setFilters] = useState(() => readFilters(search));
+  useEffect(() => { setFilters(readFilters(search)); }, [search]);
 
   const options = useMemo(() => {
     const brands: string[] = [], tonnage: string[] = [], refrigerant: string[] = [], subcategory: string[] = [], system: string[] = [], attribute: string[] = [];
+    const collections = new Map<string, string>();
+    const productTypes: string[] = [];
     for (const p of products) {
-      const m = metafieldMap(p);
+      const m = getCatalogFacets(p);
+      productTypes.push(p.productType);
+      for (const collection of p.collections?.nodes ?? []) collections.set(collection.handle, collection.title);
       brands.push(p.vendor);
       if (m.tonnage) tonnage.push(m.tonnage);
       if (m.refrigerant) refrigerant.push(m.refrigerant);
@@ -43,13 +54,15 @@ export function CatalogGrid({ products, locale, kind }: Props) {
         if (/(mfd|voltage|amps|horsepower|hp|rpm)/.test(k)) attribute.push(`${spec.label}: ${spec.value}`);
       }
     }
-    return { brands: unique(brands), tonnage: unique(tonnage), refrigerant: unique(refrigerant), subcategory: unique(subcategory), system: unique(system), attribute: unique(attribute).slice(0, 40) };
+    return { brands: unique(brands), tonnage: unique(tonnage), refrigerant: unique(refrigerant), subcategory: unique(subcategory), system: unique(system), attribute: unique(attribute), collections: unique([...collections.keys()]), collectionLabels: Object.fromEntries(collections), productTypes: unique(productTypes) };
   }, [products]);
 
   const filtered = useMemo(() => products.filter((p) => {
-    const m = metafieldMap(p);
+    const m = getCatalogFacets(p);
     const price = Number(p.priceRange.minVariantPrice.amount);
     if (filters.brand && p.vendor !== filters.brand) return false;
+    if (filters.collection && !p.collections?.nodes.some((c) => c.handle === filters.collection)) return false;
+    if (filters.productType && p.productType !== filters.productType) return false;
     if (filters.tonnage && m.tonnage !== filters.tonnage) return false;
     if (filters.refrigerant && m.refrigerant !== filters.refrigerant) return false;
     if (filters.subcategory && m.subcategory !== filters.subcategory) return false;
@@ -65,15 +78,17 @@ export function CatalogGrid({ products, locale, kind }: Props) {
   function update(key: keyof typeof filters, value: string) {
     const next = { ...filters, [key]: value };
     setFilters(next);
-    const params = new URLSearchParams();
-    Object.entries(next).forEach(([k, v]) => v && params.set(k, v));
+    const params = new URLSearchParams(search.toString());
+    Object.entries(next).forEach(([k, v]) => v ? params.set(k, v) : params.delete(k));
     router.replace(params.size ? `${pathname}?${params}` : pathname, { scroll: false });
   }
 
   function reset() {
-    const empty = { brand: "", tonnage: "", refrigerant: "", subcategory: "", system: "", attribute: "", price: "" };
+    const empty = readFilters(new URLSearchParams());
     setFilters(empty);
-    router.replace(pathname, { scroll: false });
+    const params = new URLSearchParams(search.toString());
+    Object.keys(empty).forEach((key) => params.delete(key));
+    router.replace(params.size ? `${pathname}?${params}` : pathname, { scroll: false });
   }
 
   return (
@@ -81,11 +96,13 @@ export function CatalogGrid({ products, locale, kind }: Props) {
       <aside className="filters" aria-label={t("aria")}>
         <div className="filter-head"><strong>{t("title")}</strong><button type="button" onClick={reset}>{t("reset")}</button></div>
         <Filter allLabel={t("all")} label={t("brand")} value={filters.brand} values={options.brands} onChange={(v) => update("brand", v)} />
-        {kind === "units" && <Filter allLabel={t("all")} label={t("tonnage")} value={filters.tonnage} values={options.tonnage} onChange={(v) => update("tonnage", v)} />}
+        <Filter allLabel={t("all")} label={t("collection")} value={filters.collection} values={options.collections} labels={options.collectionLabels} onChange={(v) => update("collection", v)} />
+        <Filter allLabel={t("all")} label={t("productType")} value={filters.productType} values={options.productTypes} onChange={(v) => update("productType", v)} />
+        {kind !== "parts" && <Filter allLabel={t("all")} label={t("tonnage")} value={filters.tonnage} values={options.tonnage} onChange={(v) => update("tonnage", v)} />}
         <Filter allLabel={t("all")} label={t("refrigerant")} value={filters.refrigerant} values={options.refrigerant} onChange={(v) => update("refrigerant", v)} />
-        {kind === "parts" && options.subcategory.length > 1 && <Filter allLabel={t("all")} label={t("subcategory")} value={filters.subcategory} values={options.subcategory} onChange={(v) => update("subcategory", v)} />}
-        {kind === "units" && <Filter allLabel={t("all")} label={t("systemType")} value={filters.system} values={options.system} onChange={(v) => update("system", v)} />}
-        {kind === "parts" && options.attribute.length > 0 && <Filter allLabel={t("all")} label={t("keySpecification")} value={filters.attribute} values={options.attribute} onChange={(v) => update("attribute", v)} />}
+        {kind !== "units" && options.subcategory.length > 1 && <Filter allLabel={t("all")} label={t("subcategory")} value={filters.subcategory} values={options.subcategory} onChange={(v) => update("subcategory", v)} />}
+        {kind !== "parts" && <Filter allLabel={t("all")} label={t("systemType")} value={filters.system} values={options.system} onChange={(v) => update("system", v)} />}
+        {kind !== "units" && options.attribute.length > 0 && <Filter allLabel={t("all")} label={t("keySpecification")} value={filters.attribute} values={options.attribute} onChange={(v) => update("attribute", v)} />}
         <Filter allLabel={t("all")} label={t("price")} value={filters.price} values={["under-100","100-500","500-2000","2000-plus"]} labels={{"under-100":t("under100"),"100-500":t("from100to500"),"500-2000":t("from500to2000"),"2000-plus":t("over2000")}} onChange={(v) => update("price", v)} />
       </aside>
       <section>

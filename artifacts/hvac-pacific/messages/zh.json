@@ -135,6 +135,9 @@
       "ton": "{value} 吨"
     },
     "catalog": {
+      "allProducts": "全部产品",
+      "collection": "产品系列",
+      "productType": "产品类型",
       "aria": "产品筛选",
       "title": "筛选产品",
       "reset": "重置",

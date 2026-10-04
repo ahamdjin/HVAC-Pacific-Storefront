@@ -134,6 +134,9 @@
       "ton": "{value} Ton"
     },
     "catalog": {
+      "allProducts": "All products",
+      "collection": "Collection",
+      "productType": "Product type",
       "aria": "Product filters",
       "title": "Filter products",
       "reset": "Reset",

@@ -11,6 +11,7 @@ export type ProductCardData = {
   productType: string;
   availableForSale: boolean;
   tags: string[];
+  collections?: { nodes: Array<{ id: string; handle: string; title: string }> };
   featuredImage?: ShopifyImage | null;
   priceRange: { minVariantPrice: Money; maxVariantPrice: Money };
   variants: { nodes: Array<{ id: string; title: string; availableForSale: boolean; quantityAvailable?: number | null; price: Money; sku?: string | null; selectedOptions: Array<{ name: string; value: string }> }> };

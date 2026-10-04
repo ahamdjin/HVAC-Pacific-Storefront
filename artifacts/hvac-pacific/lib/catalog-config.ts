@@ -1,5 +1,5 @@
-import type { ProductCardData } from "./shopify/catalog";
-import { metafieldMap } from "./shopify/catalog";
+import type { ProductCardData } from "./shopify/shared";
+import { metafieldMap } from "./shopify/shared";
 
 export type CatalogSection = {
   slug: string;
@@ -41,7 +41,7 @@ function norm(v?: string) {
 
 const aliases: Record<string, string[]> = {
   "heat-pump-systems": ["heat pump", "heat pump systems"],
-  "packaged-units": ["packaged unit", "packaged units", "gas electric"],
+  "packaged-units": ["packaged unit", "packaged units", "packaged heat pump", "packaged gas electric", "gas electric"],
   "mini-splits": ["mini split", "mini splits", "ductless mini split", "mini split systems"],
   "ac-furnace-systems": ["central ac", "ac furnace", "ac furnace systems", "air conditioner"],
   "capacitors": ["capacitor", "capacitors"],
@@ -60,11 +60,13 @@ const aliases: Record<string, string[]> = {
 };
 
 export function productMatchesSection(product: ProductCardData, slug: string) {
+  if (product.collections?.nodes.some((collection) => collection.handle === slug)) return true;
   const m = metafieldMap(product);
   const haystack = [
     m.site_category,
     m.subcategory,
     product.productType,
+    ...(product.collections?.nodes ?? []).map((collection) => collection.title),
     ...product.tags,
     product.title,
   ]
@@ -73,6 +75,41 @@ export function productMatchesSection(product: ProductCardData, slug: string) {
   return (aliases[slug] ?? [slug.replace(/-/g, " ")]).some((a) =>
     haystack.includes(norm(a)),
   );
+}
+
+/** Explicit merchant grouping takes priority over keyword heuristics. */
+export function getProductKind(product: ProductCardData): "units" | "parts" | null {
+  const meta = metafieldMap(product);
+  const category = norm(meta.site_category);
+  if (["units", "equipment", "hvac units", "hvac equipment"].includes(category)) return "units";
+  if (["parts", "accessories", "parts accessories", "parts and accessories"].includes(category)) return "parts";
+  const roots = product.collections?.nodes.map((c) => c.handle) ?? [];
+  if (roots.includes("units")) return "units";
+  if (roots.some((handle) => ["parts", "accessories", "parts-accessories"].includes(handle))) return "parts";
+  // Don't classify equipment as a part merely because it mentions refrigerant.
+  const typed = { ...product, title: "", tags: [], collections: undefined };
+  if (PART_SECTIONS.some((s) => productMatchesSection(typed, s.slug))) return "parts";
+  if (UNIT_SECTIONS.some((s) => productMatchesSection(typed, s.slug))) return "units";
+  if (product.tags.some((tag) => norm(tag) === "units")) return "units";
+  if (PART_SECTIONS.some((s) => productMatchesSection(product, s.slug))) return "parts";
+  if (UNIT_SECTIONS.some((s) => productMatchesSection(product, s.slug))) return "units";
+  return null;
+}
+
+/** Use actual metafields, tags and titles; don't invent technical specifications. */
+export function getCatalogFacets(product: ProductCardData): Record<string, string> {
+  const meta = metafieldMap(product);
+  const text = [...product.tags, product.title].join(" | ");
+  const tonnage = (meta.tonnage || text.match(/\b(\d+(?:\.\d+)?)\s*tons?\b/i)?.[1] || "").replace(/\s*tons?$/i, "").trim();
+  const refrigerantText = meta.refrigerant || text.match(/\bR[-\s]?\d{2,3}[a-z]?\b/i)?.[0] || "";
+  const refrigerant = refrigerantText.replace(/^R[-\s]?(\d{2,3}[a-z]?)$/i, (_, value: string) => `R-${value.toUpperCase()}`);
+  return {
+    ...meta,
+    tonnage,
+    refrigerant,
+    subcategory: meta.subcategory || product.productType,
+    system_type: meta.system_type || product.productType,
+  };
 }
 
 export function getSection(kind: "units" | "parts", slugs: string[]) {

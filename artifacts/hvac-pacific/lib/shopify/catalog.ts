@@ -1,5 +1,6 @@
 import "server-only";
 import { shopifyStorefrontRequest } from "./storefront";
+import { collectConnection, type ShopifyConnection } from "./pagination";
 
 import { isVisibleCatalogProduct } from "./shared";
 import type { ArticleData, CollectionData, ProductCardData, ProductDetailData } from "./shared";
@@ -8,6 +9,7 @@ export { boolMeta, isBlockedCatalogProduct, isVisibleCatalogProduct, metafieldMa
 
 const PRODUCT_CARD_FIELDS = `
   id handle title description vendor productType availableForSale tags
+  collections(first:250) { nodes { id handle title } }
   featuredImage { url altText width height }
   priceRange { minVariantPrice { amount currencyCode } maxVariantPrice { amount currencyCode } }
   variants(first: 50) {
@@ -54,17 +56,24 @@ function mockBuild() {
   return process.env.SHOPIFY_MOCK_BUILD === "true";
 }
 
-export async function getAllProducts(locale = "en", first = 250) {
+export async function getAllProducts(locale = "en", limit?: number) {
   if (mockBuild()) return [] as ProductCardData[];
+  if (limit !== undefined && (!Number.isInteger(limit) || limit < 1)) return [] as ProductCardData[];
   const query = `
-    query Products($first:Int!, $language:LanguageCode!) @inContext(language:$language) {
-      products(first:$first, sortKey:TITLE) { nodes { ${PRODUCT_CARD_FIELDS} } }
+    query Products($first:Int!, $after:String, $language:LanguageCode!) @inContext(language:$language) {
+      products(first:$first, after:$after, sortKey:TITLE) {
+        nodes { ${PRODUCT_CARD_FIELDS} }
+        pageInfo { hasNextPage endCursor }
+      }
     }`;
-  const data = await shopifyStorefrontRequest<{ products: { nodes: ProductCardData[] } }>(
-    query,
-    { first, language: language(locale) },
-  );
-  return data.products.nodes.filter(isVisibleCatalogProduct);
+  const nodes = await collectConnection(async (after) => {
+    const data = await shopifyStorefrontRequest<{ products: ShopifyConnection<ProductCardData> }>(
+      query, { first: Math.min(limit ?? 50, 50), after, language: language(locale) },
+      { revalidate: 60 },
+    );
+    return data.products;
+  }, limit);
+  return Array.from(new Map(nodes.filter(isVisibleCatalogProduct).map((p) => [p.id, p])).values());
 }
 
 export async function getFeaturedProducts(locale = "en") {
@@ -76,6 +85,7 @@ export async function getFeaturedProducts(locale = "en") {
   const data = await shopifyStorefrontRequest<{ collection?: { products: { nodes: ProductCardData[] } } | null }>(
     query,
     { language: language(locale) },
+    { revalidate: 60 },
   );
   const featured = data.collection?.products.nodes.filter(isVisibleCatalogProduct) ?? [];
   if (featured.length) return featured;
@@ -97,6 +107,7 @@ export async function getProduct(handle: string, locale = "en") {
   const data = await shopifyStorefrontRequest<{ product: ProductDetailData | null }>(
     query,
     { handle, language: language(locale) },
+    { revalidate: 60 },
   );
   return data.product && isVisibleCatalogProduct(data.product) ? data.product : null;
 }
@@ -117,6 +128,7 @@ export async function getCollection(handle: string, locale = "en") {
   const data = await shopifyStorefrontRequest<{ collection: CollectionData | null }>(
     query,
     { handle, language: language(locale) },
+    { revalidate: 60 },
   );
   return data.collection;
 }
@@ -126,20 +138,23 @@ export async function searchProducts(term: string, locale = "en") {
   const clean = term.trim();
   if (!clean) return [];
   const query = `
-    query Search($query:String!, $language:LanguageCode!) @inContext(language:$language) {
-      search(first:60, query:$query, types:[PRODUCT], unavailableProducts:HIDE) {
+    query Search($query:String!, $after:String, $language:LanguageCode!) @inContext(language:$language) {
+      search(first:50, after:$after, query:$query, types:[PRODUCT], unavailableProducts:SHOW) {
         nodes { ... on Product { ${PRODUCT_CARD_FIELDS} } }
+        pageInfo { hasNextPage endCursor }
       }
     }`;
-  const [data, all] = await Promise.all([
-    shopifyStorefrontRequest<{ search: { nodes: ProductCardData[] } }>(
-      query,
-      { query: clean, language: language(locale) },
-      { cache: "no-store", revalidate: 0 },
-    ),
+  const [searchNodes, all] = await Promise.all([
+    collectConnection(async (after) => {
+      const data = await shopifyStorefrontRequest<{ search: ShopifyConnection<ProductCardData> }>(
+        query, { query: clean, after, language: language(locale) },
+        { cache: "no-store", revalidate: 0 },
+      );
+      return data.search;
+    }),
     getAllProducts(locale),
   ]);
-  const native = data.search.nodes.filter(Boolean).filter(isVisibleCatalogProduct);
+  const native = searchNodes.filter(Boolean).filter(isVisibleCatalogProduct);
   const needle = clean.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
   const synonymMatches = all.filter((product) => {
     const m = Object.fromEntries((product.metafields ?? []).filter(Boolean).map((x) => [x!.key, x!.value]));
@@ -147,6 +162,8 @@ export async function searchProducts(term: string, locale = "en") {
       product.title,
       product.vendor,
       product.productType,
+      ...product.tags,
+      ...(product.collections?.nodes ?? []).map((collection) => collection.title),
       m.search_keywords,
       m.outdoor_model,
       m.indoor_model,
@@ -155,20 +172,11 @@ export async function searchProducts(term: string, locale = "en") {
     ].join(" ").toLowerCase().replace(/[^a-z0-9]+/g, " ");
     return needle.length >= 2 && haystack.includes(needle);
   });
-  return Array.from(new Map([...native, ...synonymMatches].map((product) => [product.id, product])).values()).slice(0, 60);
+  return Array.from(new Map([...native, ...synonymMatches].map((product) => [product.id, product])).values());
 }
 
 export async function getProductsByVendor(vendor: string, locale = "en") {
-  if (mockBuild()) return [] as ProductCardData[];
-  const query = `
-    query Vendor($query:String!, $language:LanguageCode!) @inContext(language:$language) {
-      products(first:100, query:$query, sortKey:TITLE) { nodes { ${PRODUCT_CARD_FIELDS} } }
-    }`;
-  const data = await shopifyStorefrontRequest<{ products: { nodes: ProductCardData[] } }>(
-    query,
-    { query: `vendor:"${vendor.replace(/"/g, "\\\"")}"`, language: language(locale) },
-  );
-  return data.products.nodes.filter(isVisibleCatalogProduct);
+  return (await getAllProducts(locale)).filter((p) => p.vendor.toLowerCase() === vendor.toLowerCase());
 }
 
 export async function getGuideArticles(locale = "en", first = 50) {

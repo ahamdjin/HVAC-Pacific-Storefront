@@ -26,3 +26,9 @@ The merchant reports more than 100 products in Shopify Admin. Storefront API res
 **Why:** The user corrected an earlier statement that treated the products exposed to the current Headless token as the full Shopify catalog. Shopify can publish different product sets to each named Headless storefront.
 
 **How to apply:** Distinguish Admin product totals from the token's published, market-visible product set. Check raw API pagination and website exclusions, then inspect a missing product's status and publication to the exact named Headless storefront. Do not automatically activate or publish every Admin product.
+
+Merchant publication changes must become visible through normal website visits without requiring code changes, another Replit publish, or a manual server restart.
+
+**Why:** The merchant is releasing their existing inventory through Shopify and expects the website to reflect those availability changes. A long catalog cache can obscure successful publication and make the connection appear broken.
+
+**How to apply:** Keep bounded freshness for both listings and product details, including previously missing products. Distinguish cache staleness from actual Headless publication restrictions; do not fill missing inventory with fabricated products.

@@ -9,7 +9,7 @@ import { LeadForm } from "./LeadForm";
 import { hrefFor } from "./paths";
 import { SITE } from "@/config/site";
 import { localizedAlternates } from "@/lib/seo";
-import { ALL_SECTIONS, getSection, productMatchesSection, sectionPath } from "@/lib/catalog-config";
+import { ALL_SECTIONS, getSection, getProductKind, productMatchesSection, sectionPath } from "@/lib/catalog-config";
 import { getAllProducts, getCollection, getGuideArticles, metafieldMap, parseFaq } from "@/lib/shopify/catalog";
 
 export async function categoryMetadata(kind:"units"|"parts", slugs:string[], locale:string, hasParams:boolean): Promise<Metadata> {
@@ -22,7 +22,7 @@ export async function categoryMetadata(kind:"units"|"parts", slugs:string[], loc
   let emptySection=false;
   if(section&&!hasParams){
     const all=await getAllProducts(locale).catch(()=>[]);
-    emptySection=!all.some((product)=>productMatchesSection(product,section.slug));
+    emptySection=!all.some((product)=>getProductKind(product)===kind&&productMatchesSection(product,section.slug));
   }
   return {
     title:t("forSaleTitle",{title,brand:SITE.brand}),
@@ -35,6 +35,7 @@ export async function categoryMetadata(kind:"units"|"parts", slugs:string[], loc
 
 export async function CategoryPage({kind,slugs,locale}:{kind:"units"|"parts";slugs:string[];locale:string}) {
   const t=await getTranslations({locale,namespace:"Category"});
+  const catalog=await getTranslations({locale,namespace:"Commerce.catalog"});
   const section=getSection(kind,slugs);
   if(slugs.length && !section) notFound();
 
@@ -47,10 +48,8 @@ export async function CategoryPage({kind,slugs,locale}:{kind:"units"|"parts";slu
 
   const sections=ALL_SECTIONS.filter((s)=>s.kind===kind && !s.parent);
   let products=section
-    ? all.filter((p)=>productMatchesSection(p,section.slug))
-    : all.filter((p)=>sections.some((s)=>productMatchesSection(p,s.slug)));
-
-  if(section?.parent && products.length<5) notFound();
+    ? all.filter((p)=>getProductKind(p)===kind && productMatchesSection(p,section.slug))
+    : all.filter((p)=>getProductKind(p)===kind);
 
   const fallbackTitle=section?t(`sections.${section.slug}.title`):(kind==="units"?t("allUnitsTitle"):t("allPartsTitle"));
   const fallbackIntro=section?t(`sections.${section.slug}.intro`):(kind==="units"?t("unitsIntro"):t("partsIntro"));
@@ -84,6 +83,7 @@ export async function CategoryPage({kind,slugs,locale}:{kind:"units"|"parts";slu
     <div className="wrap page-shell">
       <Breadcrumbs locale={locale} items={crumbs}/>
       <header className="page-head"><p className="eyebrow">{kind==="units"?t("equipment"):t("partsEyebrow")}</p><h1>{title}</h1><p className="category-intro">{intro}</p></header>
+      <div className="subcat-links"><Link href={hrefFor(locale,"/search")}>{catalog("allProducts")}</Link></div>
       <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(itemList).replace(/</g,"\\u003c")}}/>
       {!section && <div className="category-links">{sections.map((s)=><Link key={s.slug} href={hrefFor(locale,sectionPath(s))}><strong>{t(`sections.${s.slug}.title`)}</strong><span>{t(`sections.${s.slug}.intro`)}</span></Link>)}</div>}
       {section?.slug==="capacitors" && <div className="subcat-links">{ALL_SECTIONS.filter((s)=>s.parent==="capacitors").map((s)=><Link key={s.slug} href={hrefFor(locale,sectionPath(s))}>{t(`sections.${s.slug}.title`)}</Link>)}</div>}
