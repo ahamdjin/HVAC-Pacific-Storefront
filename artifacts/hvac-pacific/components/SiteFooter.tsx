@@ -21,11 +21,11 @@ export async function SiteFooter({ locale }: { locale: string }) {
         <div>
           <h2>{t("units")}</h2>
           <ul>{unitLinks.map(([k, s]) => <li key={s}><Link href={h(`/units/${s}`)}>{t(`unitsCategories.${k}`)}</Link></li>)}</ul>
-          <h2 className="h2b">Company</h2>
+          <h2 className="h2b">{f("company")}</h2>
           <ul>
-            <li><Link href={h("/about")}>About</Link></li>
-            <li><Link href={h("/contact")}>Contact</Link></li>
-            <li><Link href={h("/pickup-delivery")}>Pickup & delivery</Link></li>
+            <li><Link href={h("/about")}>{f("about")}</Link></li>
+            <li><Link href={h("/contact")}>{f("contactLink")}</Link></li>
+            <li><Link href={h("/pickup-delivery")}>{f("pickupLink")}</Link></li>
           </ul>
         </div>
         <div>
@@ -34,11 +34,11 @@ export async function SiteFooter({ locale }: { locale: string }) {
             {partLinks.slice(0, 6).map(([k, s]) => <li key={s}><Link href={h(`/parts/${s}`)}>{t(`partsCategories.${k}`)}</Link></li>)}
             <li><Link href={h("/parts")}>{t("parts")} &rarr;</Link></li>
           </ul>
-          <h2 className="h2b">Resources</h2>
+          <h2 className="h2b">{f("resources")}</h2>
           <ul>
-            <li><Link href={h("/guides")}>HVAC guides</Link></li>
-            <li><Link href={h("/california-hvac-compliance")}>California compliance</Link></li>
-            <li><Link href={h("/refrigerant-sales-policy")}>Refrigerant policy</Link></li>
+            <li><Link href={h("/guides")}>{f("guides")}</Link></li>
+            <li><Link href={h("/california-hvac-compliance")}>{f("californiaCompliance")}</Link></li>
+            <li><Link href={h("/refrigerant-sales-policy")}>{f("refrigerantPolicy")}</Link></li>
           </ul>
         </div>
         <div>
@@ -48,13 +48,13 @@ export async function SiteFooter({ locale }: { locale: string }) {
           </ul>
           <h2 className="h2b">{f("pickupDelivery")}</h2>
           <p className="fnote">{f("pickupNote")}</p>
-          <h2 className="h2b">Policies</h2>
+          <h2 className="h2b">{f("policies")}</h2>
           <ul>
-            <li><Link href={h("/shipping-returns")}>Shipping & returns</Link></li>
-            <li><Link href={h("/warranty")}>Warranty</Link></li>
-            <li><Link href={h("/privacy")}>Privacy</Link></li>
-            <li><Link href={h("/terms")}>Terms</Link></li>
-            <li><Link href={h("/prop-65")}>Prop 65</Link></li>
+            <li><Link href={h("/shipping-returns")}>{f("shippingReturns")}</Link></li>
+            <li><Link href={h("/warranty")}>{f("warranty")}</Link></li>
+            <li><Link href={h("/privacy")}>{f("privacy")}</Link></li>
+            <li><Link href={h("/terms")}>{f("terms")}</Link></li>
+            <li><Link href={h("/prop-65")}>{f("prop65")}</Link></li>
           </ul>
         </div>
       </div>
