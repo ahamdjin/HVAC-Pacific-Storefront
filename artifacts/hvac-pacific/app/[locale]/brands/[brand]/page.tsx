@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { hrefFor } from "@/components/paths";
 import { ProductCard } from "@/components/ProductCard";
 import { SITE } from "@/config/site";
-import { localizedAlternates } from "@/lib/seo";
+import { localizedAlternates, seoMetaDescription, seoPageTitle } from "@/lib/seo";
 import { getAllProducts } from "@/lib/shopify/catalog";
 
 type P={params:Promise<{locale:string;brand:string}>};
@@ -21,10 +22,12 @@ export async function generateMetadata({params}:P):Promise<Metadata>{
   const [{vendor},t]=await Promise.all([resolveBrand(brand,locale),getTranslations({locale,namespace:"BrandsPage"})]);
   if(!vendor)return {};
   const path="/brands/"+brand;
+  const description=seoMetaDescription(t("brandMetaDescription",{brand:vendor}));
   return {
-    title:t("brandMetaTitle",{brand:vendor,site:SITE.brand}),
-    description:t("brandMetaDescription",{brand:vendor}),
-    alternates:localizedAlternates(locale,path)
+    title:seoPageTitle(t("brandMetaTitle",{brand:vendor})),
+    description,
+    alternates:localizedAlternates(locale,path),
+    openGraph:{title:t("brandTitle",{brand:vendor}),description,url:SITE.domain+hrefFor(locale,path),type:"website"}
   };
 }
 export default async function Page({params}:P){
