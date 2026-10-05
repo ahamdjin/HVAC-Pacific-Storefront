@@ -122,7 +122,7 @@ export async function getShopifyStorefrontConfig(
 export async function shopifyStorefrontRequest<T>(
   query: string,
   variables?: Record<string, unknown>,
-  options: { cache?: RequestCache; revalidate?: number; buyerIp?: string } = {},
+  options: { cache?: RequestCache; revalidate?: number; buyerIp?: string; tags?: string[] } = {},
 ): Promise<T> {
   const config = await getShopifyStorefrontConfig();
   const request = async (current: ShopifyStorefrontConfig) =>
@@ -141,10 +141,10 @@ export async function shopifyStorefrontRequest<T>(
         },
         body: JSON.stringify({ query, variables }),
         cache: options.cache ?? "force-cache",
-        next:
-          options.revalidate === undefined
-            ? { revalidate: 3600 }
-            : { revalidate: options.revalidate },
+        next: {
+          revalidate: options.revalidate ?? 3600,
+          ...(options.tags ? { tags: options.tags } : {}),
+        },
         signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
       },
     );

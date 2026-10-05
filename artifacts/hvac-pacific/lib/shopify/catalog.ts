@@ -1,6 +1,7 @@
 import "server-only";
 import { shopifyStorefrontRequest } from "./storefront";
 import { collectConnection, type ShopifyConnection } from "./pagination";
+import { SHOPIFY_CATALOG_TAG, SHOPIFY_GUIDES_TAG } from "./cache";
 
 import { isVisibleCatalogProduct } from "./shared";
 import type { ArticleData, CollectionData, ProductCardData, ProductDetailData } from "./shared";
@@ -69,7 +70,7 @@ export async function getAllProducts(locale = "en", limit?: number) {
   const nodes = await collectConnection(async (after) => {
     const data = await shopifyStorefrontRequest<{ products: ShopifyConnection<ProductCardData> }>(
       query, { first: Math.min(limit ?? 50, 50), after, language: language(locale) },
-      { revalidate: 60 },
+      { revalidate: 60, tags: [SHOPIFY_CATALOG_TAG] },
     );
     return data.products;
   }, limit);
@@ -85,7 +86,7 @@ export async function getFeaturedProducts(locale = "en") {
   const data = await shopifyStorefrontRequest<{ collection?: { products: { nodes: ProductCardData[] } } | null }>(
     query,
     { language: language(locale) },
-    { revalidate: 60 },
+    { revalidate: 60, tags: [SHOPIFY_CATALOG_TAG] },
   );
   const featured = data.collection?.products.nodes.filter(isVisibleCatalogProduct) ?? [];
   if (featured.length) return featured;
@@ -107,7 +108,7 @@ export async function getProduct(handle: string, locale = "en") {
   const data = await shopifyStorefrontRequest<{ product: ProductDetailData | null }>(
     query,
     { handle, language: language(locale) },
-    { revalidate: 60 },
+    { revalidate: 60, tags: [SHOPIFY_CATALOG_TAG] },
   );
   return data.product && isVisibleCatalogProduct(data.product) ? data.product : null;
 }
@@ -128,7 +129,7 @@ export async function getCollection(handle: string, locale = "en") {
   const data = await shopifyStorefrontRequest<{ collection: CollectionData | null }>(
     query,
     { handle, language: language(locale) },
-    { revalidate: 60 },
+    { revalidate: 60, tags: [SHOPIFY_CATALOG_TAG] },
   );
   return data.collection;
 }
@@ -197,6 +198,7 @@ export async function getGuideArticles(locale = "en", first = 50) {
   const data = await shopifyStorefrontRequest<{ blog: { articles: { nodes: ArticleData[] } } | null }>(
     query,
     { first, language: language(locale) },
+    { tags: [SHOPIFY_GUIDES_TAG] },
   );
   return data.blog?.articles.nodes ?? [];
 }
@@ -217,6 +219,7 @@ export async function getGuideArticle(handle: string, locale = "en") {
   const data = await shopifyStorefrontRequest<{ blog: { articleByHandle: ArticleData | null } | null }>(
     query,
     { handle, language: language(locale) },
+    { tags: [SHOPIFY_GUIDES_TAG] },
   );
   return data.blog?.articleByHandle ?? null;
 }
@@ -231,6 +234,7 @@ export async function getProductRecommendations(productId: string, locale = "en"
   const data = await shopifyStorefrontRequest<{ complementary: ProductCardData[]; related: ProductCardData[] }>(
     query,
     { id: productId, language: language(locale) },
+    { tags: [SHOPIFY_CATALOG_TAG] },
   );
   const recommendations = data.complementary?.length ? data.complementary : (data.related ?? []);
   return recommendations.filter(isVisibleCatalogProduct);

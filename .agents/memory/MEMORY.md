@@ -1,3 +1,4 @@
 - [Next.js preview origins](next-preview-origins.md) — allow the exact development hostname and loopback for proxied Next.js live reload.
 - [Next.js API routing](next-api-routing.md) — Next.js handlers need explicit service paths to override the shared API artifact's broad prefix.
 - [Merchant Shopify catalog](shopify-store-choice.md) — verify the merchant store; Admin totals differ from Headless visibility, and publication changes must appear without code changes.
+- [Shopify invalidation tradeoff](shopify-invalidation.md) — prefer catalog-wide expiration over adding Admin lookups or persistent inventory-to-product mappings.

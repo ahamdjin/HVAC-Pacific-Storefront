@@ -11,7 +11,8 @@
     "check:xlsx-reader": "python3 -m py_compile ./src/read-xlsx.py",
     "seed:guides": "tsx ./src/seed-guides.ts",
     "test:purchase-policy": "tsx ./src/purchase-policy-test.ts",
-    "test:storefront-smoke": "tsx ./src/storefront-smoke-test.ts"
+    "test:storefront-smoke": "tsx ./src/storefront-smoke-test.ts",
+    "test:webhook-cache": "node ./src/webhook-cache-test.mjs"
   },
   "devDependencies": {
     "@types/node": "catalog:",
