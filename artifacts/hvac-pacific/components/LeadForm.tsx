@@ -26,7 +26,8 @@ export function LeadForm({ type, product = "", compact = false }: { type:"instal
     } catch(err) { setStatus(err instanceof Error ? err.message : t("error")); }
     finally { setBusy(false); }
   }
-  return <form className={compact?"lead-form compact":"lead-form"} onSubmit={submit}>
+  const formName=type==="installer"?"hvac-pacific-installer-form":"hvac-pacific-contact-form";
+  return <form id={formName} name={formName} className={compact?"lead-form compact":"lead-form"} onSubmit={submit}>
     <input type="text" name="company_website" tabIndex={-1} autoComplete="off" className="honeypot" aria-hidden="true" />
     <label><span>{t("name")}</span><input name="name" required autoComplete="name" /></label>
     <label><span>{t("phone")}</span><input name="phone" required autoComplete="tel" inputMode="tel" /></label>
