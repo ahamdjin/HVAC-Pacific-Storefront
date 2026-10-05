@@ -6,10 +6,10 @@ export const SITE = {
   phoneE164: "+16269294200",
   email: "min@hvacpacific.com",
   mailingAddress: {
-    street: "1142 S Diamond Bar Blvd #726",
-    city: "Diamond Bar",
+    street: "2438 San Gabriel Blvd",
+    city: "Rosemead",
     region: "CA",
-    postal: "91765",
+    postal: "91770",
     country: "US",
   },
   showroom: null as null | {
