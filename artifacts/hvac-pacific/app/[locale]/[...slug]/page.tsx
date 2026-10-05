@@ -53,8 +53,8 @@ export default async function StaticPage({params}:P){
         </div>
         {key==="about"&&(
           <p className="about-credit">
-            <strong>Credits</strong><span aria-hidden="true"> · </span>
-            Website/Store/Products, automation, AI systems, and backend:{" "}
+            <strong>Credits</strong><br />
+            Website, e-commerce, product catalog, automation, AI systems, and backend:{" "}
             <a href="https://www.ahmadyar.co/">Ahmad Yar</a>
           </p>
         )}
