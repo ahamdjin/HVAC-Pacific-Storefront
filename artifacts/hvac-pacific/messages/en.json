@@ -351,7 +351,13 @@
     "relatedGuides": "Related HVAC guides",
     "call": "Call",
     "order": "Order",
-    "highlights": "Key highlights"
+    "highlights": "Key highlights",
+    "description": "Description",
+    "gallery": "Product image gallery",
+    "viewImage": "View product image",
+    "previousImage": "Previous image",
+    "nextImage": "Next image",
+    "closeGallery": "Close image gallery"
   },
   "Pages": {
     "cart": {
