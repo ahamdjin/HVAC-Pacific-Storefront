@@ -4,12 +4,20 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { hrefFor } from "@/components/paths";
+import { SITE } from "@/config/site";
+import { localizedAlternates, seoMetaDescription, seoPageTitle } from "@/lib/seo";
 import { getGuideArticles } from "@/lib/shopify/catalog";
 
 export async function generateMetadata({params}:{params:Promise<{locale:string}>}):Promise<Metadata>{
   const {locale}=await params;
   const t=await getTranslations({locale,namespace:"GuidesPage"});
-  return {title:t("metaTitle"),description:t("metaDescription")};
+  const description=seoMetaDescription(t("metaDescription"));
+  return {
+    title:seoPageTitle(t("metaTitle")),
+    description,
+    alternates:localizedAlternates(locale,"/guides"),
+    openGraph:{title:t("title"),description,url:SITE.domain+hrefFor(locale,"/guides"),type:"website"}
+  };
 }
 
 export default async function Page({params}:{params:Promise<{locale:string}>}){
