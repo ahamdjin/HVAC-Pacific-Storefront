@@ -8,7 +8,7 @@ import { Breadcrumbs } from "./Breadcrumbs";
 import { LeadForm } from "./LeadForm";
 import { hrefFor } from "./paths";
 import { SITE } from "@/config/site";
-import { localizedAlternates } from "@/lib/seo";
+import { localizedAlternates, seoMetaDescription, seoPageTitle } from "@/lib/seo";
 import { ALL_SECTIONS, getSection, getProductKind, productMatchesSection, sectionPath } from "@/lib/catalog-config";
 import { getAllProducts, getCollection, getGuideArticles, metafieldMap, parseFaq } from "@/lib/shopify/catalog";
 
@@ -18,15 +18,19 @@ export async function categoryMetadata(kind:"units"|"parts", slugs:string[], loc
   const title=section?t(`sections.${section.slug}.title`):(kind==="units"?t("allUnitsTitle"):t("allPartsTitle"));
   const path=section?sectionPath(section):`/${kind}`;
   const canonical=hrefFor(locale,path);
-  const desc=section?t(`sections.${section.slug}.intro`):(kind==="units"?t("unitsMetaDescription"):t("partsMetaDescription"));
+  const fallbackDesc=section?t(`sections.${section.slug}.intro`):(kind==="units"?t("unitsMetaDescription"):t("partsMetaDescription"));
+  const handle=section?.collectionHandle ?? section?.slug;
+  const collection=handle?await getCollection(handle,locale).catch(()=>null):null;
+  const seoTitle=collection?.seo?.title || t("forSaleTitle",{title});
+  const desc=seoMetaDescription(collection?.seo?.description || collection?.description || fallbackDesc);
   let emptySection=false;
   if(section&&!hasParams){
     const all=await getAllProducts(locale).catch(()=>[]);
     emptySection=!all.some((product)=>getProductKind(product)===kind&&productMatchesSection(product,section.slug));
   }
   return {
-    title:t("forSaleTitle",{title,brand:SITE.brand}),
-    description:desc.slice(0,160),
+    title:seoPageTitle(seoTitle),
+    description:desc,
     robots:hasParams||emptySection?{index:false,follow:true}:undefined,
     alternates:localizedAlternates(locale,path),
     openGraph:{title,description:desc,url:`${SITE.domain}${canonical}`,type:"website"},
