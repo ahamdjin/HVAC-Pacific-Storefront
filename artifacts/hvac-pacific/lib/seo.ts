@@ -18,3 +18,31 @@ export function localizedAlternates(locale: string, path: string) {
     languages,
   };
 }
+
+export function cleanSeoText(value: string) {
+  return value
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export function truncateSeoText(value: string, max = 155) {
+  const clean = cleanSeoText(value);
+  if (clean.length <= max) return clean;
+  const sample = clean.slice(0, max + 1);
+  const lastSpace = sample.lastIndexOf(" ");
+  const cut = lastSpace >= Math.floor(max * 0.72) ? lastSpace : max;
+  return clean.slice(0, cut).replace(/[\s,;:|\-–—]+$/g, "") + "…";
+}
+
+export function seoPageTitle(value: string, max = 60) {
+  const clean = cleanSeoText(value)
+    .replace(/\s*(?:\||[-–—])\s*(?:HVAC\s*Pacific|hvacpacific)\s*$/i, "")
+    .trim();
+  return truncateSeoText(clean, max);
+}
+
+export function seoMetaDescription(value: string, max = 155) {
+  return truncateSeoText(value, max);
+}
