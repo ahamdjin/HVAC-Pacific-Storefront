@@ -34,7 +34,7 @@ export async function SiteHeader({ locale }: { locale: string }) {
 
       <div className="wrap header-main">
         <Link href={h("/")} className="logo" aria-label={SITE.displayName}>
-          <Image src={SITE.logoPath} alt={SITE.displayName} width={1514} height={428} priority sizes="180px" />
+          <Image src={SITE.logoPath} alt={SITE.displayName} width={645} height={242} priority sizes="180px" />
         </Link>
 
         <form action={h("/search")} role="search" className="search header-search">

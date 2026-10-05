@@ -15,11 +15,19 @@ const verification=[process.env.GSC_VERIFICATION,process.env.MERCHANT_VERIFICATI
 
 export const metadata:Metadata={
   metadataBase:new URL(process.env.CI_SITE_ORIGIN || SITE.domain),
-  icons:{icon:SITE.logoPath},
+  icons:{
+    icon:[
+      {url:SITE.iconPath,type:"image/png",sizes:"32x32"},
+      {url:"/brand/hvac-pacific-icon-192.png",type:"image/png",sizes:"192x192"},
+      {url:"/brand/hvac-pacific-icon-512.png",type:"image/png",sizes:"512x512"},
+    ],
+    shortcut:SITE.iconPath,
+    apple:{url:"/brand/hvac-pacific-icon-180.png",sizes:"180x180",type:"image/png"},
+  },
   title:{default:"HVAC Equipment & Parts for Southern California | hvacpacific",template:"%s | hvacpacific"},
   description:"HVAC equipment and parts for Southern California with local pickup, local delivery and model-specific product data.",
   verification:verification.length?{google:verification}:undefined,
-  openGraph:{type:"website",siteName:SITE.displayName,title:"HVAC Equipment & Parts for Southern California | hvacpacific",description:"HVAC equipment and parts for Southern California.",url:SITE.domain,images:[{url:SITE.logoPath,width:1514,height:428,alt:SITE.displayName}]},
+  openGraph:{type:"website",siteName:SITE.displayName,title:"HVAC Equipment & Parts for Southern California | hvacpacific",description:"HVAC equipment and parts for Southern California.",url:SITE.domain,images:[{url:SITE.logoPath,width:645,height:242,alt:SITE.displayName}]},
   twitter:{card:"summary_large_image",title:"HVAC Pacific",description:"HVAC equipment and parts for Southern California."},
 };
 

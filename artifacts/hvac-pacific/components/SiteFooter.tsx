@@ -14,7 +14,7 @@ export async function SiteFooter({ locale }: { locale: string }) {
     <footer className="site-footer">
       <div className="wrap fgrid">
         <div>
-          <Image src={SITE.logoPath} alt={SITE.displayName} width={1514} height={428} sizes="170px" className="flogo" />
+          <Image src={SITE.footerLogoPath} alt={SITE.displayName} width={652} height={248} sizes="170px" className="flogo" />
           <p className="fnote">{hm("subtitle")}</p>
           <p className="fnote"><a href={`tel:${SITE.phoneE164}`}>{SITE.phone}</a><br/><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
         </div>

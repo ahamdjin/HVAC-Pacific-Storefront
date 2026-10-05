@@ -856,9 +856,9 @@ h2{letter-spacing:-.025em}
 .site-footer a{color:#eaf2f6}
 .site-footer .fnote{color:#b8c8d3}
 .site-footer .flogo{
-  background:#fff;
-  padding:8px 10px;
-  border-radius:4px;
+  background:transparent;
+  padding:0;
+  border-radius:0;
 }
 .fgrid{gap:46px;padding-top:54px;padding-bottom:42px}
 .fbar{

@@ -25,9 +25,10 @@ export const SITE = {
   locales: ["en", "zh"] as const,
   defaultLocale: "en" as const,
   featuredBrands: ["Lennox", "Carrier", "Midea", "Daikin", "TCL"],
-  logoUrl:
-    "https://assets.cdn.filesafe.space/Z1X6dLIh9rIQWOIUiptn/media/6aa5c74edf2d0155533d43d4.png",
-  logoPath: "/brand/hvacpacific-logo.png",
+  logoPath: "/brand/hvac-pacific-dark.png",
+  footerLogoPath: "/brand/hvac-pacific-white.png",
+  iconPath: "/brand/hvac-pacific-icon-32.png",
+  heroPath: "/brand/hvac-pacific-hero.webp",
 } as const;
 
 export type SiteLocale = (typeof SITE.locales)[number];

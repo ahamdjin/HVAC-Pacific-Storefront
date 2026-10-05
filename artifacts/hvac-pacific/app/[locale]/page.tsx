@@ -38,9 +38,12 @@ export default async function HomePage({params}:HomePageProps){
         <div className="hero-photo-card">
           <img
             className="hero-photo"
-            src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Air_Conditioner_for_a_single_room.jpg"
-            alt="Wall-mounted air conditioner in a room"
+            src={SITE.heroPath}
+            alt="HVAC equipment in a sunlit interior with a wall-mounted mini split, outdoor condenser, and furnace"
+            width={1672}
+            height={941}
             loading="eager"
+            fetchPriority="high"
           />
           <div className="hero-photo-overlay">
             <p className="eyebrow">{t("supplyEyebrow")}</p>
