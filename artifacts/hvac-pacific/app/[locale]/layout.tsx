@@ -36,7 +36,7 @@ export function generateStaticParams(){return routing.locales.map(locale=>({loca
 export default async function LocaleLayout({children,params}:{children:React.ReactNode;params:Promise<{locale:string}>}){
   const {locale}=await params;if(!hasLocale(routing.locales,locale))notFound();setRequestLocale(locale);const messages=await getMessages();
   const graph:any[]=[
-    {"@type":"Organization","@id":SITE.domain+"/#organization",name:SITE.displayName,url:SITE.domain,logo:SITE.domain+SITE.logoPath,telephone:SITE.phoneE164,email:SITE.email},
+    {"@type":"Organization","@id":SITE.domain+"/#organization",name:SITE.displayName,url:SITE.domain,logo:SITE.domain+SITE.logoPath,telephone:SITE.phoneE164,email:SITE.email,address:{"@type":"PostalAddress",streetAddress:SITE.mailingAddress.street,addressLocality:SITE.mailingAddress.city,addressRegion:SITE.mailingAddress.region,postalCode:SITE.mailingAddress.postal,addressCountry:SITE.mailingAddress.country}},
     {"@type":"WebSite","@id":SITE.domain+"/#website",name:SITE.displayName,url:SITE.domain,publisher:{"@id":SITE.domain+"/#organization"},potentialAction:{"@type":"SearchAction",target:{"@type":"EntryPoint",urlTemplate:SITE.domain+"/search?q={search_term_string}"},"query-input":"required name=search_term_string"}},
   ];
   if(SITE.showroom)graph.push({"@type":"Store","@id":SITE.domain+"/#store",name:SITE.displayName,url:SITE.domain,telephone:SITE.phoneE164,address:{"@type":"PostalAddress",streetAddress:SITE.showroom.street,addressLocality:SITE.showroom.city,addressRegion:SITE.showroom.region,postalCode:SITE.showroom.postal,addressCountry:"US"},openingHours: SITE.showroom.hours});
