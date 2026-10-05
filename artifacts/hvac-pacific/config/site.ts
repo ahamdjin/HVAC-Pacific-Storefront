@@ -2,9 +2,9 @@ export const SITE = {
   brand: "hvacpacific",
   displayName: "HVAC Pacific",
   domain: "https://hvacpacific.com",
-  phone: "213-282-8212",
-  phoneE164: "+12132828212",
-  email: "support@bmon.ai",
+  phone: "+1 626-929-4200",
+  phoneE164: "+16269294200",
+  email: "min@hvacpacific.com",
   mailingAddress: {
     street: "1142 S Diamond Bar Blvd #726",
     city: "Diamond Bar",
