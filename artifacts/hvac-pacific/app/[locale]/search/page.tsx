@@ -10,7 +10,7 @@ export async function generateMetadata({params,searchParams}:{params:Promise<{lo
   const {q}=await searchParams;
   const t=await getTranslations({locale,namespace:"Commerce.search"});
   const catalog=await getTranslations({locale,namespace:"Commerce.catalog"});
-  return { title: (q?.trim()?t("title"):catalog("allProducts"))+" | hvacpacific", robots:{index:false,follow:true} };
+  return { title: q?.trim()?t("title"):catalog("allProducts"), robots:{index:false,follow:true} };
 }
 
 export default async function Page({
