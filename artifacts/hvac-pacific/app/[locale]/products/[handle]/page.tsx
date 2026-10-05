@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ProductPurchase } from "@/components/ProductPurchase";
+import { ProductGallery } from "@/components/ProductGallery";
 import { ProductCard } from "@/components/ProductCard";
 import { hrefFor } from "@/components/paths";
 import { SITE } from "@/config/site";
@@ -192,29 +192,24 @@ export default async function ProductPage({ params }: P) {
         )}
 
         <section className="pdp-top">
-          <div className="gallery">
-            {product.images.nodes.length ? (
-              product.images.nodes.map((img, i) => (
-                <div className={i === 0 ? "gallery-main" : "gallery-item"} key={img.url}>
-                  <Image
-                    src={img.url}
-                    alt={img.altText || t("imageAlt", { title: product.title, number: i + 1 })}
-                    width={img.width || 1000}
-                    height={img.height || 1000}
-                    priority={i === 0}
-                    sizes={i === 0 ? "(max-width:850px) 100vw, 50vw" : "(max-width:850px) 50vw, 25vw"}
-                  />
-                </div>
-              ))
-            ) : (
-              <div className="gallery-main image-placeholder">{t("imageUnavailable")}</div>
-            )}
-          </div>
+          <ProductGallery
+            images={product.images.nodes}
+            title={product.title}
+            unavailableLabel={t("imageUnavailable")}
+            labels={{
+              gallery: t("gallery"),
+              viewImage: t("viewImage"),
+              previousImage: t("previousImage"),
+              nextImage: t("nextImage"),
+              closeGallery: t("closeGallery"),
+            }}
+          />
           <div className="pdp-info">
             <p className="eyebrow"><Link href={hrefFor(locale, "/brands/" + brandSlug(product.vendor))}>{product.vendor}</Link></p>
             <h1>{product.title}</h1>
             {mpn && <p className="model-line">{t("model")}: <strong>{mpn}</strong></p>}
             {product.description && <p className="pdp-summary">{product.description}</p>}
+            {(product.descriptionHtml || product.description) && <a className="pdp-description-link" href="#description">{t("description")}</a>}
             <ProductPurchase product={product} />
             <Link
               className="installer-link"
@@ -224,6 +219,15 @@ export default async function ProductPage({ params }: P) {
             </Link>
           </div>
         </section>
+
+        {(product.descriptionHtml || product.description) && (
+          <section className="pdp-section pdp-description-section" id="description">
+            <h2>{t("description")}</h2>
+            {product.descriptionHtml
+              ? <div className="prose" dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
+              : <p className="prose">{product.description}</p>}
+          </section>
+        )}
 
         {highlights.length > 0 && (
           <section className="pdp-section">
@@ -284,13 +288,6 @@ export default async function ProductPage({ params }: P) {
           <section className="pdp-section prop65">
             <h2>{t("prop65Title")}</h2>
             <p>{t("prop65Text")}</p>
-          </section>
-        )}
-
-        {product.descriptionHtml && (
-          <section className="pdp-section">
-            <h2>{t("productDetails")}</h2>
-            <div className="prose" dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
           </section>
         )}
 
