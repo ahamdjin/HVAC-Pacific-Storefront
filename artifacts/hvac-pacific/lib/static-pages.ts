@@ -8,21 +8,21 @@ export type StaticPage = {
 export const STATIC_PAGES: Record<string, StaticPage> = {
   about: {
     title: "About HVAC Pacific",
-    description: "HVAC Pacific supplies HVAC equipment and parts with local pickup and delivery in Southern California.",
+    description: "HVAC Pacific supplies HVAC equipment and parts with pickup in Rosemead and local delivery across Southern California.",
     reviewed: true,
     sections: [
       { paragraphs: ["HVAC Pacific supplies HVAC equipment and replacement parts for contractors, technicians and property owners in Southern California. Our catalog is built around clear model information and verified product data rather than placeholder specifications."] },
-      { heading: "How we sell", paragraphs: ["Orders are fulfilled through local pickup or eligible local delivery. Product availability, price and technical details shown on the site come from the live Shopify catalog."] },
+      { heading: "How we sell", paragraphs: ["Orders are fulfilled through pickup at 2438 San Gabriel Blvd, Rosemead, CA 91770 or eligible local delivery. Product availability, price and technical details shown on the site come from the live Shopify catalog."] },
       { heading: "Product information", paragraphs: ["We publish model numbers, efficiency data, refrigerant, compliance fields and technical documents only when those values are available in the product catalog. Buyers should still verify the exact equipment combination and job requirements before installation."] },
     ],
   },
   "pickup-delivery": {
     title: "Pickup & Local Delivery",
-    description: "Information about HVAC Pacific local pickup and delivery within the configured service area.",
+    description: "Pickup at 2438 San Gabriel Blvd, Rosemead, CA 91770, plus eligible local delivery within the configured service area.",
     reviewed: true,
     sections: [
-      { paragraphs: ["HVAC Pacific offers local pickup and eligible local delivery within the configured Southern California service area. At launch, the storefront is not offering nationwide carrier shipping."] },
-      { heading: "Pickup", paragraphs: ["The pickup location and order-specific instructions are provided after an order is placed. Bring the order information requested in the pickup instructions. Restricted products may require additional verification before release."] },
+      { paragraphs: ["HVAC Pacific offers pickup at 2438 San Gabriel Blvd, Rosemead, CA 91770 and eligible local delivery within the configured Southern California service area. At launch, the storefront is not offering nationwide carrier shipping."] },
+      { heading: "Pickup", paragraphs: ["Pickup is at 2438 San Gabriel Blvd, Rosemead, CA 91770. Bring the order information requested in the pickup instructions. Restricted products may require additional verification before release."] },
       { heading: "Local delivery", paragraphs: ["Delivery eligibility depends on the delivery address, product and current service radius. Large equipment and restricted products can have additional handling requirements. If an order cannot be fulfilled using the selected local method, HVAC Pacific will contact the purchaser before fulfillment."] },
       { heading: "Before ordering equipment", paragraphs: ["Confirm that the exact model, capacity, voltage, phase, refrigerant and component combination match the intended project. Local pickup or delivery does not include installation unless a product or service is explicitly described otherwise."] },
     ],
@@ -59,7 +59,7 @@ export const STATIC_PAGES: Record<string, StaticPage> = {
     reviewed: false,
     sections: [
       { paragraphs: ["At launch, HVAC Pacific is configured for local pickup and eligible local delivery rather than nationwide carrier shipping. The website should not be interpreted as offering carrier shipment outside the displayed or confirmed local fulfillment options."] },
-      { heading: "Pickup and delivery", paragraphs: ["Pickup instructions are provided after order. Local-delivery eligibility depends on the address, product and current delivery radius. Large equipment, refrigerants and other restricted products can require additional verification or handling before fulfillment."] },
+      { heading: "Pickup and delivery", paragraphs: ["Pickup is at 2438 San Gabriel Blvd, Rosemead, CA 91770. Local-delivery eligibility depends on the address, product and current delivery radius. Large equipment, refrigerants and other restricted products can require additional verification or handling before fulfillment."] },
       { heading: "Inspect the order", paragraphs: ["Inspect equipment and packaging at pickup or delivery and report visible damage, missing items or a model mismatch promptly using the order contact information. Do not install equipment that appears damaged or is not the model ordered."] },
       { heading: "Proposed return eligibility — pending final review", paragraphs: ["The working return policy is intended to limit standard returns to eligible merchandise that is unopened, uninstalled and in resalable condition with the original packaging and product identification intact. A return authorization should be obtained before bringing equipment back. The final return window, any restocking rules and category-specific exclusions have not been approved and must be finalized before this page is marked reviewed."] },
       { heading: "Installed, opened or restricted products", paragraphs: ["Installation, opening sealed product, adding refrigerant, field modification or other use can affect whether an item can be returned. Refrigerants, electrical parts and special-order items may require separate rules. These exclusions remain subject to final business and legal review."] },
