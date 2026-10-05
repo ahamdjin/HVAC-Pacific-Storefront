@@ -5,7 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { hrefFor } from "@/components/paths";
 import { SITE } from "@/config/site";
-import { localizedAlternates } from "@/lib/seo";
+import { localizedAlternates, seoMetaDescription, seoPageTitle } from "@/lib/seo";
 import { getGuideArticle } from "@/lib/shopify/catalog";
 
 type P={params:Promise<{locale:string;handle:string}>};
@@ -16,7 +16,7 @@ export async function generateMetadata({params}:P):Promise<Metadata>{
   const path="/guides/"+handle;let noindex=false;
   if(locale==="zh"){const en=await getGuideArticle(handle,"en").catch(()=>null);noindex=Boolean(en&&en.title===article.title&&en.contentHtml===article.contentHtml);}
   const t=await getTranslations({locale,namespace:"GuidesPage"});
-  return {title:(article.seo.title||article.title)+" | "+SITE.brand,description:(article.seo.description||article.excerpt||t("fallbackDescription")).slice(0,160),robots:noindex?{index:false,follow:true}:undefined,alternates:localizedAlternates(locale,path),openGraph:{type:"article",title:article.title,images:article.image?[article.image.url]:undefined}};
+  return {title:seoPageTitle(article.seo.title||article.title),description:seoMetaDescription(article.seo.description||article.excerpt||t("fallbackDescription")),robots:noindex?{index:false,follow:true}:undefined,alternates:localizedAlternates(locale,path),openGraph:{type:"article",title:article.title,url:SITE.domain+hrefFor(locale,path),images:article.image?[{url:article.image.url,alt:article.image.altText||article.title}]:undefined}};
 }
 export default async function Page({params}:P){
   const {locale,handle}=await params;
