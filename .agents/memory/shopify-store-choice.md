@@ -9,11 +9,11 @@ Verify the intended backend against a real product supplied by the merchant. Suc
 
 **How to apply:** Compare a supplied merchant product with the authenticated store before claiming the catalog is connected. Use an existing-store integration for merchant catalog access rather than provisioning another empty store. Treat importing or publishing products as separate work requiring explicit instruction.
 
-For the buyer storefront, the user chose the existing merchant store's Headless credentials instead of authorizing the generic Admin integration, and subsequently supplied a private Storefront token for checkout.
+For the buyer storefront, the user chose the existing merchant store's Headless credentials instead of authorizing the generic Admin integration. They subsequently explicitly approved the working public-token connection instead of private authentication. Keep that selection unless they request a change.
 
-**Why:** The user dismissed Admin integration setup and explicitly offered their existing Headless credentials. Buyer catalog, cart, and checkout access do not require an Admin token.
+**Why:** The user dismissed Admin integration setup and explicitly offered their existing Headless credentials. Buyer catalog, cart, and checkout access do not require an Admin token. Secret-save confirmations establish existence, not authorization; a rejected preferred credential previously blocked an otherwise working public connection. The user confirmed public authentication after catalog and cart verification.
 
-**How to apply:** Preserve this merchant Headless connection approach. Request tokens through the secure Secrets flow, never chat, and never write their values into project files. Private tokens stay server-only and must not use public-token authentication. For buyer-originated private cart requests, forward the validated buyer IP: Shopify documents that omitting it can cause unauthenticated checkout flows. Use the public token only when a private token is not configured, not as a silent fallback after private authentication fails.
+**How to apply:** Preserve this merchant Headless connection approach. Request tokens through the secure Secrets flow, never chat, and never write their values into project files. Private tokens stay server-only and must not use public-token authentication. For buyer-originated private cart requests, forward the validated buyer IP: Shopify documents that omitting it can cause unauthenticated checkout flows. In automatic mode, prefer private authentication when configured. Honour an explicit public/private selection regardless of other saved credentials, verify the active mode, and never switch modes automatically after an authentication error.
 
 The merchant's Shopify store is live, not a development/test store. Keep the normal live-store checkout flow.
 

@@ -30,15 +30,23 @@ function normalizeDomain(value: string) {
 function envConfig(): ShopifyStorefrontConfig | null {
   const shopDomain = process.env.SHOPIFY_STORE_DOMAIN;
   const privateToken = process.env.SHOPIFY_STOREFRONT_PRIVATE_TOKEN;
-  const storefrontAccessToken =
-    privateToken ??
+  const publicToken =
     process.env.SHOPIFY_STOREFRONT_TOKEN ??
     process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
+  const mode = process.env.SHOPIFY_STOREFRONT_AUTH_MODE ?? "auto";
+  if (!["auto", "public", "private"].includes(mode)) {
+    throw new Error("SHOPIFY_STOREFRONT_AUTH_MODE must be auto, public, or private.");
+  }
+  const accessTokenType = mode === "public" ? "public" : mode === "private" || privateToken ? "private" : "public";
+  const storefrontAccessToken = accessTokenType === "private" ? privateToken : publicToken;
+  if (mode !== "auto" && (!shopDomain || !storefrontAccessToken)) {
+    throw new Error(`Shopify ${mode} authentication requires the store domain and its corresponding Storefront token.`);
+  }
   if (!shopDomain || !storefrontAccessToken) return null;
   return {
     shopDomain: normalizeDomain(shopDomain),
     storefrontAccessToken,
-    accessTokenType: privateToken ? "private" : "public",
+    accessTokenType,
   };
 }
 
