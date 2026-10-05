@@ -212,3 +212,10 @@ body.mobile-menu-open{overflow:hidden}
   .product-gallery-arrow.previous{left:8px}.product-gallery-arrow.next{right:8px}
   .product-gallery-close{right:10px}
 }
+
+
+/* Minimal About page credit */
+.about-credit{margin:48px 0 0;padding-top:14px;border-top:1px solid rgba(21,43,69,.08);color:#8a939c;font-size:10px;line-height:1.45;font-weight:400}
+.about-credit strong{font-weight:600;color:#7c858e}
+.about-credit a{color:inherit;text-decoration:none}
+.about-credit a:hover{text-decoration:underline;color:#65717c}
