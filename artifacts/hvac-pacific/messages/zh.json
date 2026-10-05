@@ -36,19 +36,19 @@
   "HomePage": {
     "eyebrow": "本地暖通设备与零件",
     "title": "暖通设备与零件",
-    "subtitle": "20 英里范围内提供本地自取和配送。提供 English 和中文支持。",
+    "subtitle": "可在 Rosemead 自取，并在 20 英里范围内提供本地配送。提供 English 和中文支持。",
     "shopUnits": "选购设备",
     "shopParts": "选购零件",
     "unitsHeading": "暖通设备",
     "partsHeading": "零件与配件",
-    "pickupNote": "订单完成后提供自取地点。",
+    "pickupNote": "自取地址：2438 San Gabriel Blvd, Rosemead, CA 91770。",
     "contactTitle": "有问题？请联系我们。",
     "contactDescription": "致电获取真实的产品和订单支持。",
     "metaTitle": "南加州暖通设备与零件 | HVAC Pacific",
-    "metaDescription": "选购暖通设备、系统和替换零件，支持南加州本地自取与配送。",
+    "metaDescription": "选购 HVAC 设备、系统和替换零件，可在 Rosemead 自取，并在南加州提供本地配送。",
     "ogDescription": "在 HVAC Pacific 选购已核实信息的暖通设备与零件。",
     "supplyEyebrow": "南加州暖通供应",
-    "lead": "南加州暖通设备、零件、本地自取与配送。",
+    "lead": "HVAC 设备与零件，可在 Rosemead 自取，并在南加州提供本地配送。",
     "verifiedData": "已核实的产品数据",
     "localFulfillment": "本地履约",
     "phoneSupport": "真人电话支持",
@@ -69,7 +69,7 @@
     "californiaFocused": "聚焦加州要求",
     "californiaFocusedText": "只有目录中确有数据时，产品页面才显示相应的合规字段。",
     "localPickupDelivery": "本地自取与配送",
-    "localPickupDeliveryText": "履约范围聚焦南加州已配置的本地服务区域。",
+    "localPickupDeliveryText": "可在 2438 San Gabriel Blvd, Rosemead, CA 91770 自取，并在配置的服务范围内提供符合条件的本地配送。",
     "bilingual": "English & 中文",
     "bilingualText": "提供清晰的语言版本入口和电话支持，不根据浏览器语言自动跳转。",
     "contractorData": "面向承包商的产品数据",
@@ -102,7 +102,7 @@
     "about": "关于我们",
     "compliance": "加州暖通合规",
     "copyright": "HVAC Pacific",
-    "pickupNote": "订单完成后提供自取地点。",
+    "pickupNote": "自取地址：2438 San Gabriel Blvd, Rosemead, CA 91770。",
     "company": "公司",
     "contactLink": "联系我们",
     "pickupLink": "自取与本地配送",
@@ -131,7 +131,7 @@
       "imageUnavailable": "暂无图片",
       "available": "可购买",
       "unavailable": "暂不可购买",
-      "fulfillment": "20 英里内本地自取 / 配送",
+      "fulfillment": "Rosemead 自取 / 20 英里内本地配送",
       "ton": "{value} 吨"
     },
     "catalog": {
@@ -162,7 +162,7 @@
       "option": "选项",
       "unavailableSuffix": " — 暂不可购买",
       "unavailable": "暂不可购买",
-      "fulfillment": "本地自取 · 20 英里内本地配送",
+      "fulfillment": "Rosemead 自取 · 20 英里内本地配送",
       "installAck": "我了解此设备必须由持证承包商安装，并由具备 EPA 608 认证的技术人员进行相关制冷剂工作，且可能需要许可证。",
       "adding": "正在加入…",
       "addToCart": "加入购物车",
@@ -232,8 +232,8 @@
     "partsEyebrow": "零件与配件",
     "allUnitsTitle": "暖通设备",
     "allPartsTitle": "暖通零件与配件",
-    "unitsMetaDescription": "选购暖通设备，支持南加州本地自取和配送。",
-    "partsMetaDescription": "选购暖通零件与配件，支持南加州本地自取和配送。",
+    "unitsMetaDescription": "选购 HVAC 设备，可在 Rosemead 自取，并在南加州提供本地配送。",
+    "partsMetaDescription": "选购 HVAC 零件和配件，可在 Rosemead 自取，并在南加州提供本地配送。",
     "forSaleTitle": "{title} – 南加州本地自取",
     "unitsIntro": "按系统类型、品牌、容量和制冷剂浏览暖通设备。只有目录中存在的信息才会显示在产品页面。",
     "partsIntro": "按类别、品牌和关键规格浏览暖通零件与配件。",
@@ -381,7 +381,7 @@
       "title": "联系 HVAC Pacific",
       "description": "对型号、零件、订单或本地自取有疑问？请发送消息或致电。",
       "talk": "联系我们",
-      "pickup": "订单完成后提供自取地点。"
+      "pickup": "自取地址：2438 San Gabriel Blvd, Rosemead, CA 91770。"
     }
   },
   "BrandsPage": {
@@ -424,11 +424,11 @@
     "pages": {
       "about": {
         "title": "关于 HVAC Pacific",
-        "description": "HVAC Pacific 在南加州供应暖通设备和零件，并提供本地自取与配送。"
+        "description": "HVAC Pacific 提供 HVAC 设备与零件，可在 Rosemead 自取，并在南加州提供本地配送。"
       },
       "pickup-delivery": {
         "title": "自取与本地配送",
-        "description": "了解 HVAC Pacific 在已配置服务区域内的本地自取和配送方式。"
+        "description": "自取地址：2438 San Gabriel Blvd, Rosemead, CA 91770，并在配置的服务范围内提供符合条件的本地配送。"
       },
       "california-hvac-compliance": {
         "title": "加州暖通合规指南",
