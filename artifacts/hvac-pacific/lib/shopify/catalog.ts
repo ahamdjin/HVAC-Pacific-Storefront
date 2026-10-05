@@ -89,8 +89,7 @@ export async function getFeaturedProducts(locale = "en") {
     { revalidate: 60, tags: [SHOPIFY_CATALOG_TAG] },
   );
   const featured = data.collection?.products.nodes.filter(isVisibleCatalogProduct) ?? [];
-  if (featured.length) return featured;
-  return (await getAllProducts(locale, 12)).slice(0, 8);
+  return featured;
 }
 
 export async function getProduct(handle: string, locale = "en") {
