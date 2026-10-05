@@ -27,7 +27,7 @@ export const metadata:Metadata={
   title:{default:"HVAC Equipment & Parts for Southern California | HVAC Pacific",template:"%s | HVAC Pacific"},
   description:"HVAC equipment and parts for Southern California with local pickup, local delivery and model-specific product data.",
   verification:verification.length?{google:verification}:undefined,
-  openGraph:{type:"website",siteName:SITE.displayName,title:"HVAC Equipment & Parts for Southern California | hvacpacific",description:"HVAC equipment and parts for Southern California.",url:SITE.domain,images:[{url:SITE.logoPath,width:645,height:242,alt:SITE.displayName}]},
+  openGraph:{type:"website",siteName:SITE.displayName,title:"HVAC Equipment & Parts for Southern California | HVAC Pacific",description:"HVAC equipment and parts for Southern California.",url:SITE.domain,images:[{url:SITE.logoPath,width:645,height:242,alt:SITE.displayName}]},
   twitter:{card:"summary_large_image",title:"HVAC Pacific",description:"HVAC equipment and parts for Southern California."},
 };
 
