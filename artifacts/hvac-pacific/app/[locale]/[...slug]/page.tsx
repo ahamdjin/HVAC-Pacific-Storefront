@@ -4,7 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { hrefFor } from "@/components/paths";
 import { SITE } from "@/config/site";
-import { localizedAlternates } from "@/lib/seo";
+import { localizedAlternates, seoMetaDescription, seoPageTitle } from "@/lib/seo";
 import { STATIC_PAGES } from "@/lib/static-pages";
 
 type P={params:Promise<{locale:string;slug:string[]}>};
@@ -19,8 +19,8 @@ export async function generateMetadata({params}:P):Promise<Metadata>{
   const path="/"+key;
   const t=await getTranslations({locale,namespace:"StaticPage"});
   return {
-    title:t(`pages.${key}.title`)+" | "+SITE.brand,
-    description:t(`pages.${key}.description`),
+    title:seoPageTitle(t(`pages.${key}.title`)),
+    description:seoMetaDescription(t(`pages.${key}.description`)),
     robots:!page.reviewed||locale==="zh"?{index:false,follow:true}:undefined,
     alternates:localizedAlternates(locale,path),
   };
