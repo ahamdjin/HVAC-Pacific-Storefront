@@ -35,19 +35,19 @@
   "HomePage": {
     "eyebrow": "Local HVAC equipment and parts",
     "title": "HVAC Equipment & Parts",
-    "subtitle": "Local pickup and delivery within 20 miles. Support in English and 中文.",
+    "subtitle": "Pickup in Rosemead and local delivery within 20 miles. Support in English and 中文.",
     "shopUnits": "Shop units",
     "shopParts": "Shop parts",
     "unitsHeading": "HVAC units",
     "partsHeading": "Parts & accessories",
-    "pickupNote": "Pickup location provided after order.",
+    "pickupNote": "Pickup: 2438 San Gabriel Blvd, Rosemead, CA 91770.",
     "contactTitle": "Questions? Talk with our team.",
     "contactDescription": "Call for real product and order support.",
     "metaTitle": "HVAC Equipment & Parts for Southern California | HVAC Pacific",
-    "metaDescription": "Shop HVAC equipment, systems and replacement parts with local pickup and delivery in Southern California.",
+    "metaDescription": "Shop HVAC equipment, systems and replacement parts with pickup in Rosemead and local delivery across Southern California.",
     "ogDescription": "Shop verified HVAC equipment and parts from HVAC Pacific.",
     "supplyEyebrow": "Southern California HVAC supply",
-    "lead": "Equipment, parts, pickup and local delivery across Southern California.",
+    "lead": "HVAC equipment and parts with pickup in Rosemead and local delivery across Southern California.",
     "verifiedData": "Verified product data",
     "localFulfillment": "Local fulfillment",
     "phoneSupport": "Real phone support",
@@ -68,7 +68,7 @@
     "californiaFocused": "California-focused",
     "californiaFocusedText": "Product pages surface compliance fields only when they exist in the catalog.",
     "localPickupDelivery": "Local pickup & delivery",
-    "localPickupDeliveryText": "Fulfillment is focused on Southern California within the configured local service area.",
+    "localPickupDeliveryText": "Pickup is available at 2438 San Gabriel Blvd, Rosemead, CA 91770, with eligible local delivery in the configured service area.",
     "bilingual": "English & 中文",
     "bilingualText": "Visible language routes and phone support without browser-language redirects.",
     "contractorData": "Contractor-friendly data",
@@ -101,7 +101,7 @@
     "about": "About",
     "compliance": "California HVAC compliance",
     "copyright": "HVAC Pacific",
-    "pickupNote": "Pickup location provided after order.",
+    "pickupNote": "Pickup: 2438 San Gabriel Blvd, Rosemead, CA 91770.",
     "company": "Company",
     "contactLink": "Contact",
     "pickupLink": "Pickup & delivery",
@@ -130,7 +130,7 @@
       "imageUnavailable": "Image unavailable",
       "available": "Available",
       "unavailable": "Unavailable",
-      "fulfillment": "Local pickup / delivery within 20 mi",
+      "fulfillment": "Rosemead pickup / local delivery within 20 mi",
       "ton": "{value} Ton"
     },
     "catalog": {
@@ -161,7 +161,7 @@
       "option": "Option",
       "unavailableSuffix": " — unavailable",
       "unavailable": "Unavailable",
-      "fulfillment": "Local pickup · Local delivery within 20 miles",
+      "fulfillment": "Pickup in Rosemead · Local delivery within 20 miles",
       "installAck": "I understand this equipment must be installed by a licensed contractor with EPA 608 certification and may require a permit.",
       "adding": "Adding…",
       "addToCart": "Add to cart",
@@ -231,8 +231,8 @@
     "partsEyebrow": "Parts & accessories",
     "allUnitsTitle": "HVAC Units",
     "allPartsTitle": "HVAC Parts & Accessories",
-    "unitsMetaDescription": "Shop HVAC equipment for Southern California pickup and local delivery.",
-    "partsMetaDescription": "Shop HVAC parts and accessories for Southern California pickup and local delivery.",
+    "unitsMetaDescription": "Shop HVAC equipment with pickup in Rosemead and local delivery across Southern California.",
+    "partsMetaDescription": "Shop HVAC parts and accessories with pickup in Rosemead and local delivery across Southern California.",
     "forSaleTitle": "{title} for Sale – Southern California",
     "unitsIntro": "Browse HVAC equipment by system type, brand, capacity and refrigerant. Product information is displayed only when it is available from the catalog.",
     "partsIntro": "Browse HVAC parts and accessories by category, brand and key specifications.",
@@ -380,7 +380,7 @@
       "title": "Contact HVAC Pacific",
       "description": "Questions about a model, part, order or local pickup? Send us a message or call.",
       "talk": "Talk with us",
-      "pickup": "Pickup location provided after order."
+      "pickup": "Pickup: 2438 San Gabriel Blvd, Rosemead, CA 91770."
     }
   },
   "BrandsPage": {
@@ -423,11 +423,11 @@
     "pages": {
       "about": {
         "title": "About HVAC Pacific",
-        "description": "HVAC Pacific supplies HVAC equipment and parts with local pickup and delivery in Southern California."
+        "description": "HVAC Pacific supplies HVAC equipment and parts with pickup in Rosemead and local delivery across Southern California."
       },
       "pickup-delivery": {
         "title": "Pickup & Local Delivery",
-        "description": "Information about HVAC Pacific local pickup and delivery within the configured service area."
+        "description": "Pickup at 2438 San Gabriel Blvd, Rosemead, CA 91770, plus eligible local delivery within the configured service area."
       },
       "california-hvac-compliance": {
         "title": "California HVAC Compliance Guide",
