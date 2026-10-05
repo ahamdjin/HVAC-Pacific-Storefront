@@ -78,7 +78,22 @@
     "allGuides": "All guides →",
     "helpFind": "Need help finding a product?",
     "talkWith": "Talk with HVAC Pacific",
-    "sendModel": "Call <call>{phone}</call> or send us the model number."
+    "sendModel": "Call <call>{phone}</call> or send us the model number.",
+    "heroPlaceholder": "HVAC equipment image placeholder",
+    "quickLinks": "Shop shortcuts",
+    "equipmentShort": "Systems and packaged equipment",
+    "partsShort": "Replacement and service parts",
+    "miniSplits": "Ductless Mini Splits",
+    "miniSplitsShort": "Compact heating and cooling",
+    "shoppingHelp": "Shopping Assistance",
+    "shoppingHelpShort": "Model, availability and order help",
+    "popularParts": "Popular parts",
+    "capacitors": "Capacitors",
+    "contactors": "Contactors & Relays",
+    "motors": "Motors",
+    "thermostats": "Thermostats",
+    "brandsWeCarry": "Brands we carry",
+    "contactUs": "Contact us"
   },
   "Footer": {
     "pickupDelivery": "Pickup & delivery",
