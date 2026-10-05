@@ -3,11 +3,19 @@ import { getTranslations } from "next-intl/server";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { LeadForm } from "@/components/LeadForm";
 import { SITE } from "@/config/site";
+import { hrefFor } from "@/components/paths";
+import { localizedAlternates, seoMetaDescription } from "@/lib/seo";
 
 export async function generateMetadata({params}:{params:Promise<{locale:string}>}):Promise<Metadata>{
   const {locale}=await params;
   const t=await getTranslations({locale,namespace:"Pages.contact"});
-  return {title:t("title"),description:t("description")};
+  const description=seoMetaDescription(t("description"));
+  return {
+    title:t("title"),
+    description,
+    alternates:localizedAlternates(locale,"/contact"),
+    openGraph:{title:t("title"),description,url:SITE.domain+hrefFor(locale,"/contact"),type:"website"}
+  };
 }
 
 export default async function Page({params}:{params:Promise<{locale:string}>}){
