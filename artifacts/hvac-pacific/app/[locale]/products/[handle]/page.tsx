@@ -8,16 +8,12 @@ import { ProductGallery } from "@/components/ProductGallery";
 import { ProductCard } from "@/components/ProductCard";
 import { hrefFor } from "@/components/paths";
 import { SITE } from "@/config/site";
-import { localizedAlternates } from "@/lib/seo";
+import { localizedAlternates, seoMetaDescription, seoPageTitle } from "@/lib/seo";
 import { ALL_SECTIONS, productMatchesSection, sectionPath } from "@/lib/catalog-config";
 import { boolMeta, getCollection, getGuideArticles, getProduct, getProductRecommendations, metafieldMap, parseFaq, parseKeySpecs } from "@/lib/shopify/catalog";
 
 type P = { params: Promise<{ locale: string; handle: string }> };
 export const revalidate = 3600;
-
-function shortTitle(value: string) {
-  return value.length > 58 ? value.slice(0, 55).replace(/\s+\S*$/, "") + "…" : value;
-}
 
 function brandSlug(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -35,16 +31,16 @@ export async function generateMetadata({ params }: P): Promise<Metadata> {
   const meta = metafieldMap(product);
   const blocked = isBlockedStatus(meta.site_status);
   const path = "/products/" + handle;
-  const description = (product.seo.description || product.description || "Shop " + product.title + " from HVAC Pacific.")
-    .replace(/\s+/g, " ")
-    .slice(0, 155);
+  const description = seoMetaDescription(
+    product.seo.description || product.description || "Shop " + product.title + " from HVAC Pacific.",
+  );
   let noindex = blocked;
   if (locale === "zh") {
     const en = await getProduct(handle, "en").catch(() => null);
     noindex = blocked || Boolean(en && en.title === product.title && en.description === product.description);
   }
   return {
-    title: shortTitle(product.seo.title || product.title) + " | " + SITE.brand,
+    title: seoPageTitle(product.seo.title || product.title),
     description,
     robots: noindex ? { index: false, follow: true } : undefined,
     alternates: localizedAlternates(locale, path),
@@ -131,6 +127,29 @@ export default async function ProductPage({ params }: P) {
       ? undefined
       : m.outdoor_model || m.indoor_model || m.furnace_model || undefined;
 
+  const productCategories = [
+    m.google_product_category
+      ? {
+          "@type": "CategoryCode",
+          inCodeSet: "https://www.google.com/basepages/producttype/taxonomy-with-ids.en-US.txt",
+          codeValue: m.google_product_category,
+        }
+      : undefined,
+    m.site_category || product.productType || undefined,
+  ].filter(Boolean);
+
+  const additionalProperty = [
+    [t("capacity"), m.tonnage ? (locale === "zh" ? m.tonnage + " 吨" : m.tonnage + " Ton") : ""],
+    ["BTU", m.btu],
+    [t("refrigerant"), m.refrigerant],
+    ["SEER2", m.seer2],
+    ["EER2", m.eer2],
+    ["HSPF2", m.hspf2],
+    ["AFUE", m.afue],
+  ]
+    .filter((item) => item[1])
+    .map(([name, value]) => ({ "@type": "PropertyValue", name, value }));
+
   const productJson = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -141,7 +160,9 @@ export default async function ProductPage({ params }: P) {
     brand: product.vendor ? { "@type": "Brand", name: product.vendor } : undefined,
     sku: variant?.sku || undefined,
     mpn,
-    category: m.site_category || product.productType || undefined,
+    model: m.outdoor_model || m.indoor_model || m.furnace_model || variant?.sku || undefined,
+    category: productCategories.length ? productCategories : undefined,
+    additionalProperty: additionalProperty.length ? additionalProperty : undefined,
     offers: variant
       ? {
           "@type": "Offer",
@@ -150,7 +171,7 @@ export default async function ProductPage({ params }: P) {
           availability: product.availableForSale ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
           itemCondition: "https://schema.org/NewCondition",
           url: SITE.domain + hrefFor(locale, "/products/" + handle),
-          seller: { "@type": "Organization", name: SITE.displayName },
+          seller: { "@id": SITE.domain + "/#organization" },
         }
       : undefined,
   };
