@@ -381,3 +381,66 @@ img{max-width:100%}
   .hero-copy h1{font-size:2.55rem}
   .hero-copy .row{margin-top:22px}
 }
+
+
+/* Alpine-inspired homepage: simple supplier layout with a centered product hero */
+.home-showcase{background:#f4f5f6;border-bottom:1px solid var(--line);padding:26px 0 0}
+.showcase-frame{background:#fff;border:1px solid #d9e0e6;overflow:hidden}
+.showcase-copy{text-align:center;padding:30px 24px 12px}
+.showcase-copy .eyebrow{margin-bottom:8px}
+.showcase-copy h1{margin:0 auto 10px;font-size:clamp(2.2rem,4.5vw,3.7rem);max-width:850px}
+.showcase-copy>p:last-child{margin:0 auto;color:var(--muted);font-size:1.02rem}
+.showcase-media{height:min(47vw,470px);min-height:350px;display:grid;place-items:center;padding:18px 36px;background:linear-gradient(180deg,#fff 0%,#f3f4f5 100%);overflow:hidden}
+.showcase-media img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 22px 22px rgba(26,43,61,.13))}
+.showcase-placeholder{width:min(620px,84%);height:72%;display:grid;place-items:center;border:2px dashed #c7d0d8;background:#f8fafb;color:#91a0ad;font-size:clamp(2rem,7vw,5rem);font-weight:800;letter-spacing:.14em}
+.showcase-bottom{display:grid;grid-template-columns:auto minmax(320px,560px);gap:28px;align-items:center;padding:18px 24px 24px;border-top:1px solid #e4e9ed}
+.showcase-bottom .row{margin:0}
+.showcase-search{width:100%}
+.home-shortcuts{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border:1px solid var(--line);border-top:0}
+.home-shortcuts>a{min-height:108px;padding:21px 22px;text-decoration:none;border-right:1px solid var(--line);display:flex;flex-direction:column;justify-content:center;gap:6px}
+.home-shortcuts>a:last-child{border-right:0}
+.home-shortcuts strong{color:var(--navy);font-size:1.02rem}
+.home-shortcuts span{color:var(--muted);font-size:.87rem}
+.home-shortcuts>a:hover{background:#f7f9fb}
+.home-products{padding-top:58px;padding-bottom:64px}
+.home-parts-strip{display:grid;grid-template-columns:260px 1fr;gap:42px;align-items:center;padding-top:42px;padding-bottom:42px}
+.home-parts-strip h2{margin:0}
+.part-link-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.part-link-row a{display:flex;align-items:center;justify-content:center;min-height:62px;padding:12px;border:1px solid var(--line);background:#fff;text-decoration:none;font-weight:700;color:var(--navy)}
+.part-link-row a:hover{border-color:#aebdca;background:#f9fbfc}
+.brand-strip{display:flex;align-items:center;justify-content:space-between;gap:32px;padding-top:34px;padding-bottom:34px;border-bottom:1px solid #eef1f4}
+.brand-strip>span{font-size:.78rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:800;white-space:nowrap}
+.brand-strip>div{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:26px}
+.brand-strip strong{font-size:1.05rem;color:#536579}
+.home-support{background:#fff}
+.home-support-inner{display:flex;align-items:center;justify-content:space-between;gap:32px;padding-top:48px;padding-bottom:48px}
+.home-support-inner h2{margin:0}
+.support-actions{display:flex;gap:10px}
+@media(max-width:900px){
+  .showcase-bottom{grid-template-columns:1fr}
+  .showcase-bottom .row{justify-content:center}
+  .showcase-search{max-width:620px;margin:0 auto}
+  .home-shortcuts{grid-template-columns:1fr 1fr}
+  .home-shortcuts>a:nth-child(2){border-right:0}
+  .home-shortcuts>a:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .home-parts-strip{grid-template-columns:1fr;gap:20px}
+  .part-link-row{grid-template-columns:1fr 1fr}
+}
+@media(max-width:640px){
+  .home-showcase{padding-top:14px}
+  .showcase-copy{padding:24px 18px 8px}
+  .showcase-copy h1{font-size:2.35rem}
+  .showcase-media{min-height:275px;height:74vw;padding:12px 20px}
+  .showcase-bottom{padding:16px 18px 20px;gap:18px}
+  .showcase-bottom .row{display:grid;grid-template-columns:1fr 1fr;width:100%;gap:8px}
+  .showcase-bottom .btn{padding:0 12px}
+  .home-shortcuts>a{min-height:96px;padding:16px}
+  .home-shortcuts span{font-size:.8rem}
+  .home-products{padding-top:42px;padding-bottom:48px}
+  .part-link-row{grid-template-columns:1fr 1fr}
+  .brand-strip{align-items:flex-start;flex-direction:column;gap:16px}
+  .brand-strip>div{justify-content:flex-start;gap:16px 22px}
+  .home-support-inner{align-items:flex-start;flex-direction:column}
+  .support-actions{width:100%}
+  .support-actions .btn{flex:1}
+}

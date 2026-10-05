@@ -79,7 +79,22 @@
     "allGuides": "全部指南 →",
     "helpFind": "需要帮助寻找产品？",
     "talkWith": "联系 HVAC Pacific",
-    "sendModel": "致电 <call>{phone}</call>，或发送产品型号。"
+    "sendModel": "致电 <call>{phone}</call>，或发送产品型号。",
+    "heroPlaceholder": "暖通设备图片占位",
+    "quickLinks": "快捷选购",
+    "equipmentShort": "系统与一体式设备",
+    "partsShort": "替换与维修零件",
+    "miniSplits": "无管道迷你分体",
+    "miniSplitsShort": "紧凑型供暖与制冷",
+    "shoppingHelp": "选购帮助",
+    "shoppingHelpShort": "型号、库存与订单帮助",
+    "popularParts": "热门零件",
+    "capacitors": "电容器",
+    "contactors": "接触器与继电器",
+    "motors": "电机",
+    "thermostats": "温控器",
+    "brandsWeCarry": "供应品牌",
+    "contactUs": "联系我们"
   },
   "Footer": {
     "pickupDelivery": "自取与配送",
