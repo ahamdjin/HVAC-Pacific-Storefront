@@ -51,6 +51,13 @@ export default async function StaticPage({params}:P){
             {section.paragraphs.map((p,j)=><p key={j}>{p}</p>)}
           </section>)}
         </div>
+        {key==="about"&&(
+          <p className="about-credit">
+            <strong>Credits</strong><span aria-hidden="true"> · </span>
+            Website/Store/Products, automation, AI systems, and backend:{" "}
+            <a href="https://www.ahmadyar.co/">Ahmad Yar</a>
+          </p>
+        )}
       </div>
     </main>
   );
