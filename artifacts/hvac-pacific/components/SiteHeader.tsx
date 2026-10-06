@@ -18,9 +18,7 @@ export async function SiteHeader({ locale }: { locale: string }) {
   const parts = partLinks.map(([k, s]) => ({ label: t(`partsCategories.${k}`), href: h(`/parts/${s}`) }));
 
   return (
-    <header className="site-header">
-      <a href="#main" className="skip">{n("skip")}</a>
-
+    <>
       <div className="utility-bar">
         <div className="wrap utility-inner">
           <span>{hm("supplyEyebrow")}</span>
@@ -32,7 +30,10 @@ export async function SiteHeader({ locale }: { locale: string }) {
         </div>
       </div>
 
-      <div className="wrap header-main">
+      <header className="site-header">
+        <a href="#main" className="skip">{n("skip")}</a>
+
+        <div className="wrap header-main">
         <Link href={h("/")} className="logo" aria-label={SITE.displayName}>
           <Image src={SITE.logoPath} alt={SITE.displayName} width={645} height={242} priority sizes="180px" />
         </Link>
@@ -76,6 +77,7 @@ export async function SiteHeader({ locale }: { locale: string }) {
           <Link href={h("/need-installer")} className="nav-support">{t("needInstaller")}</Link>
         </div>
       </nav>
-    </header>
+      </header>
+    </>
   );
 }
