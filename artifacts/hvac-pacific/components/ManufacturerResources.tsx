@@ -56,13 +56,25 @@ function DocumentCards({ documents }: { documents?: ManufacturerDocument[] }) {
   );
 }
 
-export function ManufacturerResources({ data }: { data: ManufacturerResourceData }) {
+export function ManufacturerResources({
+  data,
+  descriptionHtml,
+  descriptionText,
+}: {
+  data: ManufacturerResourceData;
+  descriptionHtml?: string;
+  descriptionText?: string;
+}) {
   const sections = useMemo(() => {
     const base = data.sections || [];
-    return base.length ? base : [{ key: "marketing", title: "Marketing" }];
-  }, [data.sections]);
-  const [activeKey, setActiveKey] = useState(sections[0]?.key || "marketing");
+    const description = (descriptionHtml || descriptionText)
+      ? [{ key: "description", title: "Description" }]
+      : [];
+    return [...description, ...(base.length ? base : [{ key: "marketing", title: "Marketing" }])];
+  }, [data.sections, descriptionHtml, descriptionText]);
+  const [activeKey, setActiveKey] = useState(sections[0]?.key || "description");
   const activeSection = sections.find((section) => section.key === activeKey) || sections[0];
+  const isDescription = activeSection?.key === "description";
   const isMarketing = activeSection?.key === "marketing";
 
   return (
@@ -104,7 +116,14 @@ export function ManufacturerResources({ data }: { data: ManufacturerResourceData
         >
           <div className="manufacturer-tab-copy">
             <h3>{activeSection.title}</h3>
-            {activeSection.summary && <p className="manufacturer-section-summary">{activeSection.summary}</p>}
+
+            {isDescription ? (
+              descriptionHtml
+                ? <div className="prose manufacturer-description" dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
+                : <p className="manufacturer-section-summary manufacturer-description">{descriptionText}</p>
+            ) : (
+              activeSection.summary && <p className="manufacturer-section-summary">{activeSection.summary}</p>
+            )}
 
             {isMarketing && data.features?.length ? (
               <div className="manufacturer-content-block">
@@ -115,7 +134,7 @@ export function ManufacturerResources({ data }: { data: ManufacturerResourceData
               </div>
             ) : null}
 
-            {activeSection.content?.map((block) => (
+            {!isDescription && activeSection.content?.map((block) => (
               <div className="manufacturer-content-block" key={block.title}>
                 <h4>{block.title}</h4>
                 {block.text && <p>{block.text}</p>}
@@ -125,7 +144,7 @@ export function ManufacturerResources({ data }: { data: ManufacturerResourceData
               </div>
             ))}
 
-            {(activeSection.specifications?.length || (isMarketing && data.specifications?.length)) ? (
+            {!isDescription && (activeSection.specifications?.length || (isMarketing && data.specifications?.length)) ? (
               <div className="manufacturer-content-block">
                 <h4>{isMarketing ? "Key product specifications" : `${activeSection.title} specifications`}</h4>
                 <div className="spec-table manufacturer-spec-table">
@@ -140,7 +159,7 @@ export function ManufacturerResources({ data }: { data: ManufacturerResourceData
             ) : null}
           </div>
 
-          <DocumentCards documents={activeSection.documents} />
+          {!isDescription && <DocumentCards documents={activeSection.documents} />}
         </div>
       )}
     </section>
