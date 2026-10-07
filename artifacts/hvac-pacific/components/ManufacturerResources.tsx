@@ -29,14 +29,14 @@ function FileIcon({ kind }: { kind?: string }) {
 }
 
 function DocumentCards({ documents }: { documents?: ManufacturerDocument[] }) {
-  const localDocuments = (documents || []).filter((doc) => doc.hosted && doc.url);
-  if (!localDocuments.length) return null;
+  const availableDocuments = (documents || []).filter((doc) => doc.url);
+  if (!availableDocuments.length) return null;
 
   return (
     <div className="manufacturer-downloads">
       <h4>Downloads</h4>
       <div className="manufacturer-document-grid">
-        {localDocuments.map((doc) => (
+        {availableDocuments.map((doc) => (
           <a className="manufacturer-document-card" href={doc.url} target="_blank" rel="noreferrer" key={doc.title}>
             <FileIcon kind={doc.kind} />
             <span className="manufacturer-document-copy">
