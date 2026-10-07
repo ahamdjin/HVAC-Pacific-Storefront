@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { ManufacturerDocument, ManufacturerResourceData } from "@/lib/manufacturer-resources";
+import type { ManufacturerDocument, ManufacturerResourceData, ManufacturerSection } from "@/lib/manufacturer-resources";
 
 function PdfIcon() {
   return (
@@ -65,12 +65,13 @@ export function ManufacturerResources({
   descriptionHtml?: string;
   descriptionText?: string;
 }) {
-  const sections = useMemo(() => {
-    const base = data.sections || [];
-    const description = (descriptionHtml || descriptionText)
+  const sections = useMemo<ManufacturerSection[]>(() => {
+    const base: ManufacturerSection[] = data.sections || [];
+    const description: ManufacturerSection[] = (descriptionHtml || descriptionText)
       ? [{ key: "description", title: "Description" }]
       : [];
-    return [...description, ...(base.length ? base : [{ key: "marketing", title: "Marketing" }])];
+    const fallback: ManufacturerSection[] = [{ key: "marketing", title: "Marketing" }];
+    return [...description, ...(base.length ? base : fallback)];
   }, [data.sections, descriptionHtml, descriptionText]);
   const [activeKey, setActiveKey] = useState(sections[0]?.key || "description");
   const activeSection = sections.find((section) => section.key === activeKey) || sections[0];
