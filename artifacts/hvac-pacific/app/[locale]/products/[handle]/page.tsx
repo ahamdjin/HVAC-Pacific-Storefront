@@ -6,6 +6,7 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ProductPurchase } from "@/components/ProductPurchase";
 import { ProductGallery } from "@/components/ProductGallery";
 import { ProductCard } from "@/components/ProductCard";
+import { ManufacturerResources, parseManufacturerResources } from "@/components/ManufacturerResources";
 import { hrefFor } from "@/components/paths";
 import { SITE } from "@/config/site";
 import { localizedAlternates, seoMetaDescription, seoPageTitle } from "@/lib/seo";
@@ -74,6 +75,7 @@ export default async function ProductPage({ params }: P) {
   const m = metafieldMap(product);
   if (isBlockedStatus(m.site_status)) notFound();
   const section = ALL_SECTIONS.find((s) => productMatchesSection(product, s.slug));
+  const manufacturerResources = parseManufacturerResources(m.manufacturer_resources);
   const keySpecs = parseKeySpecs(m.key_specs);
   const specs = [
     [t("brand"), product.vendor],
@@ -299,6 +301,8 @@ export default async function ProductPage({ params }: P) {
             </div>
           </section>
         )}
+
+        {manufacturerResources && <ManufacturerResources data={manufacturerResources} />}
 
         <section className="pdp-section info-callout">
           <h2>{t("installNoteTitle")}</h2>
