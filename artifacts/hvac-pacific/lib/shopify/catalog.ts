@@ -45,7 +45,8 @@ const PRODUCT_CARD_FIELDS = `
     {namespace:"specs", key:"spec_sheet_url"},
     {namespace:"specs", key:"manual_url"},
     {namespace:"specs", key:"sds_url"},
-    {namespace:"specs", key:"faq"}
+    {namespace:"specs", key:"faq"},
+    {namespace:"content", key:"manufacturer_resources"}
   ]) { namespace key value type }
 `;
 
