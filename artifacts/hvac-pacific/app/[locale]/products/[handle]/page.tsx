@@ -233,7 +233,7 @@ export default async function ProductPage({ params }: P) {
             <h1>{product.title}</h1>
             {mpn && <p className="model-line">{t("model")}: <strong>{mpn}</strong></p>}
             {product.description && <p className="pdp-summary">{product.description}</p>}
-            {(product.descriptionHtml || product.description) && <a className="pdp-description-link" href="#description">{t("description")}</a>}
+            {!manufacturerResources && (product.descriptionHtml || product.description) && <a className="pdp-description-link" href="#description">{t("description")}</a>}
             <ProductPurchase product={product} />
             <Link
               className="installer-link"
@@ -244,7 +244,15 @@ export default async function ProductPage({ params }: P) {
           </div>
         </section>
 
-        {(product.descriptionHtml || product.description) && (
+        {manufacturerResources && (
+          <ManufacturerResources
+            data={manufacturerResources}
+            descriptionHtml={product.descriptionHtml}
+            descriptionText={product.description}
+          />
+        )}
+
+        {!manufacturerResources && (product.descriptionHtml || product.description) && (
           <section className="pdp-section pdp-description-section" id="description">
             <h2>{t("description")}</h2>
             {product.descriptionHtml
@@ -302,8 +310,6 @@ export default async function ProductPage({ params }: P) {
             </div>
           </section>
         )}
-
-        {manufacturerResources && <ManufacturerResources data={manufacturerResources} />}
 
         <section className="pdp-section info-callout">
           <h2>{t("installNoteTitle")}</h2>
