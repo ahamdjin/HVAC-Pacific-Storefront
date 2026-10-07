@@ -228,7 +228,7 @@ body.mobile-menu-open{overflow:hidden}
 .manufacturer-resources-head h2{margin:0;color:var(--navy);font-size:clamp(1.45rem,2.2vw,2rem)}
 .manufacturer-resources-head>p:last-child{max-width:900px;margin:12px 0 0;color:var(--muted);line-height:1.7}
 
-.manufacturer-tabs{display:flex;gap:0;overflow-x:auto;border-top:1px solid #e7ebef;border-bottom:1px solid #dfe5ea;background:#f6f7f8;scrollbar-width:thin}
+.manufacturer-tabs{position:sticky;top:139px;z-index:44;display:flex;gap:0;overflow-x:auto;border-top:1px solid #e7ebef;border-bottom:1px solid #dfe5ea;background:#f6f7f8;scrollbar-width:thin;box-shadow:0 4px 12px rgba(18,45,70,.04)}
 .manufacturer-tabs button{position:relative;flex:1 0 auto;min-width:130px;padding:19px 22px;border:0;background:transparent;color:#5f6368;font:inherit;font-size:.98rem;font-weight:800;cursor:pointer;white-space:nowrap}
 .manufacturer-tabs button:hover{color:var(--navy)}
 .manufacturer-tabs button.is-active{color:var(--accent);background:#fff}
@@ -238,6 +238,10 @@ body.mobile-menu-open{overflow:hidden}
 .manufacturer-tab-copy{max-width:1000px}
 .manufacturer-tab-copy>h3{margin:0 0 9px;color:var(--navy);font-size:1.4rem}
 .manufacturer-section-summary{max-width:900px;margin:0 0 26px;color:#40556a;line-height:1.7}
+.manufacturer-description{max-width:960px;color:#344b62;line-height:1.75}
+.manufacturer-description p:first-child{margin-top:0}
+.manufacturer-description table{width:100%;border-collapse:collapse;margin:18px 0}
+.manufacturer-description td,.manufacturer-description th{padding:10px 12px;border:1px solid var(--line);text-align:left}
 .manufacturer-content-block{margin-top:28px}
 .manufacturer-content-block:first-of-type{margin-top:22px}
 .manufacturer-content-block h4{margin:0 0 13px;color:var(--navy);font-size:1.05rem}
@@ -264,6 +268,9 @@ body.mobile-menu-open{overflow:hidden}
 .manufacturer-download-action{display:flex;align-items:center;gap:6px;color:var(--accent);font-weight:800;white-space:nowrap}
 .manufacturer-download-action svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
+@media(max-width:900px){
+  .manufacturer-tabs{top:86px}
+}
 @media(max-width:780px){
   .manufacturer-resources-head{padding:24px 20px 20px}
   .manufacturer-tabs button{min-width:122px;padding:16px 18px}
