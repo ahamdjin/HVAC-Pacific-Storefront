@@ -316,3 +316,9 @@ body.mobile-menu-open{overflow:hidden}
   }
   .mobile-menu-panel details>div{grid-template-columns:1fr}
 }
+
+@media(max-width:900px){
+  .mobile-menu-drawer-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 0 14px;border-bottom:1px solid var(--line);color:var(--navy)}
+  .mobile-menu-drawer-head strong{font-size:1.1rem}
+  .mobile-menu-drawer-head button{display:grid;place-items:center;width:40px;height:40px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--navy);font-size:1.8rem;line-height:1;cursor:pointer}
+}
