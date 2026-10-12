@@ -10,7 +10,6 @@ export function LeadForm({ type, product = "", compact = false }: { type:"instal
   // submit event and field values. Do not call preventDefault / fetch here.
   return <form id={formName} name={formName} className={compact?"lead-form compact":"lead-form"} method="POST" action="/api/installer-lead">
     <input type="hidden" name="type" value={type} />
-    <input type="hidden" name="return_to" value={typeof window === "undefined" ? (type === "installer" ? "/need-installer" : "/contact") : window.location.pathname} />
     <input type="text" name="company_website" tabIndex={-1} autoComplete="off" className="honeypot" aria-hidden="true" />
     <label><span>{t("name")}</span><input name="name" required autoComplete="name" /></label>
     <label><span>{t("phone")}</span><input name="phone" required autoComplete="tel" inputMode="tel" /></label>
