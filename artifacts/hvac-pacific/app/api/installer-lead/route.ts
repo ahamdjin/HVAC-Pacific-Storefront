@@ -41,7 +41,10 @@ export async function POST(request: NextRequest) {
     if (!allowed.has(origin)) return json({ error: "Invalid request origin." }, 403);
   }
 
-  const raw = await request.json().catch(() => null);
+  const isFormPost = request.headers.get("content-type")?.includes("application/x-www-form-urlencoded") || request.headers.get("content-type")?.includes("multipart/form-data");
+  const raw = isFormPost
+    ? Object.fromEntries((await request.formData().catch(() => new FormData())).entries())
+    : await request.json().catch(() => null);
   if (!raw || typeof raw !== "object") return json({ error: "Invalid request." }, 400);
 
   const honeypot = "company_website" in raw && typeof raw.company_website === "string"
@@ -78,6 +81,14 @@ export async function POST(request: NextRequest) {
 
   const { type, name, phone, email, zip, language, product, message } = parsed.data;
   const webhook = process.env.LEAD_WEBHOOK_URL;
+  if (!webhook && isFormPost) {
+    // HighLevel External Tracking receives the browser's native submit event.
+    // This response acknowledges the website submission, not confirmed CRM delivery.
+    return new NextResponse(`<!doctype html><html lang="en"><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Request Submitted | HVAC Pacific</title><style>body{font:16px system-ui,sans-serif;color:#173b56;background:#f6f8fa;margin:0;display:grid;min-height:100vh;place-items:center}.card{background:#fff;padding:36px;max-width:520px;margin:20px;border:1px solid #e1e6eb;border-radius:12px}h1{margin-top:0}a{color:#12679b}</style></head><body><main class="card"><h1>Request submitted</h1><p>Your form was submitted on our website. If you don't hear from our team, please call ${SITE.phone}.</p><p><a href="/">Return to HVAC Pacific</a></p></main></body></html>`, {
+      status: 200,
+      headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" },
+    });
+  }
   if (!webhook) return json({ error: "Lead delivery is not configured. Please call us instead." }, 503);
 
   try {
