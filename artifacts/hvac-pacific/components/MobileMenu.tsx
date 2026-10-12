@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { createPortal } from "react-dom";
 import { useEffect, useRef, useState } from "react";
 
 type NavItem = { label: string; href: string };
@@ -60,7 +61,7 @@ export function MobileMenu({
           )}
         </svg>
       </button>
-      {open && (
+      {open && createPortal(
         <>
           <button className="mobile-menu-scrim" type="button" aria-label="Close menu" onClick={close} />
           <nav id="mobile-site-menu" className="mobile-menu-panel" aria-label={menuLabel}>
@@ -76,7 +77,8 @@ export function MobileMenu({
               {links.map((item) => <Link key={item.href} href={item.href} onClick={close}>{item.label}</Link>)}
             </div>
           </nav>
-        </>
+        </>,
+        document.body
       )}
     </div>
   );
