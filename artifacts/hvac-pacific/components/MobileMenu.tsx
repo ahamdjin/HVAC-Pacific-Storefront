@@ -65,6 +65,10 @@ export function MobileMenu({
         <>
           <button className="mobile-menu-scrim" type="button" aria-label="Close menu" onClick={close} />
           <nav id="mobile-site-menu" className="mobile-menu-panel" aria-label={menuLabel}>
+            <div className="mobile-menu-drawer-head">
+              <strong>{menuLabel}</strong>
+              <button type="button" aria-label="Close menu" onClick={close}>×</button>
+            </div>
             <details open>
               <summary>{unitsLabel}</summary>
               <div>{units.map((item) => <Link key={item.href} href={item.href} onClick={close}>{item.label}</Link>)}</div>
