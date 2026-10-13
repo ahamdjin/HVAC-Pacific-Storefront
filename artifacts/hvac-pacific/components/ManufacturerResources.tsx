@@ -120,14 +120,38 @@ function ResourceContent({
   );
 }
 
+function ResourceAccordion({
+  section, data, descriptionHtml, descriptionText,
+}: {
+  section: ManufacturerSection;
+  data: ManufacturerResourceData;
+  descriptionHtml?: string;
+  descriptionText?: string;
+}) {
+  return (
+    <details className="manufacturer-accordion">
+      <summary>
+        <span>{section.title}</span>
+        <span className="manufacturer-accordion-chevron" aria-hidden="true" />
+      </summary>
+      <div className="manufacturer-accordion-body">
+        <ResourceContent section={section} data={data}
+          descriptionHtml={descriptionHtml} descriptionText={descriptionText} showHeading={false} />
+      </div>
+    </details>
+  );
+}
+
 export function ManufacturerResources({
   data,
   descriptionHtml,
   descriptionText,
+  specs = [],
 }: {
   data: ManufacturerResourceData;
   descriptionHtml?: string;
   descriptionText?: string;
+  specs?: string[][];
 }) {
   const sections = useMemo<ManufacturerSection[]>(() => {
     const base: ManufacturerSection[] = data.sections || [];
@@ -181,17 +205,28 @@ export function ManufacturerResources({
       </div>
 
       <div className="manufacturer-mobile">
-        {sections.map((section) => (
-          <details className="manufacturer-accordion" key={section.key}>
+        {sections.filter((section) => section.key === "description").map((section) => (
+          <ResourceAccordion key={section.key} section={section} data={data}
+            descriptionHtml={descriptionHtml} descriptionText={descriptionText} />
+        ))}
+        {specs.length > 0 && (
+          <details className="manufacturer-accordion">
             <summary>
-              <span>{section.title}</span>
+              <span>Product Specs</span>
               <span className="manufacturer-accordion-chevron" aria-hidden="true" />
             </summary>
             <div className="manufacturer-accordion-body">
-              <ResourceContent section={section} data={data}
-                descriptionHtml={descriptionHtml} descriptionText={descriptionText} showHeading={false} />
+              <div className="spec-table manufacturer-spec-table">
+                {specs.map(([label, value]) => (
+                  <div key={label}><span>{label}</span><strong>{value}</strong></div>
+                ))}
+              </div>
             </div>
           </details>
+        )}
+        {sections.filter((section) => section.key !== "description").map((section) => (
+          <ResourceAccordion key={section.key} section={section} data={data}
+            descriptionHtml={descriptionHtml} descriptionText={descriptionText} />
         ))}
       </div>
     </section>
