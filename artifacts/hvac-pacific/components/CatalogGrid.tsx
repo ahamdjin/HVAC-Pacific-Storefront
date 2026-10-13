@@ -93,7 +93,8 @@ export function CatalogGrid({ products, locale, kind }: Props) {
   }
 
   return (
-    <div className="catalog-layout">\n      <button type="button" className="mobile-filter-toggle" aria-expanded={mobileFiltersOpen} aria-controls="catalog-filters" onClick={() => setMobileFiltersOpen((value) => !value)}>{t("title")} · {Object.values(filters).filter(Boolean).length} <span aria-hidden="true">{mobileFiltersOpen ? "−" : "+"}</span></button>
+    <div className="catalog-layout">
+      <button type="button" className="mobile-filter-toggle" aria-expanded={mobileFiltersOpen} aria-controls="catalog-filters" onClick={() => setMobileFiltersOpen((value) => !value)}>{t("title")} · {Object.values(filters).filter(Boolean).length} <span aria-hidden="true">{mobileFiltersOpen ? "−" : "+"}</span></button>
       <aside id="catalog-filters" className={`filters ${mobileFiltersOpen ? "filters-mobile-open" : ""}`} aria-label={t("aria")}>
         <div className="filter-head"><strong>{t("title")}</strong><button type="button" onClick={reset}>{t("reset")}</button></div>
         <Filter allLabel={t("all")} label={t("brand")} value={filters.brand} values={options.brands} onChange={(v) => update("brand", v)} />
