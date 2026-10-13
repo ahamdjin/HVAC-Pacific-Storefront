@@ -34,6 +34,7 @@ export function CatalogGrid({ products, locale, kind }: Props) {
   const pathname = usePathname();
   const search = useSearchParams();
   const [filters, setFilters] = useState(() => readFilters(search));
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   useEffect(() => { setFilters(readFilters(search)); }, [search]);
 
   const options = useMemo(() => {
@@ -92,8 +93,8 @@ export function CatalogGrid({ products, locale, kind }: Props) {
   }
 
   return (
-    <div className="catalog-layout">
-      <aside className="filters" aria-label={t("aria")}>
+    <div className="catalog-layout">\n      <button type="button" className="mobile-filter-toggle" aria-expanded={mobileFiltersOpen} aria-controls="catalog-filters" onClick={() => setMobileFiltersOpen((value) => !value)}>{t("title")} · {Object.values(filters).filter(Boolean).length} <span aria-hidden="true">{mobileFiltersOpen ? "−" : "+"}</span></button>
+      <aside id="catalog-filters" className={`filters ${mobileFiltersOpen ? "filters-mobile-open" : ""}`} aria-label={t("aria")}>
         <div className="filter-head"><strong>{t("title")}</strong><button type="button" onClick={reset}>{t("reset")}</button></div>
         <Filter allLabel={t("all")} label={t("brand")} value={filters.brand} values={options.brands} onChange={(v) => update("brand", v)} />
         <Filter allLabel={t("all")} label={t("collection")} value={filters.collection} values={options.collections} labels={options.collectionLabels} onChange={(v) => update("collection", v)} />
@@ -105,8 +106,8 @@ export function CatalogGrid({ products, locale, kind }: Props) {
         {kind !== "units" && options.attribute.length > 0 && <Filter allLabel={t("all")} label={t("keySpecification")} value={filters.attribute} values={options.attribute} onChange={(v) => update("attribute", v)} />}
         <Filter allLabel={t("all")} label={t("price")} value={filters.price} values={["under-100","100-500","500-2000","2000-plus"]} labels={{"under-100":t("under100"),"100-500":t("from100to500"),"500-2000":t("from500to2000"),"2000-plus":t("over2000")}} onChange={(v) => update("price", v)} />
       </aside>
-      <section>
-        <div className="results-line"><strong>{filtered.length}</strong> {t("products")}</div>
+      <section className="catalog-results">
+        <div className="results-line" role="status" aria-live="polite"><strong>{filtered.length}</strong> {t("products")}</div>
         {filtered.length ? <div className="product-grid">{filtered.map((p) => <ProductCard key={p.id} product={p} locale={locale} />)}</div> : <div className="empty-state"><h2>{t("noMatchingTitle")}</h2><p>{t("noMatchingText")}</p><button className="btn ghost" onClick={reset}>{t("clearFilters")}</button></div>}
       </section>
     </div>
