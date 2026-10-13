@@ -34,7 +34,7 @@ export function LeadForm({ type, product = "", compact = false }: { type:"instal
   >
     <input type="hidden" name="type" value={type} />
     <input type="text" name="company_website" tabIndex={-1} autoComplete="off" className="honeypot" aria-hidden="true" />
-    <label><span>{t("name")}</span><input name="name" required autoComplete="name" /></label>
+    <label><span>{t("name")}</span><input name="full_name" required autoComplete="name" /></label>
     <label><span>{t("phone")}</span><input name="phone" type="tel" required autoComplete="tel" inputMode="tel" /></label>
     <label><span>{t("email")}</span><input name="email" required type="email" autoComplete="email" /></label>
     {type === "installer" && <label><span>{t("zip")}</span><input name="zip" required inputMode="numeric" pattern="[0-9]{5}" /></label>}
