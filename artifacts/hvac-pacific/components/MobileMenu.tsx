@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useLocale } from "next-intl";
 import { createPortal } from "react-dom";
 import { useEffect, useRef, useState } from "react";
 
@@ -21,6 +23,10 @@ export function MobileMenu({
   parts: NavItem[];
   links: NavItem[];
 }) {
+  const locale = useLocale();
+  const pathname = usePathname() || "/";
+  const englishPath = pathname === "/zh" ? "/" : pathname.replace(/^\/zh(?=\/)/, "");
+  const chinesePath = englishPath === "/" ? "/zh" : `/zh${englishPath}`;
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -98,6 +104,7 @@ export function MobileMenu({
               <summary>{partsLabel}</summary>
               <div>{parts.map((item) => <Link key={item.href} href={item.href} onClick={close}>{item.label}</Link>)}</div>
             </details>
+            <div className="mobile-menu-languages" role="group" aria-label="Language"><Link href={englishPath} aria-current={locale === "en" ? "page" : undefined} onClick={close}>English</Link><Link href={chinesePath} aria-current={locale === "zh" ? "page" : undefined} onClick={close}>中文</Link></div>
             <div className="mobile-menu-primary">
               {links.map((item) => <Link key={item.href} href={item.href} onClick={close}>{item.label}</Link>)}
             </div>
