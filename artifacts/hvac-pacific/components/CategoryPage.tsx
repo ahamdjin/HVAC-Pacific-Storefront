@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CatalogGrid } from "./CatalogGrid";
+import { CategoryNavigation } from "./CategoryNavigation";
 import { Breadcrumbs } from "./Breadcrumbs";
 import { LeadForm } from "./LeadForm";
 import { hrefFor } from "./paths";
@@ -87,9 +88,9 @@ export async function CategoryPage({kind,slugs,locale}:{kind:"units"|"parts";slu
     <div className="wrap page-shell">
       <Breadcrumbs locale={locale} items={crumbs}/>
       <header className="page-head"><p className="eyebrow">{kind==="units"?t("equipment"):t("partsEyebrow")}</p><h1>{title}</h1><p className="category-intro">{intro}</p></header>
-      <div className="subcat-links"><Link href={hrefFor(locale,"/search")}>{catalog("allProducts")}</Link></div>
+      {section && <div className="subcat-links"><Link href={hrefFor(locale,`/${kind}`)}>{catalog("allProducts")}</Link></div>}
       <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(itemList).replace(/</g,"\\u003c")}}/>
-      {!section && <div className="category-links">{sections.map((s)=><Link key={s.slug} href={hrefFor(locale,sectionPath(s))}><strong>{t(`sections.${s.slug}.title`)}</strong><span>{t(`sections.${s.slug}.intro`)}</span></Link>)}</div>}
+      {!section && <CategoryNavigation locale={locale} items={sections.map((s) => ({ href: hrefFor(locale,sectionPath(s)), title: t(`sections.${s.slug}.title`), intro: t(`sections.${s.slug}.intro`) }))} />}
       {section?.slug==="capacitors" && <div className="subcat-links">{ALL_SECTIONS.filter((s)=>s.parent==="capacitors").map((s)=><Link key={s.slug} href={hrefFor(locale,sectionPath(s))}>{t(`sections.${s.slug}.title`)}</Link>)}</div>}
 
       {products.length>0 ? <Suspense fallback={<div className="loading-box">{t("loadingFilters")}</div>}><CatalogGrid products={products} locale={locale} kind={kind}/></Suspense> : (
