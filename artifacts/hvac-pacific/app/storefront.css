@@ -417,3 +417,11 @@ button,input,select,textarea{font:inherit}
 .thank-you-description{max-width:540px;margin:0 auto 22px;line-height:1.7;color:var(--muted)}
 .thank-you-card p>a[href^="tel:"]{display:inline-block;margin-bottom:22px;font-weight:750;color:var(--navy)}
 .thank-you-card .btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px}
+
+
+@media(max-width:900px){
+  .mobile-menu-languages{display:flex;gap:8px;padding:18px 0 4px}
+  .mobile-menu-languages a{display:flex;align-items:center;justify-content:center;min-height:42px;min-width:92px;padding:8px 15px;border:1px solid var(--line);border-radius:6px;text-decoration:none;font-weight:650;color:var(--navy)}
+  .mobile-menu-languages a[aria-current="page"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .mobile-menu-languages a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+}
