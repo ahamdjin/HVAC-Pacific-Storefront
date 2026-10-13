@@ -10,6 +10,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import "../globals.css";
 import "../storefront.css";
+import "../responsive-ux.css";
 
 const verification=[process.env.GSC_VERIFICATION,process.env.MERCHANT_VERIFICATION].filter(Boolean) as string[];
 
