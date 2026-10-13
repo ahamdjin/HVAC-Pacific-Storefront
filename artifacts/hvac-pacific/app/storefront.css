@@ -407,3 +407,13 @@ button,input,select,textarea{font:inherit}
   .logo img{max-width:100%;height:auto}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.product-card,.manufacturer-document-card{transition:none!important;transform:none!important}}
+
+
+/* Shared confirmation-page design, consistent with contact and lead forms. */
+.thank-you-shell{padding-top:clamp(40px,6vw,76px);padding-bottom:clamp(72px,9vw,118px)}
+.thank-you-card{max-width:720px;margin-inline:auto;padding:clamp(28px,5vw,56px);text-align:center;border:1px solid var(--line);border-radius:9px;background:#f8fafb}
+.thank-you-check{display:grid;place-items:center;width:58px;height:58px;margin:0 auto 22px;border-radius:50%;background:#e5f2ed;color:#176346;font-size:1.8rem;font-weight:800}
+.thank-you-card h1{margin:0 0 16px;color:var(--navy);font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.2}
+.thank-you-description{max-width:540px;margin:0 auto 22px;line-height:1.7;color:var(--muted)}
+.thank-you-card p>a[href^="tel:"]{display:inline-block;margin-bottom:22px;font-weight:750;color:var(--navy)}
+.thank-you-card .btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px}
