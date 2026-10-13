@@ -265,6 +265,17 @@ export default async function ProductPage({ params }: P) {
           </details>
         )}
 
+        {specs.length > 0 && (
+          <details className={`pdp-section pdp-detail-disclosure ${manufacturerResources ? "pdp-manufacturer-duplicate-specs" : ""}`}>
+            <summary>{t("specifications")}</summary>
+            <div className="pdp-detail-body">
+              <div className="spec-table">
+                {specs.map(([a, b]) => <div key={a}><span>{a}</span><strong>{b}</strong></div>)}
+              </div>
+            </div>
+          </details>
+        )}
+
         {highlights.length > 0 && (
           <section className="pdp-section">
             <h2>{t("highlights")}</h2>
@@ -281,17 +292,6 @@ export default async function ProductPage({ params }: P) {
               {components.map(([a, b]) => <div key={a}><span>{a}</span><strong>{b}</strong></div>)}
             </div>
           </section>
-        )}
-
-        {specs.length > 0 && (
-          <details className={`pdp-section pdp-detail-disclosure ${manufacturerResources ? "pdp-manufacturer-duplicate-specs" : ""}`}>
-            <summary>{t("specifications")}</summary>
-            <div className="pdp-detail-body">
-              <div className="spec-table">
-                {specs.map(([a, b]) => <div key={a}><span>{a}</span><strong>{b}</strong></div>)}
-              </div>
-            </div>
-          </details>
         )}
 
         {(m.ahri_number || m.scaqmd_1111_compliant || m.cec_listed) && (
