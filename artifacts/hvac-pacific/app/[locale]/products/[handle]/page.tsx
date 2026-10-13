@@ -250,6 +250,7 @@ export default async function ProductPage({ params }: P) {
             data={manufacturerResources}
             descriptionHtml={product.descriptionHtml}
             descriptionText={product.description}
+            specs={specs}
           />
         )}
 
@@ -283,7 +284,7 @@ export default async function ProductPage({ params }: P) {
         )}
 
         {specs.length > 0 && (
-          <details className="pdp-section pdp-detail-disclosure">
+          <details className={`pdp-section pdp-detail-disclosure ${manufacturerResources ? "pdp-manufacturer-duplicate-specs" : ""}`}>
             <summary>{t("specifications")}</summary>
             <div className="pdp-detail-body">
               <div className="spec-table">
