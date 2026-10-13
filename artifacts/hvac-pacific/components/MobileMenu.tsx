@@ -22,10 +22,31 @@ export function MobileMenu({
   links: NavItem[];
 }) {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const enterFrame = useRef<number | null>(null);
   const button = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (!open) return;
+    if (open) {
+      if (closeTimer.current) clearTimeout(closeTimer.current);
+      setMounted(true);
+      enterFrame.current = requestAnimationFrame(() => {
+        enterFrame.current = requestAnimationFrame(() => setVisible(true));
+      });
+    } else {
+      setVisible(false);
+      if (mounted) closeTimer.current = setTimeout(() => setMounted(false), 320);
+    }
+    return () => {
+      if (enterFrame.current !== null) cancelAnimationFrame(enterFrame.current);
+      if (closeTimer.current) clearTimeout(closeTimer.current);
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (!mounted) return;
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setOpen(false);
@@ -38,7 +59,7 @@ export function MobileMenu({
       document.removeEventListener("keydown", onKey);
       document.body.classList.remove("mobile-menu-open");
     };
-  }, [open]);
+  }, [mounted]);
 
   const close = () => setOpen(false);
 
@@ -61,10 +82,10 @@ export function MobileMenu({
           )}
         </svg>
       </button>
-      {open && createPortal(
+      {mounted && createPortal(
         <>
-          <button className="mobile-menu-scrim" type="button" aria-label="Close menu" onClick={close} />
-          <nav id="mobile-site-menu" className="mobile-menu-panel" aria-label={menuLabel}>
+          <button data-visible={visible} className="mobile-menu-scrim" type="button" aria-label="Close menu" onClick={close} />
+          <nav id="mobile-site-menu" className="mobile-menu-panel" data-visible={visible} aria-label={menuLabel}>
             <div className="mobile-menu-drawer-head">
               <strong>{menuLabel}</strong>
               <button type="button" aria-label="Close menu" onClick={close}>×</button>
