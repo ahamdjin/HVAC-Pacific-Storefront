@@ -70,8 +70,8 @@ export function CatalogGrid({ products, locale, kind }: Props) {
     if (filters.system && m.system_type !== filters.system) return false;
     if (filters.attribute && !parseKeySpecs(m.key_specs).some((s) => `${s.label}: ${s.value}` === filters.attribute)) return false;
     if (filters.price === "under-100" && price >= 100) return false;
-    if (filters.price === "100-500" && (price < 100 || price > 500)) return false;
-    if (filters.price === "500-2000" && (price < 500 || price > 2000)) return false;
+    if (filters.price === "100-500" && (price < 100 || price >= 500)) return false;
+    if (filters.price === "500-2000" && (price < 500 || price >= 2000)) return false;
     if (filters.price === "2000-plus" && price < 2000) return false;
     return true;
   }), [products, filters]);
