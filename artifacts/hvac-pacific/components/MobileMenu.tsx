@@ -34,6 +34,20 @@ export function MobileMenu({
   const enterFrame = useRef<number | null>(null);
   const button = useRef<HTMLButtonElement>(null);
 
+  // A drawer opened on mobile must not linger when the viewport becomes desktop.
+  useEffect(() => {
+    const mobileViewport = window.matchMedia("(max-width: 900px)");
+    const onViewportChange = () => {
+      if (!mobileViewport.matches) {
+        setOpen(false);
+        setVisible(false);
+        setMounted(false);
+      }
+    };
+    mobileViewport.addEventListener("change", onViewportChange);
+    return () => mobileViewport.removeEventListener("change", onViewportChange);
+  }, []);
+
   useEffect(() => {
     if (open) {
       if (closeTimer.current) clearTimeout(closeTimer.current);
@@ -43,7 +57,7 @@ export function MobileMenu({
       });
     } else {
       setVisible(false);
-      if (mounted) closeTimer.current = setTimeout(() => setMounted(false), 320);
+      if (mounted) closeTimer.current = setTimeout(() => setMounted(false), window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 320);
     }
     return () => {
       if (enterFrame.current !== null) cancelAnimationFrame(enterFrame.current);
