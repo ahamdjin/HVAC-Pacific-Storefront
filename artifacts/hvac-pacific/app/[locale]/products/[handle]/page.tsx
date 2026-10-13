@@ -5,6 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ProductPurchase } from "@/components/ProductPurchase";
 import { ProductGallery } from "@/components/ProductGallery";
+import { ProductDescriptionPreview } from "@/components/ProductDescriptionPreview";
 import { ProductCard } from "@/components/ProductCard";
 import { ManufacturerResources } from "@/components/ManufacturerResources";
 import { parseManufacturerResources } from "@/lib/manufacturer-resources";
@@ -232,7 +233,7 @@ export default async function ProductPage({ params }: P) {
             <p className="eyebrow"><Link href={hrefFor(locale, "/brands/" + brandSlug(product.vendor))}>{product.vendor}</Link></p>
             <h1>{product.title}</h1>
             {mpn && <p className="model-line">{t("model")}: <strong>{mpn}</strong></p>}
-            {product.description && <p className="pdp-summary">{product.description}</p>}
+            {product.description && <ProductDescriptionPreview description={product.description} locale={locale} />}
             {!manufacturerResources && (product.descriptionHtml || product.description) && <a className="pdp-description-link" href="#description">{t("description")}</a>}
             <ProductPurchase product={product} />
             <Link
@@ -253,12 +254,14 @@ export default async function ProductPage({ params }: P) {
         )}
 
         {!manufacturerResources && (product.descriptionHtml || product.description) && (
-          <section className="pdp-section pdp-description-section" id="description">
-            <h2>{t("description")}</h2>
-            {product.descriptionHtml
-              ? <div className="prose" dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
-              : <p className="prose">{product.description}</p>}
-          </section>
+          <details className="pdp-section pdp-detail-disclosure pdp-description-section" id="description">
+            <summary>{t("description")}</summary>
+            <div className="pdp-detail-body">
+              {product.descriptionHtml
+                ? <div className="prose" dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
+                : <p className="prose">{product.description}</p>}
+            </div>
+          </details>
         )}
 
         {highlights.length > 0 && (
@@ -280,12 +283,14 @@ export default async function ProductPage({ params }: P) {
         )}
 
         {specs.length > 0 && (
-          <section className="pdp-section">
-            <h2>{t("specifications")}</h2>
-            <div className="spec-table">
-              {specs.map(([a, b]) => <div key={a}><span>{a}</span><strong>{b}</strong></div>)}
+          <details className="pdp-section pdp-detail-disclosure">
+            <summary>{t("specifications")}</summary>
+            <div className="pdp-detail-body">
+              <div className="spec-table">
+                {specs.map(([a, b]) => <div key={a}><span>{a}</span><strong>{b}</strong></div>)}
+              </div>
             </div>
-          </section>
+          </details>
         )}
 
         {(m.ahri_number || m.scaqmd_1111_compliant || m.cec_listed) && (
