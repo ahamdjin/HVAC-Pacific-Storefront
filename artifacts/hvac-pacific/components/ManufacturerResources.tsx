@@ -56,6 +56,70 @@ function DocumentCards({ documents }: { documents?: ManufacturerDocument[] }) {
   );
 }
 
+function ResourceContent({
+  section,
+  data,
+  descriptionHtml,
+  descriptionText,
+  showHeading = true,
+}: {
+  section: ManufacturerSection;
+  data: ManufacturerResourceData;
+  descriptionHtml?: string;
+  descriptionText?: string;
+  showHeading?: boolean;
+}) {
+  const isDescription = section.key === "description";
+  const isMarketing = section.key === "marketing";
+
+  return (
+    <>
+      <div className="manufacturer-tab-copy">
+        {showHeading && <h3>{section.title}</h3>}
+        {isDescription ? (
+          descriptionHtml
+            ? <div className="prose manufacturer-description" dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
+            : <p className="manufacturer-section-summary manufacturer-description">{descriptionText}</p>
+        ) : section.summary ? (
+          <p className="manufacturer-section-summary">{section.summary}</p>
+        ) : null}
+
+        {isMarketing && data.features?.length ? (
+          <div className="manufacturer-content-block">
+            <h4>Key features</h4>
+            <ul className="manufacturer-feature-list">
+              {data.features.map((feature) => <li key={feature}>{feature}</li>)}
+            </ul>
+          </div>
+        ) : null}
+
+        {!isDescription && section.content?.map((block) => (
+          <div className="manufacturer-content-block" key={block.title}>
+            <h4>{block.title}</h4>
+            {block.text && <p>{block.text}</p>}
+            {block.bullets?.length ? <ul>{block.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}</ul> : null}
+          </div>
+        ))}
+
+        {!isDescription && (section.specifications?.length || (isMarketing && data.specifications?.length)) ? (
+          <div className="manufacturer-content-block">
+            <h4>{isMarketing ? "Key product specifications" : `${section.title} specifications`}</h4>
+            <div className="spec-table manufacturer-spec-table">
+              {(section.specifications || data.specifications || []).map((spec) => (
+                <div key={spec.label}>
+                  <span>{spec.label}</span>
+                  <strong>{spec.value}</strong>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
+      </div>
+      {!isDescription && <DocumentCards documents={section.documents} />}
+    </>
+  );
+}
+
 export function ManufacturerResources({
   data,
   descriptionHtml,
@@ -75,8 +139,6 @@ export function ManufacturerResources({
   }, [data.sections, descriptionHtml, descriptionText]);
   const [activeKey, setActiveKey] = useState(sections[0]?.key || "description");
   const activeSection = sections.find((section) => section.key === activeKey) || sections[0];
-  const isDescription = activeSection?.key === "description";
-  const isMarketing = activeSection?.key === "marketing";
 
   return (
     <section className="pdp-section manufacturer-resources" aria-labelledby="manufacturer-resources-title">
@@ -88,81 +150,50 @@ export function ManufacturerResources({
         {data.overview && <p>{data.overview}</p>}
       </div>
 
-      <div className="manufacturer-tabs" role="tablist" aria-label="Product resource categories">
-        {sections.map((section) => {
-          const selected = section.key === activeSection?.key;
-          return (
-            <button
-              key={section.key}
-              type="button"
-              role="tab"
-              aria-selected={selected}
-              aria-controls={`manufacturer-panel-${section.key}`}
-              id={`manufacturer-tab-${section.key}`}
-              className={selected ? "is-active" : ""}
-              onClick={() => setActiveKey(section.key)}
-            >
-              {section.title}
-            </button>
-          );
-        })}
+      <div className="manufacturer-desktop">
+        <div className="manufacturer-tabs" role="tablist" aria-label="Product resource categories">
+          {sections.map((section) => {
+            const selected = section.key === activeSection?.key;
+            return (
+              <button
+                key={section.key}
+                type="button"
+                role="tab"
+                aria-selected={selected}
+                aria-controls={`manufacturer-panel-${section.key}`}
+                id={`manufacturer-tab-${section.key}`}
+                className={selected ? "is-active" : ""}
+                onClick={() => setActiveKey(section.key)}
+              >
+                {section.title}
+              </button>
+            );
+          })}
+        </div>
+        {activeSection && (
+          <div className="manufacturer-tab-panel" role="tabpanel"
+            id={`manufacturer-panel-${activeSection.key}`}
+            aria-labelledby={`manufacturer-tab-${activeSection.key}`}>
+            <ResourceContent section={activeSection} data={data}
+              descriptionHtml={descriptionHtml} descriptionText={descriptionText} />
+          </div>
+        )}
       </div>
 
-      {activeSection && (
-        <div
-          className="manufacturer-tab-panel"
-          role="tabpanel"
-          id={`manufacturer-panel-${activeSection.key}`}
-          aria-labelledby={`manufacturer-tab-${activeSection.key}`}
-        >
-          <div className="manufacturer-tab-copy">
-            <h3>{activeSection.title}</h3>
-
-            {isDescription ? (
-              descriptionHtml
-                ? <div className="prose manufacturer-description" dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
-                : <p className="manufacturer-section-summary manufacturer-description">{descriptionText}</p>
-            ) : (
-              activeSection.summary && <p className="manufacturer-section-summary">{activeSection.summary}</p>
-            )}
-
-            {isMarketing && data.features?.length ? (
-              <div className="manufacturer-content-block">
-                <h4>Key features</h4>
-                <ul className="manufacturer-feature-list">
-                  {data.features.map((feature) => <li key={feature}>{feature}</li>)}
-                </ul>
-              </div>
-            ) : null}
-
-            {!isDescription && activeSection.content?.map((block) => (
-              <div className="manufacturer-content-block" key={block.title}>
-                <h4>{block.title}</h4>
-                {block.text && <p>{block.text}</p>}
-                {block.bullets?.length ? (
-                  <ul>{block.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}</ul>
-                ) : null}
-              </div>
-            ))}
-
-            {!isDescription && (activeSection.specifications?.length || (isMarketing && data.specifications?.length)) ? (
-              <div className="manufacturer-content-block">
-                <h4>{isMarketing ? "Key product specifications" : `${activeSection.title} specifications`}</h4>
-                <div className="spec-table manufacturer-spec-table">
-                  {(activeSection.specifications || data.specifications || []).map((spec) => (
-                    <div key={spec.label}>
-                      <span>{spec.label}</span>
-                      <strong>{spec.value}</strong>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : null}
-          </div>
-
-          {!isDescription && <DocumentCards documents={activeSection.documents} />}
-        </div>
-      )}
+      <div className="manufacturer-mobile">
+        {sections.map((section) => (
+          <details className="manufacturer-accordion" key={section.key}>
+            <summary>
+              <span>{section.title}</span>
+              <span className="manufacturer-accordion-chevron" aria-hidden="true" />
+            </summary>
+            <div className="manufacturer-accordion-body">
+              <ResourceContent section={section} data={data}
+                descriptionHtml={descriptionHtml} descriptionText={descriptionText} showHeading={false} />
+            </div>
+          </details>
+        ))}
+      </div>
     </section>
   );
 }
